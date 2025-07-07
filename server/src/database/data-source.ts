@@ -15,4 +15,10 @@ export const AppDataSource = new DataSource({
     migrations: [__dirname + '/migrations/*.{js,ts}'],
     synchronize: false,
     logging: configService.get('NODE_ENV') === 'development',
+    ssl: {
+        rejectUnauthorized: false,
+    },
+    extra: {
+        family: 4, // <-- This is the crucial line to add
+    }
 });

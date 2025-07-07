@@ -58,6 +58,12 @@ import {SeederModule} from "@/database/seeds/seeder.module";
                 username: configService.get('DATABASE_USERNAME'),
                 password: configService.get('DATABASE_PASSWORD'),
                 database: configService.get('DATABASE_NAME'),
+                ssl: {
+                    rejectUnauthorized: false,
+                },
+                extra: {
+                    family: 4, // <-- This is the crucial line to add
+                },
                 entities: [
                     User,
                     Company,
