@@ -1,21 +1,43 @@
-FROM node:18-alpine AS builder
+# Building layer
+FROM node:20-alpine as development
+
 WORKDIR /app
+
+# Copy configuration files
+COPY tsconfig*.json ./
 COPY package*.json ./
-RUN npm install
-COPY . .
-# Copy the wait script and make it executable
-#COPY wait-for-postgres.sh .
-#RUN chmod +x ./wait-for-postgres.sh
+
+# Authenticate NPM registry
+
+# Install dependencies from package-lock.json
+RUN npm ci
+
+# Copy application sources (.ts, .tsx, .js) and .hbs files
+COPY src/ src/
+
+# Build application (produces dist/ folder)
 RUN npm run build
 
-# Stage 2: Create the production image
-FROM node:18-alpine
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-# Copy the wait script into the final image
-#COPY --from=builder /app/wait-for-postgres.sh .
+# Runtime (production) layer
+FROM node:20-alpine as production
 
-EXPOSE 3005
-CMD ["node", "dist/main"]
+ENV NODE_ENV production
+
+WORKDIR /app
+
+# Copy dependencies files
+COPY package*.json ./
+
+# Authenticate NPM registry
+
+# Install runtime dependencies (without dev/test dependencies)
+RUN npm ci --omit=dev
+
+# Copy production build and .hbs files from development stage
+COPY --from=development /app/dist/ ./dist/
+
+# Expose application port
+EXPOSE 3000
+
+# Start application
+CMD [ "node", "dist/main.js" ]
