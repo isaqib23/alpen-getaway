@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -39,6 +40,7 @@ async function bootstrap() {
 
     const port = process.env.PORT || 3000;
     await app.listen(port);
+    console.log(`Server started on port:`, app.get(ConfigService));
     console.log(`🚀 Admin portal running on: http://localhost:${port}`);
     console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
 }
