@@ -35,9 +35,10 @@ RUN npm ci --omit=dev
 
 # Copy production build and .hbs files from development stage
 COPY --from=development /app/dist/ ./dist/
-
+COPY docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
 # Expose application port
 EXPOSE 3000
 
 # Start application
-CMD [ "node", "dist/main.js" ]
+CMD ["./docker-entrypoint.sh"]
