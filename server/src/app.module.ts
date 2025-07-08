@@ -40,7 +40,7 @@ import { Auction } from './auctions/entities/auction.entity';
 import { AuctionBid } from './auctions/entities/auction-bid.entity';
 import { AuctionActivity } from './auctions/entities/auction-activity.entity';
 import {SeederModule} from "@/database/seeds/seeder.module";
-
+import * as pg from 'pg';
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -52,38 +52,28 @@ import {SeederModule} from "@/database/seeds/seeder.module";
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
-            useFactory: (configService: ConfigService) => ({
-                type: 'postgres',
-                host: configService.get('DATABASE_HOST'),
-                port: +configService.get('DATABASE_PORT'),
-                username: configService.get('DATABASE_USERNAME'),
-                password: configService.get('DATABASE_PASSWORD'),
-                database: configService.get('DATABASE_NAME'),
-                entities: [
-                    User,
-                    Company,
-                    CarCategory,
-                    Car,
-                    CarImage,
-                    Driver,
-                    DriverCarAssignment,
-                    RouteFare,
-                    Booking,
-                    Coupon,
-                    CouponUsage,
-                    Payment,
-                    Commission,
-                    PaymentMethodConfig,
-                    CmsPage,
-                    Review,
-                    Setting,
-                    Auction,
-                    AuctionBid,
-                    AuctionActivity,
-                ],
-                synchronize: process.env.NODE_ENV === 'development',
-                logging: process.env.NODE_ENV === 'development',
-            }),
+            useFactory: async (configService: ConfigService) => {
+                //const dbUrl = 'postgresql://neondb_owner:npg_M0aiFWV6xPYK@ep-cold-firefly-a1kx3e7c-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
+                const dbUrl = configService.get<string>('DATABASE_URI');
+                const sslConfig = {
+                    ssl: {
+                        rejectUnauthorized: false, // Accept Neon self-signed cert
+                    },
+                };
+
+                // Patch pg to always use SSL if needed
+                pg.defaults.ssl = sslConfig.ssl;
+
+                return {
+                    type: 'postgres',
+                    url: dbUrl,
+                    ssl: sslConfig.ssl, // Required by Neon
+                    extra: sslConfig,
+                    synchronize: process.env.NODE_ENV === 'development',
+                    logging: process.env.NODE_ENV === 'development',
+                    entities: [/* your entities here */],
+                };
+            },
             inject: [ConfigService],
         }),
         AuthModule,
