@@ -27,6 +27,9 @@ import {
   Gavel,
   Timer,
   TrendingUp,
+  Payment,
+  Pages,
+  AccountBalance
 } from '@mui/icons-material'
 import { useState } from 'react'
 
@@ -122,7 +125,7 @@ const menuItems: MenuItem[] = [
       { id: 'coupon-usage', title: 'Coupon Usage', icon: LocalOffer, path: '/coupons/usage' },
     ],
   },
-  /*{
+  {
     id: 'financial-management',
     title: 'Financial Management',
     icon: Payment,
@@ -130,17 +133,6 @@ const menuItems: MenuItem[] = [
       { id: 'payments', title: 'Payments', icon: Payment, path: '/financial/payments' },
       { id: 'commissions', title: 'Commissions', icon: AccountBalance, path: '/financial/commissions' },
       { id: 'payment-methods', title: 'Payment Methods', icon: Payment, path: '/financial/payment-methods' },
-    ],
-  },
-  {
-    id: 'reviews-management',
-    title: 'Reviews & Ratings',
-    icon: RateReview,
-    children: [
-      { id: 'reviews', title: 'All Reviews', icon: RateReview, path: '/reviews' },
-      { id: 'pending-reviews', title: 'Pending Reviews', icon: RateReview, path: '/reviews/pending' },
-      { id: 'approved-reviews', title: 'Approved Reviews', icon: RateReview, path: '/reviews/approved' },
-      { id: 'rejected-reviews', title: 'Rejected Reviews', icon: RateReview, path: '/reviews/rejected' },
     ],
   },
   {
@@ -153,13 +145,7 @@ const menuItems: MenuItem[] = [
       { id: 'cms-help', title: 'Help Pages', icon: Pages, path: '/cms/help' },
       { id: 'cms-legal', title: 'Legal Pages', icon: Pages, path: '/cms/legal' },
     ],
-  },
-  {
-    id: 'system-settings',
-    title: 'System Settings',
-    icon: Settings,
-    path: '/settings',
-  },*/
+  }
 ]
 
 const Sidebar = () => {

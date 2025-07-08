@@ -48,10 +48,10 @@ import PricingManagement from './pages/routes/PricingManagement'
 import Coupons from './pages/coupons/Coupons'
 import CouponUsage from './pages/coupons/CouponUsage'
 
-// Financial Management - DISABLED FOR LATER DEVELOPMENT
-// import Payments from './pages/financial/Payments'
-// import Commissions from './pages/financial/Commissions'
-// import PaymentMethods from './pages/financial/PaymentMethods'
+// Financial Management
+import Payments from './pages/financial/Payments'
+import Commissions from './pages/financial/Commissions'
+import PaymentMethods from './pages/financial/PaymentMethods'
 
 // Reviews & Ratings - DISABLED FOR LATER DEVELOPMENT
 // import AllReviews from './pages/reviews/AllReviews'
@@ -429,8 +429,7 @@ function App() {
         )
       } />
 
-      {/* Financial Management Routes - DISABLED FOR LATER DEVELOPMENT */}
-      {/* 
+      {/* Financial Management Routes */}
       <Route path="/financial/payments" element={
         authenticated ? (
           <DashboardLayout>
@@ -458,7 +457,6 @@ function App() {
           <Navigate to="/auth/login" replace />
         )
       } />
-      */}
 
       {/* Reviews & Ratings Routes - DISABLED FOR LATER DEVELOPMENT */}
       {/*
