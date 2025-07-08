@@ -51,57 +51,37 @@ import {SeederModule} from "@/database/seeds/seeder.module";
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
-            useFactory: (configService: ConfigService) => {
-
-                // --- Logging Added for Debugging ---
-                console.log('Attempting DB connection with the following config:');
-                console.log({
-                    host: configService.get('DATABASE_HOST'),
-                    port: configService.get('DATABASE_PORT'),
-                    username: configService.get('DATABASE_USERNAME'),
-                    database: configService.get('DATABASE_NAME'),
-                    family: 4, // Verifying the IPv4 fix is being applied
-                });
-                // ------------------------------------
-
-                return {
-                    type: 'postgres',
-                    host: configService.get('DATABASE_HOST'),
-                    port: +configService.get('DATABASE_PORT'),
-                    username: configService.get('DATABASE_USERNAME'),
-                    password: configService.get('DATABASE_PASSWORD'),
-                    database: configService.get('DATABASE_NAME'),
-                    ssl: {
-                        rejectUnauthorized: false,
-                    },
-                    extra: {
-                        family: 4, // This forces the IPv4 connection
-                    },
-                    entities: [
-                        User,
-                        Company,
-                        CarCategory,
-                        Car,
-                        CarImage,
-                        Driver,
-                        DriverCarAssignment,
-                        RouteFare,
-                        Booking,
-                        Coupon,
-                        CouponUsage,
-                        Payment,
-                        Commission,
-                        CmsPage,
-                        Review,
-                        Setting,
-                        Auction,
-                        AuctionBid,
-                        AuctionActivity,
-                    ],
-                    synchronize: process.env.NODE_ENV === 'development',
-                    logging: process.env.NODE_ENV === 'development',
-                };
-            },
+            useFactory: (configService: ConfigService) => ({
+                type: 'postgres',
+                host: configService.get('DATABASE_HOST'),
+                port: +configService.get('DATABASE_PORT'),
+                username: configService.get('DATABASE_USERNAME'),
+                password: configService.get('DATABASE_PASSWORD'),
+                database: configService.get('DATABASE_NAME'),
+                entities: [
+                    User,
+                    Company,
+                    CarCategory,
+                    Car,
+                    CarImage,
+                    Driver,
+                    DriverCarAssignment,
+                    RouteFare,
+                    Booking,
+                    Coupon,
+                    CouponUsage,
+                    Payment,
+                    Commission,
+                    CmsPage,
+                    Review,
+                    Setting,
+                    Auction,
+                    AuctionBid,
+                    AuctionActivity,
+                ],
+                synchronize: process.env.NODE_ENV === 'development',
+                logging: process.env.NODE_ENV === 'development',
+            }),
             inject: [ConfigService],
         }),
         AuthModule,
