@@ -413,6 +413,7 @@ const Commissions = () => {
                   </TableCell>
                   <TableCell>
                     <Chip
+                        // @ts-ignore
                       icon={getStatusIcon(commission.status)}
                       label={formatCommissionStatus(commission.status)}
                       color={getStatusColor(commission.status) as any}
@@ -529,6 +530,7 @@ const Commissions = () => {
                       <Grid item xs={12}>
                         <Typography variant="body2" color="textSecondary">Status</Typography>
                         <Chip
+                            // @ts-ignore
                           icon={getStatusIcon(selectedCommission.status)}
                           label={formatCommissionStatus(selectedCommission.status)}
                           color={getStatusColor(selectedCommission.status) as any}

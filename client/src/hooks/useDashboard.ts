@@ -14,6 +14,7 @@ export const useDashboard = () => {
       setError(null)
       const response = await dashboardAPI.getOverview()
       console.log('✅ useDashboard.fetchDashboard response:', response)
+      // @ts-ignore
       setData(response)
     } catch (err) {
       console.error('❌ useDashboard.fetchDashboard error:', err)

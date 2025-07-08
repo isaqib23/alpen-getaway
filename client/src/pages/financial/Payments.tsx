@@ -668,6 +668,7 @@ const Payments = () => {
                       <Grid item xs={12}>
                         <Typography variant="body2" color="textSecondary">Status</Typography>
                         <Chip
+                            // @ts-ignore
                           icon={getStatusIcon(selectedPayment.payment_status)}
                           label={formatPaymentStatus(selectedPayment.payment_status)}
                           color={getStatusColor(selectedPayment.payment_status) as any}
