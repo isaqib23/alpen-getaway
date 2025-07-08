@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
+import {Repository, MoreThanOrEqual} from 'typeorm';
 import {User} from '@/users/entities/user.entity';
 import {Company} from '@/companies/entities/company.entity';
 import {Car} from '@/cars/entities/car.entity';
@@ -68,7 +68,7 @@ export class AnalyticsService {
         // Recent activity
         const recentBookings = await this.bookingsRepository.count({
             where: {
-                created_at: this.getDateRange(7), // Last 7 days
+                created_at: MoreThanOrEqual(this.getStartDate(7)), // Last 7 days
             },
         });
 
@@ -768,9 +768,9 @@ export class AnalyticsService {
         return 30; // default
     }
 
-    private getDateRange(days: number): any {
+    private getStartDate(days: number): Date {
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - days);
-        return { $gte: startDate };
+        return startDate;
     }
 }

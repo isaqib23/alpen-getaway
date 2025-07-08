@@ -3,8 +3,11 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Payment} from './entities/payment.entity';
 import {Commission} from './entities/commission.entity';
+import {PaymentMethodConfig} from './entities/payment-method.entity';
 import {CreatePaymentDto} from './dto/create-payment.dto';
 import {UpdatePaymentDto} from './dto/update-payment.dto';
+import {CreatePaymentMethodDto} from './dto/create-payment-method.dto';
+import {UpdatePaymentMethodDto} from './dto/update-payment-method.dto';
 import {CommissionStatus, PaymentStatus} from "@/common/enums";
 
 @Injectable()
@@ -14,6 +17,8 @@ export class PaymentsService {
         private paymentsRepository: Repository<Payment>,
         @InjectRepository(Commission)
         private commissionsRepository: Repository<Commission>,
+        @InjectRepository(PaymentMethodConfig)
+        private paymentMethodsRepository: Repository<PaymentMethodConfig>,
     ) {}
 
     async create(createPaymentDto: CreatePaymentDto): Promise<Payment> {
@@ -21,7 +26,7 @@ export class PaymentsService {
         return this.paymentsRepository.save(payment);
     }
 
-    async findAll(page: number = 1, limit: number = 10, filters?: any): Promise<{ data: Payment[], total: number }> {
+    async findAll(page: number = 1, limit: number = 10, filters?: any): Promise<{ data: Payment[], meta: { total: number, page: number, lastPage: number, limit: number } }> {
         const queryBuilder = this.paymentsRepository.createQueryBuilder('payment')
             .leftJoinAndSelect('payment.booking', 'booking')
             .leftJoinAndSelect('payment.payer', 'payer')
@@ -52,7 +57,25 @@ export class PaymentsService {
             .orderBy('payment.created_at', 'DESC')
             .getManyAndCount();
 
-        return { data, total };
+        const lastPage = Math.ceil(total / limit);
+        
+        // Map the data to include the required fields
+        const mappedData = data.map(payment => ({
+            ...payment,
+            payer_name: payment.payer ? `${payment.payer.first_name} ${payment.payer.last_name}` : null,
+            company_name: payment.company?.company_name || null,
+            booking_reference: payment.booking?.booking_reference || null
+        }));
+        
+        return { 
+            data: mappedData, 
+            meta: {
+                total,
+                page,
+                lastPage,
+                limit
+            }
+        };
     }
 
     async findOne(id: string): Promise<Payment> {
@@ -97,7 +120,7 @@ export class PaymentsService {
     }
 
     // Commission methods
-    async findAllCommissions(page: number = 1, limit: number = 10, status?: string): Promise<{ data: Commission[], total: number }> {
+    async findAllCommissions(page: number = 1, limit: number = 10, status?: string): Promise<{ data: Commission[], meta: { total: number, page: number, lastPage: number, limit: number } }> {
         const queryBuilder = this.commissionsRepository.createQueryBuilder('commission')
             .leftJoinAndSelect('commission.company', 'company')
             .leftJoinAndSelect('commission.booking', 'booking')
@@ -113,7 +136,25 @@ export class PaymentsService {
             .orderBy('commission.created_at', 'DESC')
             .getManyAndCount();
 
-        return { data, total };
+        const lastPage = Math.ceil(total / limit);
+        
+        // Map the data to include the required fields
+        const mappedData = data.map(commission => ({
+            ...commission,
+            company_name: commission.company?.company_name || null,
+            booking_reference: commission.booking?.booking_reference || null,
+            payment_amount: commission.payment?.amount || null
+        }));
+        
+        return { 
+            data: mappedData, 
+            meta: {
+                total,
+                page,
+                lastPage,
+                limit
+            }
+        };
     }
 
     async approveCommission(id: string): Promise<Commission> {
@@ -167,20 +208,52 @@ export class PaymentsService {
             .orderBy('month', 'DESC')
             .getRawMany();
 
+        // Get total payments and amount
+        const totalStats = await this.paymentsRepository
+            .createQueryBuilder('payment')
+            .select('COUNT(*)', 'totalPayments')
+            .addSelect('SUM(payment.amount)', 'totalAmount')
+            .getRawOne();
+
+        // Create status object with all possible statuses
+        const byStatus = {
+            pending: { count: 0, amount: 0 },
+            paid: { count: 0, amount: 0 },
+            failed: { count: 0, amount: 0 },
+            refunded: { count: 0, amount: 0 }
+        };
+
+        statusStats.forEach(stat => {
+            byStatus[stat.status] = {
+                count: parseInt(stat.count),
+                amount: parseFloat(stat.total_amount || 0)
+            };
+        });
+
+        // Create method object with all possible methods
+        const byMethod = {
+            credit_card: { count: 0, amount: 0 },
+            debit_card: { count: 0, amount: 0 },
+            bank_transfer: { count: 0, amount: 0 },
+            wallet: { count: 0, amount: 0 },
+            cash: { count: 0, amount: 0 }
+        };
+
+        methodStats.forEach(stat => {
+            byMethod[stat.method] = {
+                count: parseInt(stat.count),
+                amount: parseFloat(stat.total_amount || 0)
+            };
+        });
+
         return {
-            byStatus: statusStats.map(stat => ({
-                status: stat.status,
-                count: parseInt(stat.count),
-                totalAmount: parseFloat(stat.total_amount || 0).toFixed(2),
-            })),
-            byMethod: methodStats.map(stat => ({
-                method: stat.method,
-                count: parseInt(stat.count),
-                totalAmount: parseFloat(stat.total_amount || 0).toFixed(2),
-            })),
+            totalPayments: parseInt(totalStats.totalPayments || 0),
+            totalAmount: parseFloat(totalStats.totalAmount || 0),
+            byStatus,
+            byMethod,
             monthlyRevenue: monthlyRevenue.map(stat => ({
                 month: stat.month,
-                revenue: parseFloat(stat.revenue || 0).toFixed(2),
+                amount: parseFloat(stat.revenue || 0),
                 count: parseInt(stat.count),
             })),
         };
@@ -206,17 +279,66 @@ export class PaymentsService {
             .limit(10)
             .getRawMany();
 
-        return {
-            byStatus: statusStats.map(stat => ({
-                status: stat.status,
-                count: parseInt(stat.count),
-                totalAmount: parseFloat(stat.total_amount || 0).toFixed(2),
-            })),
-            topCompanies: companyStats.map(stat => ({
-                companyName: stat.company_name,
-                totalCommission: parseFloat(stat.total_commission || 0).toFixed(2),
-                bookingCount: parseInt(stat.booking_count),
-            })),
+        // Get total commissions and amount
+        const totalStats = await this.commissionsRepository
+            .createQueryBuilder('commission')
+            .select('COUNT(*)', 'totalCommissions')
+            .addSelect('SUM(commission.commission_amount)', 'totalAmount')
+            .getRawOne();
+
+        // Create status object with all possible statuses
+        const byStatus = {
+            pending: { count: 0, amount: 0 },
+            approved: { count: 0, amount: 0 },
+            paid: { count: 0, amount: 0 },
+            rejected: { count: 0, amount: 0 }
         };
+
+        statusStats.forEach(stat => {
+            byStatus[stat.status] = {
+                count: parseInt(stat.count),
+                amount: parseFloat(stat.total_amount || 0)
+            };
+        });
+
+        return {
+            totalCommissions: parseInt(totalStats.totalCommissions || 0),
+            totalAmount: parseFloat(totalStats.totalAmount || 0),
+            byStatus,
+            monthlyCommissions: [], // Can be populated later if needed
+        };
+    }
+
+    // Payment Methods CRUD
+    async createPaymentMethod(createPaymentMethodDto: CreatePaymentMethodDto): Promise<PaymentMethodConfig> {
+        const paymentMethod = this.paymentMethodsRepository.create(createPaymentMethodDto);
+        return this.paymentMethodsRepository.save(paymentMethod);
+    }
+
+    async findAllPaymentMethods(): Promise<PaymentMethodConfig[]> {
+        return this.paymentMethodsRepository.find({
+            order: { created_at: 'DESC' }
+        });
+    }
+
+    async findOnePaymentMethod(id: string): Promise<PaymentMethodConfig> {
+        const paymentMethod = await this.paymentMethodsRepository.findOne({ where: { id } });
+        
+        if (!paymentMethod) {
+            throw new NotFoundException(`Payment method with ID ${id} not found`);
+        }
+
+        return paymentMethod;
+    }
+
+    async updatePaymentMethod(id: string, updatePaymentMethodDto: UpdatePaymentMethodDto): Promise<PaymentMethodConfig> {
+        const paymentMethod = await this.findOnePaymentMethod(id);
+        Object.assign(paymentMethod, updatePaymentMethodDto);
+        return this.paymentMethodsRepository.save(paymentMethod);
+    }
+
+    async removePaymentMethod(id: string): Promise<void> {
+        const paymentMethod = await this.findOnePaymentMethod(id);
+        await this.paymentMethodsRepository.remove(paymentMethod);
     }
 }

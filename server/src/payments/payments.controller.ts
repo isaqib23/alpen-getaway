@@ -50,36 +50,6 @@ export class PaymentsController {
         return this.paymentsService.getPaymentStats();
     }
 
-    @ApiOperation({ summary: 'Get payment by ID' })
-    @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.paymentsService.findOne(id);
-    }
-
-    @ApiOperation({ summary: 'Update payment by ID' })
-    @Patch(':id')
-    update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
-        return this.paymentsService.update(id, updatePaymentDto);
-    }
-
-    @ApiOperation({ summary: 'Mark payment as paid' })
-    @Patch(':id/mark-paid')
-    markAsPaid(@Param('id') id: string) {
-        return this.paymentsService.markAsPaid(id);
-    }
-
-    @ApiOperation({ summary: 'Mark payment as failed' })
-    @Patch(':id/mark-failed')
-    markAsFailed(@Param('id') id: string, @Body() body: { failure_reason: string }) {
-        return this.paymentsService.markAsFailed(id, body.failure_reason);
-    }
-
-    @ApiOperation({ summary: 'Refund payment' })
-    @Patch(':id/refund')
-    refund(@Param('id') id: string) {
-        return this.paymentsService.refund(id);
-    }
-
     // Commission endpoints
     @ApiOperation({ summary: 'Get all commissions with pagination' })
     @ApiQuery({ name: 'page', required: false, type: Number })
@@ -110,5 +80,35 @@ export class PaymentsController {
     @Patch('commissions/:id/pay')
     payCommission(@Param('id') id: string) {
         return this.paymentsService.payCommission(id);
+    }
+
+    @ApiOperation({ summary: 'Get payment by ID' })
+    @Get(':id')
+    findOne(@Param('id') id: string) {
+        return this.paymentsService.findOne(id);
+    }
+
+    @ApiOperation({ summary: 'Update payment by ID' })
+    @Patch(':id')
+    update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
+        return this.paymentsService.update(id, updatePaymentDto);
+    }
+
+    @ApiOperation({ summary: 'Mark payment as paid' })
+    @Patch(':id/mark-paid')
+    markAsPaid(@Param('id') id: string) {
+        return this.paymentsService.markAsPaid(id);
+    }
+
+    @ApiOperation({ summary: 'Mark payment as failed' })
+    @Patch(':id/mark-failed')
+    markAsFailed(@Param('id') id: string, @Body() body: { failure_reason: string }) {
+        return this.paymentsService.markAsFailed(id, body.failure_reason);
+    }
+
+    @ApiOperation({ summary: 'Refund payment' })
+    @Patch(':id/refund')
+    refund(@Param('id') id: string) {
+        return this.paymentsService.refund(id);
     }
 }

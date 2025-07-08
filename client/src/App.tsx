@@ -48,10 +48,10 @@ import PricingManagement from './pages/routes/PricingManagement'
 import Coupons from './pages/coupons/Coupons'
 import CouponUsage from './pages/coupons/CouponUsage'
 
-// Financial Management - DISABLED FOR LATER DEVELOPMENT
-// import Payments from './pages/financial/Payments'
-// import Commissions from './pages/financial/Commissions'
-// import PaymentMethods from './pages/financial/PaymentMethods'
+// Financial Management
+import Payments from './pages/financial/Payments'
+import Commissions from './pages/financial/Commissions'
+import PaymentMethods from './pages/financial/PaymentMethods'
 
 // Reviews & Ratings - DISABLED FOR LATER DEVELOPMENT
 // import AllReviews from './pages/reviews/AllReviews'
@@ -59,11 +59,11 @@ import CouponUsage from './pages/coupons/CouponUsage'
 // import ApprovedReviews from './pages/reviews/ApprovedReviews'
 // import RejectedReviews from './pages/reviews/RejectedReviews'
 
-// Content Management - DISABLED FOR LATER DEVELOPMENT
-// import CMSPages from './pages/cms/CMSPages'
-// import BlogPosts from './pages/cms/BlogPosts'
-// import HelpPages from './pages/cms/HelpPages'
-// import LegalPages from './pages/cms/LegalPages'
+// Content Management
+import CMSPages from './pages/cms/CMSPages'
+import BlogPosts from './pages/cms/BlogPosts'
+import HelpPages from './pages/cms/HelpPages'
+import LegalPages from './pages/cms/LegalPages'
 
 // System Settings - DISABLED FOR LATER DEVELOPMENT
 // import SystemSettings from './pages/settings/SystemSettings'
@@ -429,8 +429,7 @@ function App() {
         )
       } />
 
-      {/* Financial Management Routes - DISABLED FOR LATER DEVELOPMENT */}
-      {/* 
+      {/* Financial Management Routes */}
       <Route path="/financial/payments" element={
         authenticated ? (
           <DashboardLayout>
@@ -458,7 +457,6 @@ function App() {
           <Navigate to="/auth/login" replace />
         )
       } />
-      */}
 
       {/* Reviews & Ratings Routes - DISABLED FOR LATER DEVELOPMENT */}
       {/*
@@ -500,8 +498,7 @@ function App() {
       } />
       */}
 
-      {/* Content Management Routes - DISABLED FOR LATER DEVELOPMENT */}
-      {/*
+      {/* Content Management Routes */}
       <Route path="/cms/pages" element={
         authenticated ? (
           <DashboardLayout>
@@ -538,7 +535,6 @@ function App() {
           <Navigate to="/auth/login" replace />
         )
       } />
-      */}
 
       {/* System Settings Routes - DISABLED FOR LATER DEVELOPMENT */}
       {/*

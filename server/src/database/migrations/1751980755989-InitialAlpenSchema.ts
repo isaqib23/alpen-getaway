@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class InitialAlpenSchema1751889593199 implements MigrationInterface {
-    name = 'InitialAlpenSchema1751889593199'
+export class InitialAlpenSchema1751980755989 implements MigrationInterface {
+    name = 'InitialAlpenSchema1751980755989'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "route_fares" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "from_location" character varying NOT NULL, "from_country_code" character varying(2) NOT NULL, "to_location" character varying NOT NULL, "to_country_code" character varying(2) NOT NULL, "distance_km" integer NOT NULL, "vehicle" character varying NOT NULL, "min_fare" numeric(10,2) NOT NULL, "original_fare" numeric(10,2) NOT NULL, "sale_fare" numeric(10,2) NOT NULL, "currency" character varying(3) NOT NULL DEFAULT 'EUR', "is_active" boolean NOT NULL DEFAULT true, "effective_from" TIMESTAMP NOT NULL DEFAULT now(), "effective_until" TIMESTAMP, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_426fba162ed7ece39d288cc2ccd" PRIMARY KEY ("id"))`);
@@ -37,17 +37,19 @@ export class InitialAlpenSchema1751889593199 implements MigrationInterface {
         await queryRunner.query(`CREATE TYPE "public"."users_user_type_enum" AS ENUM('customer', 'affiliate', 'b2b', 'admin')`);
         await queryRunner.query(`CREATE TYPE "public"."users_status_enum" AS ENUM('active', 'inactive', 'suspended')`);
         await queryRunner.query(`CREATE TABLE "users" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "email" character varying NOT NULL, "password_hash" character varying NOT NULL, "phone" character varying, "first_name" character varying NOT NULL, "last_name" character varying NOT NULL, "user_type" "public"."users_user_type_enum" NOT NULL, "status" "public"."users_status_enum" NOT NULL DEFAULT 'active', "email_verified" boolean NOT NULL DEFAULT false, "phone_verified" boolean NOT NULL DEFAULT false, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE ("email"), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TYPE "public"."payment_methods_type_enum" AS ENUM('credit_card', 'debit_card', 'bank_transfer', 'wallet', 'cash')`);
+        await queryRunner.query(`CREATE TABLE "payment_methods" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "type" "public"."payment_methods_type_enum" NOT NULL, "is_active" boolean NOT NULL DEFAULT true, "config" jsonb, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_34f9b8c6dfb4ac3559f7e2820d1" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TYPE "public"."settings_setting_type_enum" AS ENUM('string', 'number', 'boolean', 'json')`);
+        await queryRunner.query(`CREATE TABLE "settings" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "setting_key" character varying NOT NULL, "setting_value" text NOT NULL, "setting_type" "public"."settings_setting_type_enum" NOT NULL DEFAULT 'string', "description" text, "is_public" boolean NOT NULL DEFAULT false, "updated_by" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "updaterId" uuid, CONSTRAINT "UQ_35690f287c60414f4b63614a006" UNIQUE ("setting_key"), CONSTRAINT "PK_0669fe20e252eb692bf4d344975" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."cms_pages_page_type_enum" AS ENUM('page', 'blog', 'help', 'legal')`);
         await queryRunner.query(`CREATE TYPE "public"."cms_pages_status_enum" AS ENUM('draft', 'published', 'archived')`);
         await queryRunner.query(`CREATE TABLE "cms_pages" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "slug" character varying NOT NULL, "title" character varying NOT NULL, "meta_title" character varying, "meta_description" text, "content" text NOT NULL, "featured_image_url" character varying(500), "page_type" "public"."cms_pages_page_type_enum" NOT NULL DEFAULT 'page', "status" "public"."cms_pages_status_enum" NOT NULL DEFAULT 'draft', "sort_order" integer NOT NULL DEFAULT '0', "is_in_menu" boolean NOT NULL DEFAULT false, "menu_title" character varying, "created_by" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_164bf011d905e86e677bc86a1e9" UNIQUE ("slug"), CONSTRAINT "PK_a6bd4d97252f8f122d34bc6bce6" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TYPE "public"."settings_setting_type_enum" AS ENUM('string', 'number', 'boolean', 'json')`);
-        await queryRunner.query(`CREATE TABLE "settings" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "setting_key" character varying NOT NULL, "setting_value" text NOT NULL, "setting_type" "public"."settings_setting_type_enum" NOT NULL DEFAULT 'string', "description" text, "is_public" boolean NOT NULL DEFAULT false, "updated_by" character varying NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), "updaterId" uuid, CONSTRAINT "UQ_35690f287c60414f4b63614a006" UNIQUE ("setting_key"), CONSTRAINT "PK_0669fe20e252eb692bf4d344975" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TYPE "public"."auction_bids_status_enum" AS ENUM('active', 'withdrawn', 'accepted', 'rejected')`);
-        await queryRunner.query(`CREATE TABLE "auction_bids" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "bid_reference" character varying(20) NOT NULL, "auction_id" uuid NOT NULL, "company_id" uuid NOT NULL, "bidder_user_id" uuid NOT NULL, "bid_amount" numeric(10,2) NOT NULL, "estimated_completion_time" TIMESTAMP, "additional_services" text, "notes" text, "proposed_driver_id" uuid, "proposed_car_id" uuid, "status" "public"."auction_bids_status_enum" NOT NULL DEFAULT 'active', "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_747a1dbcec0c03e479da9fc3a16" UNIQUE ("bid_reference"), CONSTRAINT "PK_75fb5ac3cf131789bf7c5181efb" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."auction_activities_activity_type_enum" AS ENUM('created', 'started', 'bid_placed', 'bid_withdrawn', 'bid_updated', 'closed', 'awarded', 'cancelled')`);
         await queryRunner.query(`CREATE TABLE "auction_activities" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "auction_id" uuid NOT NULL, "activity_type" "public"."auction_activities_activity_type_enum" NOT NULL, "user_id" uuid, "company_id" uuid, "bid_id" uuid, "previous_value" numeric(10,2), "new_value" numeric(10,2), "notes" text, "metadata" json, "created_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_1f2f143a52c7a299449e7bdbec1" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "public"."auctions_status_enum" AS ENUM('draft', 'active', 'closed', 'awarded', 'cancelled')`);
         await queryRunner.query(`CREATE TABLE "auctions" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "auction_reference" character varying(20) NOT NULL, "booking_id" uuid NOT NULL, "title" character varying NOT NULL, "description" text, "auction_start_time" TIMESTAMP NOT NULL, "auction_end_time" TIMESTAMP NOT NULL, "minimum_bid_amount" numeric(10,2) NOT NULL, "reserve_price" numeric(10,2), "status" "public"."auctions_status_enum" NOT NULL DEFAULT 'draft', "winning_bid_id" uuid, "winner_company_id" uuid, "awarded_at" TIMESTAMP, "awarded_by" uuid, "created_by" uuid NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_073e4d544277a9f22d276ee1f0e" UNIQUE ("auction_reference"), CONSTRAINT "REL_6c542becb4da4933ceb61c00e6" UNIQUE ("winning_bid_id"), CONSTRAINT "PK_87d2b34d4829f0519a5c5570368" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TYPE "public"."auction_bids_status_enum" AS ENUM('active', 'withdrawn', 'accepted', 'rejected')`);
+        await queryRunner.query(`CREATE TABLE "auction_bids" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "bid_reference" character varying(20) NOT NULL, "auction_id" uuid NOT NULL, "company_id" uuid NOT NULL, "bidder_user_id" uuid NOT NULL, "bid_amount" numeric(10,2) NOT NULL, "estimated_completion_time" TIMESTAMP, "additional_services" text, "notes" text, "proposed_driver_id" uuid, "proposed_car_id" uuid, "status" "public"."auction_bids_status_enum" NOT NULL DEFAULT 'active', "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_747a1dbcec0c03e479da9fc3a16" UNIQUE ("bid_reference"), CONSTRAINT "PK_75fb5ac3cf131789bf7c5181efb" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "car_images" ADD CONSTRAINT "FK_b656953875307b25131f0d9af94" FOREIGN KEY ("car_id") REFERENCES "cars"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "reviews" ADD CONSTRAINT "FK_bbd6ac6e3e6a8f8c6e0e8692d63" FOREIGN KEY ("booking_id") REFERENCES "bookings"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "reviews" ADD CONSTRAINT "FK_92e950a2513a79bb3fab273c92e" FOREIGN KEY ("reviewer_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -72,13 +74,8 @@ export class InitialAlpenSchema1751889593199 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "bookings" ADD CONSTRAINT "FK_72b0c6a8488aa477712d46bb098" FOREIGN KEY ("assigned_driver_id") REFERENCES "drivers"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "bookings" ADD CONSTRAINT "FK_23ec6943dfbd6fb667f629e990b" FOREIGN KEY ("coupon_id") REFERENCES "coupons"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "companies" ADD CONSTRAINT "FK_ee0839cba07cb0c52602021ad4b" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "cms_pages" ADD CONSTRAINT "FK_5cc8df435f4763233d3c0bc8a98" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "settings" ADD CONSTRAINT "FK_86bf86727944f2818d848b2b85d" FOREIGN KEY ("updaterId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_ab6d742c994d31873e68416b5ca" FOREIGN KEY ("auction_id") REFERENCES "auctions"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_0c5eeeb034f078153ff1b76329e" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_f2979c31b524b989328a7b869c3" FOREIGN KEY ("bidder_user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_549b6d36a2affcfdb4d93c61785" FOREIGN KEY ("proposed_driver_id") REFERENCES "drivers"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_10ad1ff2390e083108a4a0e07db" FOREIGN KEY ("proposed_car_id") REFERENCES "cars"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "cms_pages" ADD CONSTRAINT "FK_5cc8df435f4763233d3c0bc8a98" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "auction_activities" ADD CONSTRAINT "FK_36823c30bf1020b20729045dba8" FOREIGN KEY ("auction_id") REFERENCES "auctions"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "auction_activities" ADD CONSTRAINT "FK_611dcf17e29d366bdd33896c1da" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "auction_activities" ADD CONSTRAINT "FK_68adcbf9a3ab736d8ed576bfe92" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -88,9 +85,19 @@ export class InitialAlpenSchema1751889593199 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "auctions" ADD CONSTRAINT "FK_d698a96760648bed2fbcba1f6f5" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "auctions" ADD CONSTRAINT "FK_327a5f5a60a7a36584c523b7561" FOREIGN KEY ("awarded_by") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "auctions" ADD CONSTRAINT "FK_6c542becb4da4933ceb61c00e63" FOREIGN KEY ("winning_bid_id") REFERENCES "auction_bids"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_ab6d742c994d31873e68416b5ca" FOREIGN KEY ("auction_id") REFERENCES "auctions"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_0c5eeeb034f078153ff1b76329e" FOREIGN KEY ("company_id") REFERENCES "companies"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_f2979c31b524b989328a7b869c3" FOREIGN KEY ("bidder_user_id") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_549b6d36a2affcfdb4d93c61785" FOREIGN KEY ("proposed_driver_id") REFERENCES "drivers"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" ADD CONSTRAINT "FK_10ad1ff2390e083108a4a0e07db" FOREIGN KEY ("proposed_car_id") REFERENCES "cars"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_10ad1ff2390e083108a4a0e07db"`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_549b6d36a2affcfdb4d93c61785"`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_f2979c31b524b989328a7b869c3"`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_0c5eeeb034f078153ff1b76329e"`);
+        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_ab6d742c994d31873e68416b5ca"`);
         await queryRunner.query(`ALTER TABLE "auctions" DROP CONSTRAINT "FK_6c542becb4da4933ceb61c00e63"`);
         await queryRunner.query(`ALTER TABLE "auctions" DROP CONSTRAINT "FK_327a5f5a60a7a36584c523b7561"`);
         await queryRunner.query(`ALTER TABLE "auctions" DROP CONSTRAINT "FK_d698a96760648bed2fbcba1f6f5"`);
@@ -100,13 +107,8 @@ export class InitialAlpenSchema1751889593199 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "auction_activities" DROP CONSTRAINT "FK_68adcbf9a3ab736d8ed576bfe92"`);
         await queryRunner.query(`ALTER TABLE "auction_activities" DROP CONSTRAINT "FK_611dcf17e29d366bdd33896c1da"`);
         await queryRunner.query(`ALTER TABLE "auction_activities" DROP CONSTRAINT "FK_36823c30bf1020b20729045dba8"`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_10ad1ff2390e083108a4a0e07db"`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_549b6d36a2affcfdb4d93c61785"`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_f2979c31b524b989328a7b869c3"`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_0c5eeeb034f078153ff1b76329e"`);
-        await queryRunner.query(`ALTER TABLE "auction_bids" DROP CONSTRAINT "FK_ab6d742c994d31873e68416b5ca"`);
-        await queryRunner.query(`ALTER TABLE "settings" DROP CONSTRAINT "FK_86bf86727944f2818d848b2b85d"`);
         await queryRunner.query(`ALTER TABLE "cms_pages" DROP CONSTRAINT "FK_5cc8df435f4763233d3c0bc8a98"`);
+        await queryRunner.query(`ALTER TABLE "settings" DROP CONSTRAINT "FK_86bf86727944f2818d848b2b85d"`);
         await queryRunner.query(`ALTER TABLE "companies" DROP CONSTRAINT "FK_ee0839cba07cb0c52602021ad4b"`);
         await queryRunner.query(`ALTER TABLE "bookings" DROP CONSTRAINT "FK_23ec6943dfbd6fb667f629e990b"`);
         await queryRunner.query(`ALTER TABLE "bookings" DROP CONSTRAINT "FK_72b0c6a8488aa477712d46bb098"`);
@@ -131,17 +133,19 @@ export class InitialAlpenSchema1751889593199 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "reviews" DROP CONSTRAINT "FK_92e950a2513a79bb3fab273c92e"`);
         await queryRunner.query(`ALTER TABLE "reviews" DROP CONSTRAINT "FK_bbd6ac6e3e6a8f8c6e0e8692d63"`);
         await queryRunner.query(`ALTER TABLE "car_images" DROP CONSTRAINT "FK_b656953875307b25131f0d9af94"`);
+        await queryRunner.query(`DROP TABLE "auction_bids"`);
+        await queryRunner.query(`DROP TYPE "public"."auction_bids_status_enum"`);
         await queryRunner.query(`DROP TABLE "auctions"`);
         await queryRunner.query(`DROP TYPE "public"."auctions_status_enum"`);
         await queryRunner.query(`DROP TABLE "auction_activities"`);
         await queryRunner.query(`DROP TYPE "public"."auction_activities_activity_type_enum"`);
-        await queryRunner.query(`DROP TABLE "auction_bids"`);
-        await queryRunner.query(`DROP TYPE "public"."auction_bids_status_enum"`);
-        await queryRunner.query(`DROP TABLE "settings"`);
-        await queryRunner.query(`DROP TYPE "public"."settings_setting_type_enum"`);
         await queryRunner.query(`DROP TABLE "cms_pages"`);
         await queryRunner.query(`DROP TYPE "public"."cms_pages_status_enum"`);
         await queryRunner.query(`DROP TYPE "public"."cms_pages_page_type_enum"`);
+        await queryRunner.query(`DROP TABLE "settings"`);
+        await queryRunner.query(`DROP TYPE "public"."settings_setting_type_enum"`);
+        await queryRunner.query(`DROP TABLE "payment_methods"`);
+        await queryRunner.query(`DROP TYPE "public"."payment_methods_type_enum"`);
         await queryRunner.query(`DROP TABLE "users"`);
         await queryRunner.query(`DROP TYPE "public"."users_status_enum"`);
         await queryRunner.query(`DROP TYPE "public"."users_user_type_enum"`);
