@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Box,
   Grid,
@@ -9,7 +9,6 @@ import {
   Chip,
   Alert,
   Skeleton,
-  CircularProgress,
   Divider,
   List,
   ListItem,
@@ -17,7 +16,6 @@ import {
   ListItemIcon,
 } from '@mui/material'
 import {
-  TrendingUp,
   DirectionsCar,
   People,
   AttachMoney,
@@ -25,10 +23,8 @@ import {
   LocalShipping,
   Assessment,
   CheckCircle,
-  Error,
   Schedule,
   Star,
-  CreditCard,
   Route,
   LocalOffer,
 } from '@mui/icons-material'
