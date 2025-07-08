@@ -58,7 +58,9 @@ import {SeederModule} from "@/database/seeds/seeder.module";
                 username: configService.get('DATABASE_USERNAME'),
                 password: configService.get('DATABASE_PASSWORD'),
                 database: configService.get('DATABASE_NAME'),
-                ssl: true,
+                ssl: {
+                    rejectUnauthorized: false,
+                },
                 entities: [
                     User,
                     Company,
