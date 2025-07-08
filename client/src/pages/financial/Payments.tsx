@@ -547,6 +547,7 @@ const Payments = () => {
                     />
                   </TableCell>
                   <TableCell>
+                    {/* @ts-ignore */}
                     <Chip
                       {...(getStatusIcon(payment.payment_status) && { icon: getStatusIcon(payment.payment_status) })}
                       label={formatPaymentStatus(payment.payment_status)}
