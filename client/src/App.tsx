@@ -59,11 +59,11 @@ import PaymentMethods from './pages/financial/PaymentMethods'
 // import ApprovedReviews from './pages/reviews/ApprovedReviews'
 // import RejectedReviews from './pages/reviews/RejectedReviews'
 
-// Content Management - DISABLED FOR LATER DEVELOPMENT
-// import CMSPages from './pages/cms/CMSPages'
-// import BlogPosts from './pages/cms/BlogPosts'
-// import HelpPages from './pages/cms/HelpPages'
-// import LegalPages from './pages/cms/LegalPages'
+// Content Management
+import CMSPages from './pages/cms/CMSPages'
+import BlogPosts from './pages/cms/BlogPosts'
+import HelpPages from './pages/cms/HelpPages'
+import LegalPages from './pages/cms/LegalPages'
 
 // System Settings - DISABLED FOR LATER DEVELOPMENT
 // import SystemSettings from './pages/settings/SystemSettings'
@@ -498,8 +498,7 @@ function App() {
       } />
       */}
 
-      {/* Content Management Routes - DISABLED FOR LATER DEVELOPMENT */}
-      {/*
+      {/* Content Management Routes */}
       <Route path="/cms/pages" element={
         authenticated ? (
           <DashboardLayout>
@@ -536,7 +535,6 @@ function App() {
           <Navigate to="/auth/login" replace />
         )
       } />
-      */}
 
       {/* System Settings Routes - DISABLED FOR LATER DEVELOPMENT */}
       {/*

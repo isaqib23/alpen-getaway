@@ -958,3 +958,212 @@ export interface CompanyStats {
     b2b: number
   }
 }
+
+// Analytics types for Dashboard
+export interface DashboardOverview {
+  overview: {
+    totalUsers: number
+    totalCompanies: number
+    totalCars: number
+    totalDrivers: number
+    totalBookings: number
+    totalRevenue: string
+    averageRating: string
+    activeBookings: number
+    pendingCompanies: number
+    activeCoupons: number
+    totalRoutes: number
+  }
+  recentActivity: {
+    recentBookings: number
+    recentRevenue: string
+  }
+}
+
+export interface BookingAnalytics {
+  dailyTrend: Array<{
+    date: string
+    bookings: number
+    revenue: string
+    averageValue: string
+  }>
+  statusDistribution: Array<{
+    status: string
+    count: number
+    percentage: number
+  }>
+  paymentDistribution: Record<string, number>
+  topRoutes: Array<{
+    route: string
+    vehicle: string
+    bookings: number
+    totalRevenue: string
+    averageRevenue: string
+  }>
+  userTypeStats: Array<{
+    userType: string
+    bookings: number
+    revenue: string
+  }>
+  peakHours: Array<{
+    hour: number
+    bookings: number
+  }>
+}
+
+export interface RevenueAnalytics {
+  timeline: Array<{
+    period: string
+    revenue: string
+    transactions: number
+    averageTransaction: string
+  }>
+  byPaymentMethod: Array<{
+    method: string
+    revenue: string
+    count: number
+    averageAmount: string
+  }>
+  byUserType: Array<{
+    userType: string
+    revenue: string
+    count: number
+    averageAmount: string
+  }>
+  byCompany: Array<{
+    companyName: string
+    companyType: string
+    revenue: string
+    count: number
+  }>
+  failedPayments: Array<{
+    reason: string
+    count: number
+    lostRevenue: string
+  }>
+}
+
+export interface UserAnalytics {
+  registrationTrend: Array<{
+    month: string
+    userType: string
+    count: number
+  }>
+  activeUsers: Record<string, number>
+  statusDistribution: Array<{
+    status: string
+    userType: string
+    count: number
+  }>
+  topCustomers: Array<{
+    id: string
+    name: string
+    email: string
+    userType: string
+    bookingCount: number
+    totalSpent: string
+    averageBookingValue: string
+  }>
+  verificationStats: Array<{
+    emailVerified: boolean
+    phoneVerified: boolean
+    count: number
+  }>
+}
+
+export interface DriverPerformance {
+  topDrivers: Array<{
+    id: string
+    name: string
+    email: string
+    totalRides: number
+    averageRating: string
+    reviewCount: number
+    totalEarnings: string
+  }>
+  statusDistribution: Record<string, number>
+  backgroundCheckStats: Record<string, number>
+  ratingTrend: Array<{
+    month: string
+    averageRating: string
+    averagePunctuality: string
+    averageCleanliness: string
+    averageComfort: string
+    reviewCount: number
+  }>
+  efficiency: Array<{
+    id: string
+    name: string
+    totalBookings: number
+    activeDays: number
+    ridesPerDay: number
+  }>
+}
+
+export interface CompanyAnalytics {
+  topCompanies: Array<{
+    id: string
+    name: string
+    type: string
+    commissionRate: number
+    totalBookings: number
+    totalRevenue: string
+    averageBookingValue: string
+  }>
+  registrationTrend: Array<{
+    month: string
+    companyType: string
+    count: number
+  }>
+  statusDistribution: Array<{
+    status: string
+    companyType: string
+    count: number
+  }>
+}
+
+export interface CouponAnalytics {
+  topCoupons: Array<{
+    code: string
+    name: string
+    discountType: string
+    usageCount: number
+    totalDiscount: string
+    averageDiscount: string
+  }>
+  discountImpact: Array<{
+    week: string
+    totalDiscounts: string
+    totalRevenue: string
+    bookingCount: number
+    discountPercentage: number
+  }>
+}
+
+export interface OperationalMetrics {
+  fleetUtilization: Array<{
+    carId: string
+    vehicle: string
+    licensePlate: string
+    category: string
+    totalBookings: number
+    completedRides: number
+    averageDistance: string
+  }>
+  tripMetrics: {
+    averageDuration: string
+    averageDistance: string
+    averageFare: string
+    totalTrips: number
+  }
+  demandAnalysis: Array<{
+    dayOfWeek: number
+    hour: number
+    bookingCount: number
+  }>
+  cancellationStats: Array<{
+    status: string
+    count: number
+    percentage: number
+  }>
+}

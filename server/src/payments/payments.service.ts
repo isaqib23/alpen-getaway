@@ -64,7 +64,7 @@ export class PaymentsService {
             ...payment,
             payer_name: payment.payer ? `${payment.payer.first_name} ${payment.payer.last_name}` : null,
             company_name: payment.company?.company_name || null,
-            booking_reference: payment.booking?.reference_number || null
+            booking_reference: payment.booking?.booking_reference || null
         }));
         
         return { 
@@ -142,7 +142,7 @@ export class PaymentsService {
         const mappedData = data.map(commission => ({
             ...commission,
             company_name: commission.company?.company_name || null,
-            booking_reference: commission.booking?.reference_number || null,
+            booking_reference: commission.booking?.booking_reference || null,
             payment_amount: commission.payment?.amount || null
         }));
         
