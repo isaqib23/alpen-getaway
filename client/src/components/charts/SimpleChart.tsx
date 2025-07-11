@@ -20,7 +20,22 @@ export const SimpleBarChart: React.FC<SimpleBarChartProps> = ({
   height = 200,
   maxValue 
 }) => {
-  const max = maxValue || Math.max(...data.map(d => d.value))
+  // Handle empty or invalid data
+  if (!data || data.length === 0) {
+    return (
+      <Paper sx={{ p: 2, height, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography variant="h6" color="text.secondary">
+          {title}
+        </Typography>
+        <Typography color="text.secondary" sx={{ mt: 1 }}>
+          No data available
+        </Typography>
+      </Paper>
+    )
+  }
+
+  const values = data.map(d => Number(d.value) || 0)
+  const max = maxValue || Math.max(...values, 1) // Ensure at least 1 to avoid division by zero
   
   return (
     <Paper sx={{ p: 2 }}>
@@ -47,7 +62,7 @@ export const SimpleBarChart: React.FC<SimpleBarChartProps> = ({
                 width: '100%',
                 backgroundColor: item.color || 'primary.main',
                 borderRadius: 1,
-                height: `${(item.value / max) * 80}%`,
+                height: `${((Number(item.value) || 0) / max) * 80}%`,
                 minHeight: '4px',
                 transition: 'height 0.3s ease',
               }}
@@ -84,17 +99,33 @@ export const SimpleLineChart: React.FC<SimpleLineChartProps> = ({
   title, 
   height = 200 
 }) => {
-  const max = Math.max(...data.map(d => d.value))
-  const min = Math.min(...data.map(d => d.value))
-  const range = max - min
+  // Handle empty or invalid data
+  if (!data || data.length === 0) {
+    return (
+      <Paper sx={{ p: 2, height, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography variant="h6" color="text.secondary" gutterBottom>
+          {title}
+        </Typography>
+        <Typography color="text.secondary">
+          No data available
+        </Typography>
+      </Paper>
+    )
+  }
+
+  const values = data.map(d => Number(d.value) || 0)
+  const max = Math.max(...values, 1) // Ensure at least 1
+  const min = Math.min(...values, 0) // Ensure at least 0
+  const range = max - min || 1 // Prevent division by zero
 
   const getY = (value: number) => {
     if (range === 0) return 50
-    return 90 - ((value - min) / range) * 80
+    const normalizedValue = Number(value) || 0
+    return 90 - ((normalizedValue - min) / range) * 80
   }
 
   const pathData = data.map((point, index) => {
-    const x = (index / (data.length - 1)) * 100
+    const x = data.length === 1 ? 50 : (index / (data.length - 1)) * 100
     const y = getY(point.value)
     return `${index === 0 ? 'M' : 'L'} ${x} ${y}`
   }).join(' ')
@@ -136,16 +167,20 @@ export const SimpleLineChart: React.FC<SimpleLineChartProps> = ({
           />
           
           {/* Data points */}
-          {data.map((point, index) => (
-            <circle
-              key={index}
-              cx={(index / (data.length - 1)) * 100}
-              cy={getY(point.value)}
-              r="1"
-              fill="#1976d2"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
+          {data.map((point, index) => {
+            const cx = data.length === 1 ? 50 : (index / (data.length - 1)) * 100
+            const cy = getY(point.value)
+            return (
+              <circle
+                key={index}
+                cx={cx}
+                cy={cy}
+                r="1"
+                fill="#1976d2"
+                vectorEffect="non-scaling-stroke"
+              />
+            )
+          })}
         </svg>
         
         {/* Labels */}
@@ -184,7 +219,35 @@ export const SimpleDonutChart: React.FC<DonutChartProps> = ({
   title, 
   size = 120 
 }) => {
-  const total = data.reduce((sum, item) => sum + item.value, 0)
+  // Handle empty or invalid data
+  if (!data || data.length === 0) {
+    return (
+      <Paper sx={{ p: 2, textAlign: 'center', height: size + 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography variant="h6" color="text.secondary" gutterBottom>
+          {title}
+        </Typography>
+        <Typography color="text.secondary">
+          No data available
+        </Typography>
+      </Paper>
+    )
+  }
+
+  const validData = data.filter(item => Number(item.value) > 0)
+  if (validData.length === 0) {
+    return (
+      <Paper sx={{ p: 2, textAlign: 'center', height: size + 120, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <Typography variant="h6" color="text.secondary" gutterBottom>
+          {title}
+        </Typography>
+        <Typography color="text.secondary">
+          No data available
+        </Typography>
+      </Paper>
+    )
+  }
+
+  const total = validData.reduce((sum, item) => sum + (Number(item.value) || 0), 0)
   let cumulativePercentage = 0
 
   const colors = [
@@ -200,8 +263,9 @@ export const SimpleDonutChart: React.FC<DonutChartProps> = ({
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
         <svg width={size} height={size}>
           <g transform={`translate(${size/2}, ${size/2})`}>
-            {data.map((item, index) => {
-              const percentage = (item.value / total) * 100
+            {validData.map((item, index) => {
+              const itemValue = Number(item.value) || 0
+              const percentage = (itemValue / total) * 100
               const startAngle = (cumulativePercentage / 100) * 360
               const endAngle = ((cumulativePercentage + percentage) / 100) * 360
               
@@ -246,7 +310,7 @@ export const SimpleDonutChart: React.FC<DonutChartProps> = ({
         </svg>
         
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, justifyContent: 'center' }}>
-          {data.map((item, index) => (
+          {validData.map((item, index) => (
             <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <Box
                 sx={{
