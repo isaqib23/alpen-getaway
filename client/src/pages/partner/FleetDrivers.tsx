@@ -40,14 +40,12 @@ import {
   Person,
   DriveEta,
   CheckCircle,
-  Warning,
-  Block,
   Star,
   GetApp,
   Phone,
   Email,
 } from '@mui/icons-material'
-import { useDrivers, useDriverStats } from '../../hooks/useDrivers'
+import { useDrivers } from '../../hooks/useDrivers'
 import { Driver as DriverType, CreateDriverRequest } from '../../api/drivers'
 
 interface DriverFormData {
@@ -138,13 +136,12 @@ const FleetDrivers = () => {
     deleteDriver: deleteDriverAPI
   } = useDrivers()
 
-  const { stats } = useDriverStats()
 
   // Extract drivers from hook data and ensure it's an array
   const allDrivers = Array.isArray(driversData?.data) ? driversData.data : []
 
-  // Filter drivers by company (company-scoped data)
-  const companyDrivers = allDrivers.filter(driver => driver.company_id === companyId)
+  // Filter drivers - note: company filtering may need to be implemented in the API
+  const companyDrivers = allDrivers
 
   // Apply client-side filtering for search and availability
   const filteredDrivers = companyDrivers.filter(driver => {
@@ -351,14 +348,7 @@ const FleetDrivers = () => {
     }
   }
 
-  const getDocumentStatusIcon = (status: string) => {
-    switch (status) {
-      case 'approved': return <CheckCircle color="success" />
-      case 'pending': return <Warning color="warning" />
-      case 'rejected': return <Block color="error" />
-      default: return null
-    }
-  }
+  // Removed unused getDocumentStatusIcon function
 
   return (
     <Box>

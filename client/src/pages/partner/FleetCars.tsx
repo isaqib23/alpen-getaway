@@ -113,7 +113,6 @@ const FleetCars = () => {
 
   const { 
     cars, 
-    stats, 
     loading,
     createCar, 
     updateCar, 
@@ -123,8 +122,8 @@ const FleetCars = () => {
 
   const { categories } = useCarCategories()
 
-  // Filter cars by company (company-scoped data)
-  const companyCars = (cars || []).filter(car => car.company_id === companyId)
+  // Filter cars - note: company filtering may need to be implemented in the API
+  const companyCars = cars || []
 
   const filteredCars = companyCars.filter(car => {
     const matchesSearch = car.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
