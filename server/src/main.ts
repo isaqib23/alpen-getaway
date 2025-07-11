@@ -21,9 +21,9 @@ async function bootstrap() {
     app.enableCors({
         origin: (origin, callback) => {
             const allowedOrigins = [
-                'https://alpen-getaway-e7koba6mv-isaqib23s-projects.vercel.app/',
-                'https://alpen-getaway-git-main-isaqib23s-projects.vercel.app/',
-                'https://alpen-getaway.vercel.app/',
+                'https://alpen-getaway.vercel.app',
+                'https://alpen-getaway-e7koba6mv-isaqib23s-projects.vercel.app',
+                'https://alpen-getaway-git-main-isaqib23s-projects.vercel.app',
                 'http://localhost:3000', // local dev for Next.js
                 'http://localhost:3001',
                 'http://localhost:5173',
