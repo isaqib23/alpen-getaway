@@ -1,6 +1,8 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import DashboardLayout from './components/layout/DashboardLayout'
+import B2BPartnerLayout from './components/layout/B2BPartnerLayout'
+import { UserType } from './types/auth'
 
 // Auth pages
 import Login from './pages/auth/Login'
@@ -73,6 +75,14 @@ import AuctionManagement from './pages/auctions/AuctionManagement'
 import ActiveAuctions from './pages/auctions/ActiveAuctions'
 import AuctionAnalytics from './pages/auctions/AuctionAnalytics'
 
+// B2B Partner Pages
+import PartnerDashboard from './pages/partner/Dashboard'
+import PartnerBookings from './pages/partner/Bookings'
+import PartnerAuctions from './pages/partner/Auctions'
+import FleetCars from './pages/partner/FleetCars'
+import FleetDrivers from './pages/partner/FleetDrivers'
+import Earnings from './pages/partner/Earnings'
+
 // Auth check using real token
 const isAuthenticated = () => {
   try {
@@ -93,6 +103,18 @@ const isAuthenticated = () => {
   }
 }
 
+// Get current user from localStorage
+const getCurrentUser = () => {
+  try {
+    const userStr = localStorage.getItem('user')
+    return userStr ? JSON.parse(userStr) : null
+  } catch (error) {
+    console.error('Error getting current user:', error)
+    return null
+  }
+}
+
+
 // Clean up old tokens on app load
 const cleanupOldTokens = () => {
   const oldTokens = ['alpen_getaway_token', 'alpen_getaway_user', 'serviceToken', 'debug']
@@ -105,13 +127,18 @@ const cleanupOldTokens = () => {
 
 // Custom hook to manage authentication state
 const useAuthState = () => {
-  const [authenticated, setAuthenticated] = React.useState(isAuthenticated())
+  const [state, setState] = React.useState(() => {
+    const user = getCurrentUser()
+    const authenticated = isAuthenticated()
+    return { authenticated, currentUser: user }
+  })
 
   React.useEffect(() => {
     const handleStorageChange = () => {
+      const newUser = getCurrentUser()
       const newAuthState = isAuthenticated()
-      console.log('Auth state changed:', newAuthState)
-      setAuthenticated(newAuthState)
+      console.log('Auth state changed:', newAuthState, 'user:', newUser)
+      setState({ authenticated: newAuthState, currentUser: newUser })
     }
 
     // Listen for custom auth events
@@ -126,38 +153,59 @@ const useAuthState = () => {
     }
   }, [])
 
-  return authenticated
+  return state
 }
 
 function App() {
-  const authenticated = useAuthState()
+  const { authenticated, currentUser } = useAuthState()
 
   // Clean up old tokens on app initialization
   React.useEffect(() => {
     cleanupOldTokens()
   }, [])
 
-  console.log('App render - authenticated:', authenticated, 'location:', window.location.pathname)
+  // Memoize user type checks to prevent infinite re-renders
+  const userType = React.useMemo(() => currentUser?.user_type || null, [currentUser])
+  const isB2BUser = userType === UserType.B2B
+  const isAdminUser = userType === UserType.ADMIN
+
+  // Safety check: only redirect if we have a valid user and are authenticated
+  const canRedirect = authenticated && currentUser && userType
+
+  console.log('App render - authenticated:', authenticated, 'userType:', userType, 'isB2BUser:', isB2BUser, 'isAdminUser:', isAdminUser, 'canRedirect:', canRedirect, 'location:', window.location.pathname)
+  console.log('Current user object:', currentUser)
 
   return (
     <Routes>
       {/* Public Authentication Routes */}
       <Route path="/auth/login" element={
-        authenticated ? <Navigate to="/dashboard" replace /> : <Login />
+        canRedirect ? (
+          isB2BUser ? <Navigate to="/partner/dashboard" replace /> : <Navigate to="/dashboard" replace />
+        ) : <Login />
       } />
       <Route path="/auth/forgot-password" element={
-        authenticated ? <Navigate to="/dashboard" replace /> : <ForgotPassword />
+        canRedirect ? (
+          isB2BUser ? <Navigate to="/partner/dashboard" replace /> : <Navigate to="/dashboard" replace />
+        ) : <ForgotPassword />
       } />
       <Route path="/auth/reset-password" element={
-        authenticated ? <Navigate to="/dashboard" replace /> : <ResetPassword />
+        canRedirect ? (
+          isB2BUser ? <Navigate to="/partner/dashboard" replace /> : <Navigate to="/dashboard" replace />
+        ) : <ResetPassword />
       } />
 
       {/* Protected Admin Routes */}
       <Route path="/dashboard" element={
-        authenticated ? (
-          <DashboardLayout>
-            <Dashboard />
-          </DashboardLayout>
+        canRedirect ? (
+          isB2BUser ? (
+            <Navigate to="/partner/dashboard" replace />
+          ) : isAdminUser ? (
+            <DashboardLayout>
+              <Dashboard />
+            </DashboardLayout>
+          ) : (
+            <Navigate to="/auth/login" replace />
+          )
         ) : (
           <Navigate to="/auth/login" replace />
         )
@@ -549,9 +597,89 @@ function App() {
       } />
       */}
 
+      {/* B2B Partner Routes */}
+      <Route path="/partner/dashboard" element={
+        canRedirect ? (
+          isB2BUser ? (
+            <B2BPartnerLayout>
+              <PartnerDashboard />
+            </B2BPartnerLayout>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+      <Route path="/partner/bookings" element={
+        canRedirect ? (
+          isB2BUser ? (
+            <B2BPartnerLayout>
+              <PartnerBookings />
+            </B2BPartnerLayout>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+      <Route path="/partner/auctions" element={
+        canRedirect ? (
+          isB2BUser ? (
+            <B2BPartnerLayout>
+              <PartnerAuctions />
+            </B2BPartnerLayout>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+      <Route path="/partner/fleet/cars" element={
+        canRedirect ? (
+          isB2BUser ? (
+            <B2BPartnerLayout>
+              <FleetCars />
+            </B2BPartnerLayout>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+      <Route path="/partner/fleet/drivers" element={
+        canRedirect ? (
+          isB2BUser ? (
+            <B2BPartnerLayout>
+              <FleetDrivers />
+            </B2BPartnerLayout>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+      <Route path="/partner/earnings" element={
+        canRedirect ? (
+          isB2BUser ? (
+            <B2BPartnerLayout>
+              <Earnings />
+            </B2BPartnerLayout>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+
       {/* Root redirect */}
       <Route path="/" element={
-        <Navigate to={authenticated ? "/dashboard" : "/auth/login"} replace />
+        <Navigate to={canRedirect ? (isB2BUser ? "/partner/dashboard" : "/dashboard") : "/auth/login"} replace />
       } />
 
       {/* Catch all route */}

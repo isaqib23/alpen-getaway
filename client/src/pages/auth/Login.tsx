@@ -16,6 +16,7 @@ import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import AuthLayout from '../../components/layout/AuthLayout'
+import { UserType } from '../../types/auth'
 
 const validationSchema = yup.object({
   email: yup
@@ -48,9 +49,14 @@ const Login = () => {
         password: values.password,
       })
       
-      if (result.success) {
-        // Navigate to dashboard on successful login
-        navigate('/dashboard')
+      if (result.success && result.data) {
+        // Navigate to appropriate dashboard based on user type
+        const user = result.data.user
+        if (user.user_type === UserType.B2B) {
+          navigate('/partner/dashboard')
+        } else {
+          navigate('/dashboard')
+        }
       }
       // Error handling is done by the useAuth hook
     },
