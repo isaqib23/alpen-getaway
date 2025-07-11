@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   Box,
   Drawer,
@@ -65,13 +65,13 @@ const menuItems: MenuItem[] = [
     id: 'fleet',
     title: 'My Fleet',
     icon: DirectionsCar,
-    path: '/partner/fleet',
+    path: '/partner/fleet/cars',
   },
   {
     id: 'drivers',
     title: 'My Drivers',
     icon: People,
-    path: '/partner/drivers',
+    path: '/partner/fleet/drivers',
   },
   {
     id: 'earnings',
@@ -101,21 +101,50 @@ const menuItems: MenuItem[] = [
 
 const drawerWidth = 280
 
-// Sample partner data
-const partnerInfo = {
-  name: 'Alpine Travel Agency',
-  email: 'office@alpine-travel.at',
-  avatar: '/partner-avatar.jpg',
-  status: 'Premium Partner',
-  notifications: 3
+// Get partner info from current user
+const getPartnerInfo = () => {
+  try {
+    const userStr = localStorage.getItem('user')
+    if (!userStr) return null
+    
+    const user = JSON.parse(userStr)
+    return {
+      name: user.company?.name || `${user.first_name} ${user.last_name}`,
+      email: user.email,
+      avatar: user.company?.logo || '/partner-avatar.jpg',
+      status: user.company?.is_active ? 'Active Partner' : 'Inactive Partner',
+      notifications: 3 // This would come from API
+    }
+  } catch (error) {
+    console.error('Error getting partner info:', error)
+    return {
+      name: 'Partner',
+      email: 'partner@example.com',
+      avatar: '/partner-avatar.jpg',
+      status: 'Partner',
+      notifications: 0
+    }
+  }
 }
 
-const B2BPartnerLayout = () => {
+interface B2BPartnerLayoutProps {
+  children: React.ReactNode
+}
+
+const B2BPartnerLayout = ({ children }: B2BPartnerLayoutProps) => {
   const navigate = useNavigate()
   const location = useLocation()
 
   const [mobileOpen, setMobileOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  
+  const partnerInfo = getPartnerInfo() || {
+    name: 'Partner',
+    email: 'partner@example.com',
+    avatar: '/partner-avatar.jpg',
+    status: 'Partner',
+    notifications: 0
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -130,13 +159,20 @@ const B2BPartnerLayout = () => {
   }
 
   const handleLogout = () => {
-    localStorage.removeItem('alpen_getaway_token')
-    localStorage.removeItem('user_role')
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('user')
+    // Dispatch custom event to notify App component about auth state change
+    window.dispatchEvent(new Event('authStateChanged'))
     navigate('/auth/login')
     handleMenuClose()
   }
 
-  const isActive = (path: string) => location.pathname === path
+  const isActive = (path: string) => {
+    if (path === '/partner/fleet/cars' || path === '/partner/fleet/drivers') {
+      return location.pathname === path
+    }
+    return location.pathname === path
+  }
 
   const drawer = (
     <Box>
@@ -362,7 +398,7 @@ const B2BPartnerLayout = () => {
           minHeight: '100vh',
         }}
       >
-        <Outlet />
+{children}
       </Box>
     </Box>
   )

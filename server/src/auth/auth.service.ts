@@ -27,11 +27,6 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        // Only allow admin users
-        if (user.user_type !== 'admin') {
-            throw new UnauthorizedException('Access denied. Admin access required.');
-        }
-
         const payload = {
             email: user.email,
             sub: user.id,
