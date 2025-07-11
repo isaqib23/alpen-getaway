@@ -3,8 +3,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import {AppDataSource} from "@/database/data-source";
 
 async function bootstrap() {
+    await AppDataSource.initialize();
+    await AppDataSource.runMigrations();
     const app = await NestFactory.create(AppModule);
 
     // Global validation pipe
