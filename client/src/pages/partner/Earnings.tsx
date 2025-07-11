@@ -25,9 +25,7 @@ import {
   Alert,
   CircularProgress,
   Divider,
-  FormControl,
-  InputLabel,
-  Select,
+  IconButton,
 } from '@mui/material'
 import {
   Search,
@@ -36,8 +34,6 @@ import {
   AttachMoney,
   Receipt,
   AccountBalance,
-  DateRange,
-  FilterList,
   Visibility,
   RequestQuote,
 } from '@mui/icons-material'
@@ -96,19 +92,7 @@ const Earnings = () => {
     commission_rate: 0,
   })
 
-  // Get current user's company context
-  const getCurrentUser = () => {
-    try {
-      const userStr = localStorage.getItem('user')
-      return userStr ? JSON.parse(userStr) : null
-    } catch (error) {
-      console.error('Error getting current user:', error)
-      return null
-    }
-  }
-
-  const currentUser = getCurrentUser()
-  const companyId = currentUser?.company?.id
+  // Note: Company context functionality would be implemented here when needed
 
   // Filter earnings based on search and filters
   const filteredEarnings = earnings.filter(earning => {
