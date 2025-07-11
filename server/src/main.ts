@@ -6,8 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import {AppDataSource} from "@/database/data-source";
 
 async function bootstrap() {
-    await AppDataSource.initialize();
-    await AppDataSource.runMigrations();
+    //await AppDataSource.initialize();
+    //await AppDataSource.runMigrations();
     const app = await NestFactory.create(AppModule);
 
     // Global validation pipe
@@ -22,8 +22,6 @@ async function bootstrap() {
         origin: (origin, callback) => {
             const allowedOrigins = [
                 'https://alpen-getaway.vercel.app',
-                'https://alpen-getaway-e7koba6mv-isaqib23s-projects.vercel.app',
-                'https://alpen-getaway-git-main-isaqib23s-projects.vercel.app',
                 'http://localhost:3000', // local dev for Next.js
                 'http://localhost:3001',
                 'http://localhost:5173',
