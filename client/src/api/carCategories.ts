@@ -40,26 +40,26 @@ export interface CarCategoryStats {
 
 export const carCategoriesAPI = {
   getAll: async (): Promise<CarCategory[]> => {
-    return apiClient.get('/api/v1/cars/categories')
+    return apiClient.get('/cars/categories')
   },
 
   getById: async (id: string): Promise<CarCategory> => {
-    return apiClient.get(`/api/v1/cars/categories/${id}`)
+    return apiClient.get(`/cars/categories/${id}`)
   },
 
   create: async (categoryData: CreateCarCategoryRequest): Promise<CarCategory> => {
-    return apiClient.post('/api/v1/cars/categories', categoryData)
+    return apiClient.post('/cars/categories', categoryData)
   },
 
   update: async (id: string, categoryData: Partial<CreateCarCategoryRequest>): Promise<CarCategory> => {
-    return apiClient.patch(`/api/v1/cars/categories/${id}`, categoryData)
+    return apiClient.patch(`/cars/categories/${id}`, categoryData)
   },
 
   delete: async (id: string): Promise<void> => {
-    return apiClient.delete(`/api/v1/cars/categories/${id}`)
+    return apiClient.delete(`/cars/categories/${id}`)
   },
 
   getStats: async (): Promise<CarCategoryStats> => {
-    return apiClient.get('/api/v1/cars/categories/stats')
+    return apiClient.get('/cars/categories/stats')
   }
 }

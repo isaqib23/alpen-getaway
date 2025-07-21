@@ -77,7 +77,7 @@ export const pricingAPI = {
         }
       })
     }
-    const url = `/api/v1/pricing-rules?${params.toString()}`
+    const url = `/pricing-rules?${params.toString()}`
     console.log('🌐 pricingAPI.getAll calling:', url)
     return apiClient.get(url)
   },

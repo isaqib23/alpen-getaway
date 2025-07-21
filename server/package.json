@@ -31,7 +31,7 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/jwt": "^10.1.0",
     "@nestjs/passport": "^10.0.0",
-    "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-express": "^10.4.19",
     "@nestjs/swagger": "^7.1.8",
     "@nestjs/throttler": "^4.2.1",
     "@nestjs/typeorm": "^10.0.0",
@@ -45,6 +45,7 @@
     "pg": "^8.11.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
+    "sharp": "^0.34.3",
     "stripe": "^12.14.0",
     "typeorm": "^0.3.17",
     "uuid": "^9.0.0"

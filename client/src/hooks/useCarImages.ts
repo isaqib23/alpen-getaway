@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
-import { carImagesAPI, CarImage, CreateCarImageRequest, UpdateCarImageRequest, CarImageFilters, CarImageStats } from '../api/carImages'
+import { carImagesAPI, CarImage, CreateCarImageRequest, UpdateCarImageRequest, CarImageFilters } from '../api/carImages'
 import { carsAPI } from '../api/cars'
 import { useNotification } from '../contexts/NotificationContext'
 
 export const useCarImages = (filters?: CarImageFilters) => {
   const [images, setImages] = useState<CarImage[]>([])
-  const [stats, setStats] = useState<CarImageStats | null>(null)
   const [cars, setCars] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -19,11 +18,10 @@ export const useCarImages = (filters?: CarImageFilters) => {
       const filterParams = { ...filters, ...customFilters }
       const response = await carImagesAPI.getAll(filterParams)
       console.log('Car Images API Response:', response)
-      const data = response.data || response || { data: [], total: 0 }
-      // @ts-ignore
-      setImages(Array.isArray(data.data) ? data.data : Array.isArray(data) ? data : [])
-      // @ts-ignore
-      setTotal(data.total || 0)
+      // The response structure is: response.data = { data: CarImage[], total: number }
+      // response is already { data: CarImage[], total: number }
+      setImages(response.data || [])
+      setTotal(response.total || 0)
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to fetch car images'
       setError(errorMessage)
@@ -34,16 +32,6 @@ export const useCarImages = (filters?: CarImageFilters) => {
     }
   }
 
-  const fetchStats = async () => {
-    try {
-      const response = await carImagesAPI.getStats()
-      // @ts-ignore
-      const data = response.data || response
-      setStats(data)
-    } catch (err: any) {
-      console.error('Failed to fetch car images stats:', err)
-    }
-  }
 
   const fetchCars = async () => {
     try {
@@ -105,7 +93,6 @@ export const useCarImages = (filters?: CarImageFilters) => {
       showNotification('Image uploaded successfully', 'success')
       
       if (onProgress) onProgress(100)
-      fetchStats() // Refresh stats
       return true
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to upload image'
@@ -122,7 +109,6 @@ export const useCarImages = (filters?: CarImageFilters) => {
       const updatedImage = response.data || response
       setImages(prev => prev.map(image => image.id === id ? updatedImage : image))
       showNotification('Image updated successfully', 'success')
-      fetchStats() // Refresh stats
       return true
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to update image'
@@ -133,12 +119,18 @@ export const useCarImages = (filters?: CarImageFilters) => {
 
   const deleteImage = async (id: string): Promise<boolean> => {
     try {
+      console.log('Deleting image with ID:', id)
       await carImagesAPI.delete(id)
-      setImages(prev => prev.filter(image => image.id !== id))
+      console.log('Delete API call successful, updating local state')
+      setImages(prev => {
+        const filtered = prev.filter(image => image.id !== id)
+        console.log('Images before filter:', prev.length, 'After filter:', filtered.length)
+        return filtered
+      })
       showNotification('Image deleted successfully', 'success')
-      fetchStats() // Refresh stats
       return true
     } catch (err: any) {
+      console.error('Delete image error:', err)
       const errorMessage = err.response?.data?.message || 'Failed to delete image'
       showNotification(errorMessage, 'error')
       return false
@@ -152,7 +144,6 @@ export const useCarImages = (filters?: CarImageFilters) => {
       const updatedImage = response.data || response
       setImages(prev => prev.map(image => image.id === id ? updatedImage : image))
       showNotification('Image approved successfully', 'success')
-      fetchStats() // Refresh stats
       return true
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to approve image'
@@ -168,7 +159,6 @@ export const useCarImages = (filters?: CarImageFilters) => {
       const updatedImage = response.data || response
       setImages(prev => prev.map(image => image.id === id ? updatedImage : image))
       showNotification('Image rejected successfully', 'success')
-      fetchStats() // Refresh stats
       return true
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to reject image'
@@ -189,7 +179,6 @@ export const useCarImages = (filters?: CarImageFilters) => {
       showNotification(`${files.length} images uploaded successfully`, 'success')
       
       if (onProgress) onProgress(100)
-      fetchStats() // Refresh stats
       return true
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to upload images'
@@ -199,43 +188,19 @@ export const useCarImages = (filters?: CarImageFilters) => {
     }
   }
 
-  const exportImages = async (filters?: CarImageFilters): Promise<boolean> => {
-    try {
-      const response = await carImagesAPI.export(filters)
-      
-      // Create blob link and download
-      const url = window.URL.createObjectURL(new Blob([response]))
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', `car-images-${new Date().getTime()}.csv`)
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-      
-      showNotification('Export completed successfully', 'success')
-      return true
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to export images'
-      showNotification(errorMessage, 'error')
-      return false
-    }
-  }
 
   useEffect(() => {
     fetchImages()
-    fetchStats()
     fetchCars()
   }, [])
 
   return {
     images,
-    stats,
     cars,
     loading,
     error,
     total,
     fetchImages,
-    fetchStats,
     fetchCars,
     getImageById,
     getImagesByCarId,
@@ -244,7 +209,6 @@ export const useCarImages = (filters?: CarImageFilters) => {
     deleteImage,
     approveImage,
     rejectImage,
-    bulkUpload,
-    exportImages
+    bulkUpload
   }
 }

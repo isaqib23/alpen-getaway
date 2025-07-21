@@ -59,6 +59,13 @@ export class UsersService {
         return this.usersRepository.findOne({ where: { email } });
     }
 
+    async findByEmailWithCompany(email: string): Promise<User> {
+        return this.usersRepository.findOne({ 
+            where: { email },
+            relations: ['company']
+        });
+    }
+
     async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
         const user = await this.findOne(id);
 
@@ -74,6 +81,12 @@ export class UsersService {
     async remove(id: string): Promise<void> {
         const user = await this.findOne(id);
         await this.usersRepository.remove(user);
+    }
+
+    async updatePassword(id: string, hashedPassword: string): Promise<void> {
+        const user = await this.findOne(id);
+        user.password_hash = hashedPassword;
+        await this.usersRepository.save(user);
     }
 
     async getStats(): Promise<any> {

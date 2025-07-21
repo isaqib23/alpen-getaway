@@ -17,6 +17,7 @@ import { CmsModule } from './cms/cms.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AuctionsModule } from './auctions/auctions.module';
+import { EarningsModule } from './earnings/earnings.module';
 
 // Entities
 import { User } from './users/entities/user.entity';
@@ -32,12 +33,15 @@ import { Coupon } from './coupons/entities/coupon.entity';
 import { CouponUsage } from './coupons/entities/coupon-usage.entity';
 import { Payment } from './payments/entities/payment.entity';
 import { Commission } from './payments/entities/commission.entity';
+import { PaymentMethodConfig } from './payments/entities/payment-method.entity';
 import { CmsPage } from './cms/entities/cms-page.entity';
 import { Review } from './reviews/entities/review.entity';
 import { Setting } from './common/entities/setting.entity';
 import { Auction } from './auctions/entities/auction.entity';
 import { AuctionBid } from './auctions/entities/auction-bid.entity';
 import { AuctionActivity } from './auctions/entities/auction-activity.entity';
+import { Earnings } from './earnings/entities/earnings.entity';
+import { Payout } from './earnings/entities/payout.entity';
 import {SeederModule} from "@/database/seeds/seeder.module";
 
 @Module({
@@ -72,12 +76,15 @@ import {SeederModule} from "@/database/seeds/seeder.module";
                     CouponUsage,
                     Payment,
                     Commission,
+                    PaymentMethodConfig,
                     CmsPage,
                     Review,
                     Setting,
                     Auction,
                     AuctionBid,
                     AuctionActivity,
+                    Earnings,
+                    Payout,
                 ],
                 synchronize: process.env.NODE_ENV === 'development',
                 logging: process.env.NODE_ENV === 'development',
@@ -97,6 +104,7 @@ import {SeederModule} from "@/database/seeds/seeder.module";
         ReviewsModule,
         AnalyticsModule,
         AuctionsModule,
+        EarningsModule,
         SeederModule
     ],
 })

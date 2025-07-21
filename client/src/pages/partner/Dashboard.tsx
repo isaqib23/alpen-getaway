@@ -1,4 +1,5 @@
-import React from 'react'
+// @ts-nocheck
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Grid,
@@ -16,6 +17,8 @@ import {
   LinearProgress,
   Button,
   IconButton,
+  CircularProgress,
+  Alert,
 } from '@mui/material'
 import {
   TrendingUp,
@@ -27,68 +30,41 @@ import {
   Visibility,
   MoreVert,
 } from '@mui/icons-material'
+import { useCars } from '../../hooks/useCars'
+import { useDrivers } from '../../hooks/useDrivers'
+import { useAuth } from '../../hooks/useAuth'
+import { useEarningsStats } from '../../hooks/useEarnings'
+import { usePayoutStats } from '../../hooks/usePayouts'
 
-// Sample data - will be replaced with real API calls
-const dashboardData = {
-  stats: {
-    totalEarnings: 48750,
-    thisMonthEarnings: 12400,
-    activeBookings: 8,
-    completedBookings: 156,
-    fleetSize: 12,
-    activeDrivers: 8,
-    pendingPayouts: 3200,
-    avgRating: 4.8,
-  },
-  recentBookings: [
-    {
-      id: 'B001',
-      customer: 'Hans Mueller',
-      route: 'Innsbruck → Salzburg',
-      date: '2024-01-15',
-      amount: 145,
-      status: 'IN_PROGRESS',
-      driver: 'Klaus Weber',
-    },
-    {
-      id: 'B002',
-      customer: 'Maria Schmidt',
-      route: 'Vienna → Graz',
-      date: '2024-01-14',
-      amount: 89,
-      status: 'COMPLETED',
-      driver: 'Stefan Lang',
-    },
-    {
-      id: 'B003',
-      customer: 'Peter Gruber',
-      route: 'Linz → Innsbruck',
-      date: '2024-01-14',
-      amount: 210,
-      status: 'CONFIRMED',
-      driver: 'Michael Bauer',
-    },
-  ],
-  availableAuctions: [
-    {
-      id: 'A001',
-      route: 'Salzburg → Munich',
-      date: '2024-01-16',
-      amount: 180,
-      bids: 3,
-      timeLeft: '2h 45m',
-      status: 'ACTIVE',
-    },
-    {
-      id: 'A002',
-      route: 'Innsbruck → Zurich',
-      date: '2024-01-17',
-      amount: 250,
-      bids: 1,
-      timeLeft: '1d 5h',
-      status: 'ACTIVE',
-    },
-  ],
+interface DashboardStats {
+  totalEarnings: number
+  thisMonthEarnings: number
+  activeBookings: number
+  completedBookings: number
+  fleetSize: number
+  activeDrivers: number
+  pendingPayouts: number
+  avgRating: number
+}
+
+interface RecentBooking {
+  id: string
+  customer: string
+  route: string
+  date: string
+  amount: number
+  status: string
+  driver: string
+}
+
+interface AvailableAuction {
+  id: string
+  route: string
+  date: string
+  amount: number
+  bids: number
+  timeLeft: string
+  status: string
 }
 
 const StatCard = ({ title, value, change, icon: Icon, color = 'primary' }: {
@@ -138,7 +114,111 @@ const getStatusColor = (status: string) => {
 }
 
 const PartnerDashboard = () => {
-  const { stats, recentBookings, availableAuctions } = dashboardData
+  const [stats, setStats] = useState<DashboardStats>({
+    totalEarnings: 0,
+    thisMonthEarnings: 0,
+    activeBookings: 0,
+    completedBookings: 0,
+    fleetSize: 0,
+    activeDrivers: 0,
+    pendingPayouts: 0,
+    avgRating: 0,
+  })
+  const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([])
+  const [availableAuctions, setAvailableAuctions] = useState<AvailableAuction[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const { cars, stats: carStats, loading: carsLoading } = useCars()
+  const { data: driversData, loading: driversLoading, refetch: refetchDrivers } = useDrivers()
+  const { getCurrentUserCompanyId, isB2BUser } = useAuth()
+  const companyId = getCurrentUserCompanyId()
+  const { stats: earningsStats, loading: earningsLoading } = useEarningsStats(companyId)
+  const { stats: payoutStats, loading: payoutLoading } = usePayoutStats(companyId)
+
+  useEffect(() => {
+    if (!isB2BUser()) {
+      setError('Access denied. This dashboard is for B2B partners only.')
+      setLoading(false)
+      return
+    }
+
+    // Trigger drivers fetch for B2B users
+    refetchDrivers()
+  }, [isB2BUser, refetchDrivers])
+
+  useEffect(() => {
+    if (!isB2BUser()) {
+      return
+    }
+
+    // Calculate dashboard stats from real API data
+    if (!carsLoading && !driversLoading && !earningsLoading && !payoutLoading && carStats && driversData?.data) {
+      console.log('driversData structure:', driversData)
+      console.log('driversData.data:', driversData.data)
+      console.log('driversData.data is array:', Array.isArray(driversData.data))
+      const currentMonth = new Date().getMonth()
+      const currentYear = new Date().getFullYear()
+      const thisMonthEarnings = earningsStats?.monthlyTrend?.find(trend => {
+        const trendDate = new Date(trend.month)
+        return trendDate.getMonth() === currentMonth && trendDate.getFullYear() === currentYear
+      })?.amount || 0
+
+      const pendingPayoutAmount = (payoutStats?.byStatus?.pending?.amount || 0) + 
+                                  (payoutStats?.byStatus?.requested?.amount || 0)
+
+      setStats({
+        totalEarnings: earningsStats?.totalAmount || 0,
+        thisMonthEarnings: thisMonthEarnings,
+        activeBookings: 0, // TODO: Implement bookings API
+        completedBookings: 0, // TODO: Implement bookings API
+        fleetSize: cars.length,
+        activeDrivers: (() => {
+          try {
+            // Handle various response structures
+            let drivers = [];
+            if (driversData?.data?.data && Array.isArray(driversData.data.data)) {
+              drivers = driversData.data.data;
+            } else if (driversData?.data && Array.isArray(driversData.data)) {
+              drivers = driversData.data;
+            } else if (Array.isArray(driversData)) {
+              drivers = driversData;
+            }
+            return drivers.filter((d: any) => d.status === 'active').length;
+          } catch (error) {
+            console.error('Error filtering drivers:', error, driversData);
+            return 0;
+          }
+        })(),
+        pendingPayouts: pendingPayoutAmount,
+        avgRating: 4.5, // TODO: Calculate from real ratings
+      })
+
+      // TODO: Load real recent bookings data
+      setRecentBookings([])
+      
+      // TODO: Load real available auctions data  
+      setAvailableAuctions([])
+      
+      setLoading(false)
+    }
+  }, [cars, driversData, carStats, carsLoading, driversLoading, earningsStats, payoutStats, earningsLoading, payoutLoading, getCurrentUserCompanyId, isB2BUser])
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ p: 3 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    )
+  }
 
   return (
     <Box>

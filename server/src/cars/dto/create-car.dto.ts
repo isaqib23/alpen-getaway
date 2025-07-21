@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsNumber, IsBoolean, IsEnum, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsNumber, IsBoolean, IsEnum, IsDateString, IsUUID } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CarStatus } from '@/common/enums';
 
@@ -6,6 +6,11 @@ export class CreateCarDto {
     @ApiProperty({ example: 'uuid-category-id' })
     @IsNotEmpty()
     category_id: string;
+
+    @ApiProperty({ example: 'uuid-company-id', required: false })
+    @IsOptional()
+    @IsUUID()
+    company_id?: string;
 
     @ApiProperty({ example: 'Toyota' })
     @IsNotEmpty()

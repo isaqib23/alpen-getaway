@@ -101,7 +101,7 @@ export interface CmsPageFilters {
 }
 
 class CmsAPI {
-  private readonly basePath = '/api/v1/cms'
+  private readonly basePath = '/cms'
 
   async getPages(filters: CmsPageFilters = {}): Promise<CmsPagesResponse> {
     const params = new URLSearchParams()

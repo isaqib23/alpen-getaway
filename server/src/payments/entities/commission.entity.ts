@@ -40,7 +40,7 @@ export class Commission {
     created_at: Date;
 
     // Relations
-    @ManyToOne(() => Company, company => company.commissions)
+    @ManyToOne(() => Company, company => company.commissions, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'company_id' })
     company: Company;
 

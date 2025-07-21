@@ -111,7 +111,10 @@ export const useDrivers = (initialFilters: DriverFilters = {}) => {
     fetchDrivers(filters)
   }, [filters, fetchDrivers])
 
-  // Removed initial fetch - let the component control when to fetch
+  // Initial fetch on mount
+  useEffect(() => {
+    fetchDrivers(filters)
+  }, [])
 
   return {
     data,

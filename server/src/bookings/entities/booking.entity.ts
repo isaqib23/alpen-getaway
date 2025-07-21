@@ -114,11 +114,11 @@ export class Booking {
     updated_at: Date;
 
     // Relations
-    @ManyToOne(() => User, user => user.bookings)
+    @ManyToOne(() => User, user => user.bookings, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    @ManyToOne(() => Company, company => company.bookings, { nullable: true })
+    @ManyToOne(() => Company, company => company.bookings, { nullable: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'company_id' })
     company: Company;
 

@@ -3,6 +3,8 @@ import { CompanyType, CompanyStatus } from '@/common/enums';
 import { User } from '@/users/entities/user.entity';
 import { Booking } from '@/bookings/entities/booking.entity';
 import { Commission } from '@/payments/entities/commission.entity';
+import { Car } from '@/cars/entities/car.entity';
+import { Driver } from '@/drivers/entities/driver.entity';
 
 @Entity('companies')
 export class Company {
@@ -73,7 +75,7 @@ export class Company {
     updated_at: Date;
 
     // Relations
-    @OneToOne(() => User, user => user.company)
+    @OneToOne(() => User, user => user.company, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user: User;
 
@@ -82,6 +84,19 @@ export class Company {
 
     @OneToMany(() => Commission, commission => commission.company)
     commissions: Commission[];
+
+    @OneToMany(() => Car, car => car.company)
+    cars: Car[];
+
+    @OneToMany(() => Driver, driver => driver.company)
+    drivers: Driver[];
+
+    // Note: Earnings and Payouts relationships will be established when earnings module is loaded
+    // @OneToMany(() => Earnings, earnings => earnings.company)
+    // earnings: Earnings[];
+
+    // @OneToMany(() => Payout, payout => payout.company)
+    // payouts: Payout[];
 
     // Note: Auction bid relationship will be established when auction module is loaded
     // @OneToMany(() => AuctionBid, bid => bid.company)

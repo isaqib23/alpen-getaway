@@ -5,10 +5,12 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { AssignDriverCarDto } from './dto/assign-driver-car.dto';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { CompanyContextGuard } from '@/common/guards/company-context.guard';
+import { CompanyContext } from '@/common/decorators/company-context.decorator';
 
 @ApiTags('Bookings')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, CompanyContextGuard)
 @Controller('bookings')
 export class BookingsController {
     constructor(private readonly bookingsService: BookingsService) {}
@@ -17,7 +19,14 @@ export class BookingsController {
     @ApiResponse({ status: 201, description: 'Booking created successfully' })
     @ApiResponse({ status: 400, description: 'Invalid booking data' })
     @Post()
-    create(@Body() createBookingDto: CreateBookingDto) {
+    create(
+        @Body() createBookingDto: CreateBookingDto,
+        @CompanyContext() companyId?: string
+    ) {
+        // Set company_id for B2B/Affiliate users
+        if (companyId) {
+            createBookingDto.company_id = companyId;
+        }
         return this.bookingsService.create(createBookingDto);
     }
 
@@ -44,12 +53,16 @@ export class BookingsController {
         @Query('date_from') date_from?: string,
         @Query('date_to') date_to?: string,
         @Query('search') search?: string,
+        @CompanyContext() contextCompanyId?: string
     ) {
+        // Override company_id filter for B2B users
+        const effectiveCompanyId = contextCompanyId || company_id;
+        
         const filters = {
             booking_status,
             payment_status,
             user_type,
-            company_id,
+            company_id: effectiveCompanyId,
             driver_id,
             date_from: date_from ? new Date(date_from) : undefined,
             date_to: date_to ? new Date(date_to) : undefined,
@@ -61,15 +74,18 @@ export class BookingsController {
     @ApiOperation({ summary: 'Get booking statistics' })
     @ApiResponse({ status: 200, description: 'Booking statistics retrieved successfully' })
     @Get('stats')
-    getStats() {
-        return this.bookingsService.getStats();
+    getStats(@CompanyContext() companyId?: string) {
+        return this.bookingsService.getStats(companyId);
     }
 
     @ApiOperation({ summary: 'Get upcoming bookings' })
     @ApiQuery({ name: 'hours', required: false, type: Number, description: 'Hours ahead to look (default: 24)' })
     @Get('upcoming')
-    getUpcomingBookings(@Query('hours') hours: string = '24') {
-        return this.bookingsService.getUpcomingBookings(+hours);
+    getUpcomingBookings(
+        @Query('hours') hours: string = '24',
+        @CompanyContext() companyId?: string
+    ) {
+        return this.bookingsService.getUpcomingBookings(+hours, companyId);
     }
 
     @ApiOperation({ summary: 'Get bookings by user ID' })

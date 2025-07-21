@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Car } from './car.entity';
 
 @Entity('car_images')
@@ -21,8 +21,29 @@ export class CarImage {
     @Column({ nullable: true })
     alt_text: string;
 
+    @Column({ type: 'enum', enum: ['pending', 'approved', 'rejected'], default: 'pending' })
+    status: string;
+
+    @Column({ nullable: true })
+    file_size: number;
+
+    @Column({ nullable: true })
+    file_name: string;
+
+    @Column({ nullable: true })
+    mime_type: string;
+
+    @Column({ nullable: true })
+    width: number;
+
+    @Column({ nullable: true })
+    height: number;
+
     @CreateDateColumn()
     created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
 
     // Relations
     @ManyToOne(() => Car, car => car.images, { onDelete: 'CASCADE' })

@@ -4,6 +4,7 @@ import { CarCategory } from './car-category.entity';
 import { CarImage } from './car-image.entity';
 import { DriverCarAssignment } from '@/drivers/entities/driver-car-assignment.entity';
 import { Booking } from '@/bookings/entities/booking.entity';
+import { Company } from '@/companies/entities/company.entity';
 
 @Entity('cars')
 export class Car {
@@ -12,6 +13,9 @@ export class Car {
 
     @Column()
     category_id: string;
+
+    @Column({ nullable: true })
+    company_id: string;
 
     @Column()
     make: string;
@@ -78,6 +82,10 @@ export class Car {
     @ManyToOne(() => CarCategory, category => category.cars)
     @JoinColumn({ name: 'category_id' })
     category: CarCategory;
+
+    @ManyToOne(() => Company, company => company.cars, { nullable: true })
+    @JoinColumn({ name: 'company_id' })
+    company: Company;
 
     @OneToMany(() => CarImage, image => image.car)
     images: CarImage[];
