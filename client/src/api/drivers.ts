@@ -3,6 +3,7 @@ import apiClient from './client'
 export interface Driver {
   id: string
   user_id: string
+  company_id?: string
   license_number: string
   license_expiry: string
   date_of_birth: string
@@ -81,10 +82,7 @@ export interface Driver {
   emergencyContact?: {
     name: string
     phone: string
-    relationship: string
   }
-  languages?: string[]
-  experience?: number
   rating?: number
   totalTrips?: number
   earnings?: number
@@ -125,10 +123,7 @@ export interface CreateDriverRequest {
   emergencyContact: {
     name: string
     phone: string
-    relationship: string
   }
-  languages: string[]
-  experience: number
 }
 
 export interface DriverFilters {
@@ -137,6 +132,7 @@ export interface DriverFilters {
   status?: string
   backgroundCheck?: string
   search?: string
+  companyId?: string
 }
 
 export interface DriverStats {
@@ -158,44 +154,103 @@ export interface AssignCarRequest {
 export const driversAPI = {
   // @ts-ignore
   getAll: async (filters?: DriverFilters): Promise<{ data: Driver[], total: number }> => {
-    return apiClient.get(`/api/v1/drivers`)
+    const params = new URLSearchParams()
+    if (filters?.page) params.append('page', filters.page.toString())
+    if (filters?.limit) params.append('limit', filters.limit.toString())
+    if (filters?.status) params.append('status', filters.status)
+    if (filters?.backgroundCheck) params.append('backgroundCheck', filters.backgroundCheck)
+    if (filters?.search) params.append('search', filters.search)
+    if (filters?.companyId) params.append('companyId', filters.companyId)
+    
+    const queryString = params.toString()
+    return apiClient.get(`/drivers${queryString ? `?${queryString}` : ''}`)
   },
 
   getById: async (id: string): Promise<Driver> => {
-    return apiClient.get(`/api/v1/drivers/${id}`)
+    return apiClient.get(`/drivers/${id}`)
   },
 
   create: async (driverData: CreateDriverRequest): Promise<Driver> => {
-    return apiClient.post('/api/v1/drivers', driverData)
+    // Transform camelCase frontend data to snake_case backend format
+    const transformedData = {
+      user_id: null, // This will be created by backend
+      license_number: driverData.licenseNumber,
+      license_expiry: driverData.licenseExpiry,
+      date_of_birth: driverData.dateOfBirth,
+      address: driverData.address.street,
+      city: driverData.address.city,
+      state: driverData.address.state,
+      postal_code: driverData.address.zipCode,
+      emergency_contact_name: driverData.emergencyContact.name,
+      emergency_contact_phone: driverData.emergencyContact.phone,
+      status: driverData.status,
+      background_check_status: 'pending',
+      medical_clearance: false,
+      training_completed: false,
+      // Note: experience and languages fields not supported by backend
+      // User data for creation
+      user: {
+        first_name: driverData.firstName,
+        last_name: driverData.lastName,
+        email: driverData.email,
+        phone: driverData.phoneNumber,
+        user_type: 'DRIVER',
+        password: 'defaultPassword123!' // This should be changed in real implementation
+      }
+    }
+    return apiClient.post('/drivers', transformedData)
   },
 
   update: async (id: string, driverData: Partial<CreateDriverRequest>): Promise<Driver> => {
-    return apiClient.patch(`/api/v1/drivers/${id}`, driverData)
+    // Transform camelCase frontend data to snake_case backend format
+    const transformedData: any = {}
+    
+    if (driverData.licenseNumber) transformedData.license_number = driverData.licenseNumber
+    if (driverData.licenseExpiry) transformedData.license_expiry = driverData.licenseExpiry
+    if (driverData.dateOfBirth) transformedData.date_of_birth = driverData.dateOfBirth
+    if (driverData.status) transformedData.status = driverData.status
+    
+    if (driverData.address) {
+      if (driverData.address.street) transformedData.address = driverData.address.street
+      if (driverData.address.city) transformedData.city = driverData.address.city
+      if (driverData.address.state) transformedData.state = driverData.address.state
+      if (driverData.address.zipCode) transformedData.postal_code = driverData.address.zipCode
+    }
+    
+    if (driverData.emergencyContact) {
+      if (driverData.emergencyContact.name) transformedData.emergency_contact_name = driverData.emergencyContact.name
+      if (driverData.emergencyContact.phone) transformedData.emergency_contact_phone = driverData.emergencyContact.phone
+    }
+    
+    // Note: User updates and experience/languages fields not supported by backend for updates
+    // Backend expects only driver-specific fields for updates
+    
+    return apiClient.patch(`/drivers/${id}`, transformedData)
   },
 
   delete: async (id: string): Promise<void> => {
-    return apiClient.delete(`/api/v1/drivers/${id}`)
+    return apiClient.delete(`/drivers/${id}`)
   },
 
   getStats: async (): Promise<DriverStats> => {
-    return apiClient.get('/api/v1/drivers/stats')
+    return apiClient.get('/drivers/stats')
   },
 
   // Background check actions
   approveBackgroundCheck: async (id: string): Promise<Driver> => {
-    return apiClient.patch(`/api/v1/drivers/${id}/approve-background-check`)
+    return apiClient.patch(`/drivers/${id}/approve-background-check`)
   },
 
   rejectBackgroundCheck: async (id: string): Promise<Driver> => {
-    return apiClient.patch(`/api/v1/drivers/${id}/reject-background-check`)
+    return apiClient.patch(`/drivers/${id}/reject-background-check`)
   },
 
   // Car assignment
   assignCar: async (driverId: string, assignData: AssignCarRequest): Promise<any> => {
-    return apiClient.post(`/api/v1/drivers/${driverId}/assign-car`, assignData)
+    return apiClient.post(`/drivers/${driverId}/assign-car`, assignData)
   },
 
   unassignCar: async (assignmentId: string): Promise<any> => {
-    return apiClient.patch(`/api/v1/drivers/assignments/${assignmentId}/unassign`)
+    return apiClient.patch(`/drivers/assignments/${assignmentId}/unassign`)
   }
 }

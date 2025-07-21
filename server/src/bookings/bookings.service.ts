@@ -270,25 +270,40 @@ export class BookingsService {
         return { data, total };
     }
 
-    async getUpcomingBookings(hours: number = 24): Promise<Booking[]> {
+    async getUpcomingBookings(hours: number = 24, companyId?: string): Promise<Booking[]> {
         const now = new Date();
         const futureTime = new Date(now.getTime() + hours * 60 * 60 * 1000);
 
-        return this.bookingsRepository.find({
-            where: {
-                pickup_datetime: Between(now, futureTime),
-                booking_status: BookingStatus.ASSIGNED,
-            },
-            relations: ['user', 'assigned_driver', 'assigned_driver.user', 'assigned_car'],
-            order: { pickup_datetime: 'ASC' },
-        });
+        const queryBuilder = this.bookingsRepository.createQueryBuilder('booking')
+            .leftJoinAndSelect('booking.user', 'user')
+            .leftJoinAndSelect('booking.assigned_driver', 'assigned_driver')
+            .leftJoinAndSelect('assigned_driver.user', 'driver_user')
+            .leftJoinAndSelect('booking.assigned_car', 'assigned_car')
+            .where('booking.pickup_datetime BETWEEN :now AND :futureTime', { now, futureTime })
+            .andWhere('booking.booking_status = :status', { status: BookingStatus.ASSIGNED })
+            .orderBy('booking.pickup_datetime', 'ASC');
+
+        // Apply company filter for B2B users
+        if (companyId) {
+            queryBuilder.andWhere('booking.company_id = :companyId', { companyId });
+        }
+
+        return queryBuilder.getMany();
     }
 
-    async getStats(): Promise<any> {
+    async getStats(companyId?: string): Promise<any> {
+        const baseQuery = this.bookingsRepository.createQueryBuilder('booking');
+        
+        // Apply company filter for B2B users
+        if (companyId) {
+            baseQuery.where('booking.company_id = :companyId', { companyId });
+        }
+
         const statusStats = await this.bookingsRepository
             .createQueryBuilder('booking')
             .select('booking.booking_status', 'status')
             .addSelect('COUNT(*)', 'count')
+            .where(companyId ? 'booking.company_id = :companyId' : '1=1', companyId ? { companyId } : {})
             .groupBy('booking.booking_status')
             .getRawMany();
 
@@ -296,23 +311,35 @@ export class BookingsService {
             .createQueryBuilder('booking')
             .select('booking.payment_status', 'status')
             .addSelect('COUNT(*)', 'count')
+            .where(companyId ? 'booking.company_id = :companyId' : '1=1', companyId ? { companyId } : {})
             .groupBy('booking.payment_status')
             .getRawMany();
 
-        const revenueStats = await this.bookingsRepository
+        const revenueStatsQuery = this.bookingsRepository
             .createQueryBuilder('booking')
             .select('SUM(booking.total_amount)', 'total_revenue')
             .addSelect('AVG(booking.total_amount)', 'avg_booking_value')
             .addSelect('COUNT(*)', 'total_bookings')
-            .where('booking.booking_status = :status', { status: 'completed' })
-            .getRawOne();
+            .where('booking.booking_status = :status', { status: 'completed' });
+        
+        if (companyId) {
+            revenueStatsQuery.andWhere('booking.company_id = :companyId', { companyId });
+        }
+        
+        const revenueStats = await revenueStatsQuery.getRawOne();
 
-        const monthlyStats = await this.bookingsRepository
+        const monthlyStatsQuery = this.bookingsRepository
             .createQueryBuilder('booking')
             .select('DATE_TRUNC(\'month\', booking.created_at)', 'month')
             .addSelect('COUNT(*)', 'count')
             .addSelect('SUM(booking.total_amount)', 'revenue')
-            .where('booking.created_at >= :date', { date: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) })
+            .where('booking.created_at >= :date', { date: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) });
+        
+        if (companyId) {
+            monthlyStatsQuery.andWhere('booking.company_id = :companyId', { companyId });
+        }
+        
+        const monthlyStats = await monthlyStatsQuery
             .groupBy('DATE_TRUNC(\'month\', booking.created_at)')
             .orderBy('month', 'DESC')
             .getRawMany();

@@ -44,7 +44,7 @@ export class Review {
     @JoinColumn({ name: 'booking_id' })
     booking: Booking;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'reviewer_id' })
     reviewer: User;
 

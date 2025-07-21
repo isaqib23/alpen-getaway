@@ -807,14 +807,13 @@ export class AuctionsService {
         const startOfMonth = new Date(year, new Date().getMonth(), 1);
         const endOfMonth = new Date(year, new Date().getMonth() + 1, 0);
         
-        const count = await this.auctionRepository.count({
-            where: {
-                created_at: {
-                    gte: startOfMonth,
-                    lte: endOfMonth
-                } as any
-            }
-        });
+        const count = await this.auctionRepository
+            .createQueryBuilder('auction')
+            .where('auction.created_at >= :start AND auction.created_at <= :end', {
+                start: startOfMonth,
+                end: endOfMonth
+            })
+            .getCount();
         
         const sequence = String(count + 1).padStart(4, '0');
         return `${prefix}-${year}${month}-${sequence}`;
@@ -829,14 +828,13 @@ export class AuctionsService {
         const startOfMonth = new Date(year, new Date().getMonth(), 1);
         const endOfMonth = new Date(year, new Date().getMonth() + 1, 0);
         
-        const count = await this.bidRepository.count({
-            where: {
-                created_at: {
-                    gte: startOfMonth,
-                    lte: endOfMonth
-                } as any
-            }
-        });
+        const count = await this.bidRepository
+            .createQueryBuilder('bid')
+            .where('bid.created_at >= :start AND bid.created_at <= :end', {
+                start: startOfMonth,
+                end: endOfMonth
+            })
+            .getCount();
         
         const sequence = String(count + 1).padStart(4, '0');
         return `${prefix}-${year}${month}-${sequence}`;

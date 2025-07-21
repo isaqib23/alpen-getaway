@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import {
   Box,
@@ -37,6 +38,8 @@ import {
   Visibility,
   RequestQuote,
 } from '@mui/icons-material'
+import { useEarnings, useEarningsStats } from '../../hooks/useEarnings'
+import { useAuth } from '../../hooks/useAuth'
 
 interface EarningsData {
   id: string
@@ -75,38 +78,44 @@ const Earnings = () => {
   const [dateFilter, setDateFilter] = useState('all')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
-  const [selectedEarning, setSelectedEarning] = useState<EarningsData | null>(null)
+  const [selectedEarning, setSelectedEarning] = useState<any>(null)
   const [viewDialogOpen, setViewDialogOpen] = useState(false)
   const [payoutDialogOpen, setPayoutDialogOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [earnings, setEarnings] = useState<EarningsData[]>([])
-  const [stats, setStats] = useState<EarningsStats>({
-    total_earnings: 0,
-    total_commission: 0,
-    net_earnings: 0,
-    pending_amount: 0,
-    paid_amount: 0,
-    total_rides: 0,
-    avg_ride_value: 0,
-    commission_rate: 0,
+  
+  const { getCurrentUserCompanyId } = useAuth()
+  const companyId = getCurrentUserCompanyId()
+  
+  // Use real earnings hooks
+  const {
+    earnings,
+    loading,
+    error,
+    pagination,
+    fetchEarnings,
+  } = useEarnings({
+    company_id: companyId,
+    page: 1,
+    limit: 50,
   })
 
-  // Note: Company context functionality would be implemented here when needed
+  const {
+    stats,
+    loading: statsLoading,
+    error: statsError,
+  } = useEarningsStats(companyId)
 
   // Filter earnings based on search and filters
   const filteredEarnings = earnings.filter(earning => {
     const matchesSearch = searchTerm === '' || 
-      earning.booking.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      earning.booking.pickup_location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      earning.booking.dropoff_location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      earning.booking_id.toLowerCase().includes(searchTerm.toLowerCase())
+      earning.reference_number?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      earning.booking?.booking_reference?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      earning.company?.company_name?.toLowerCase().includes(searchTerm.toLowerCase())
     
-    const matchesStatus = statusFilter === 'all' || earning.payment_status === statusFilter
+    const matchesStatus = statusFilter === 'all' || earning.status === statusFilter
     
     let matchesDate = true
     if (dateFilter !== 'all') {
-      const earningDate = new Date(earning.created_at)
+      const earningDate = new Date(earning.earned_at || earning.created_at)
       const now = new Date()
       
       switch (dateFilter) {
@@ -134,103 +143,45 @@ const Earnings = () => {
     return matchesSearch && matchesStatus && matchesDate
   })
 
-  // Mock data loading function - replace with real API call
-  const loadEarnings = async () => {
-    setLoading(true)
-    setError('')
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock data - replace with actual API call
-      const mockEarnings: EarningsData[] = [
-        {
-          id: '1',
-          booking_id: 'BK-001',
-          amount: 45.00,
-          commission_rate: 0.15,
-          commission_amount: 6.75,
-          net_amount: 38.25,
-          payment_status: 'paid',
-          payment_date: '2024-07-05',
-          created_at: '2024-07-01',
-          booking: {
-            id: 'BK-001',
-            pickup_location: 'Airport Terminal 1',
-            dropoff_location: 'Hotel Alpenblick',
-            customer_name: 'John Smith',
-            ride_date: '2024-07-01',
-            status: 'completed'
-          }
-        },
-        {
-          id: '2',
-          booking_id: 'BK-002',
-          amount: 32.50,
-          commission_rate: 0.15,
-          commission_amount: 4.88,
-          net_amount: 27.62,
-          payment_status: 'pending',
-          payment_date: '',
-          created_at: '2024-07-02',
-          booking: {
-            id: 'BK-002',
-            pickup_location: 'Zurich HB',
-            dropoff_location: 'Davos Resort',
-            customer_name: 'Maria Garcia',
-            ride_date: '2024-07-02',
-            status: 'completed'
-          }
-        },
-        {
-          id: '3',
-          booking_id: 'BK-003',
-          amount: 78.00,
-          commission_rate: 0.15,
-          commission_amount: 11.70,
-          net_amount: 66.30,
-          payment_status: 'paid',
-          payment_date: '2024-07-06',
-          created_at: '2024-07-03',
-          booking: {
-            id: 'BK-003',
-            pickup_location: 'St. Moritz Center',
-            dropoff_location: 'Engadin Airport',
-            customer_name: 'Robert Johnson',
-            ride_date: '2024-07-03',
-            status: 'completed'
-          }
-        }
-      ]
-      
-      const mockStats: EarningsStats = {
-        total_earnings: 155.50,
-        total_commission: 23.33,
-        net_earnings: 132.17,
-        pending_amount: 27.62,
-        paid_amount: 104.55,
-        total_rides: 3,
-        avg_ride_value: 51.83,
-        commission_rate: 0.15
-      }
-      
-      setEarnings(mockEarnings)
-      setStats(mockStats)
-    } catch (err) {
-      setError('Failed to load earnings data')
-      console.error('Error loading earnings:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  // Load earnings on component mount and when filters change
+  // Handle filter changes - refetch data when filters change
   useEffect(() => {
-    loadEarnings()
-  }, [statusFilter, dateFilter, startDate, endDate])
+    const filters: any = {}
+    
+    if (statusFilter !== 'all') {
+      filters.status = statusFilter
+    }
+    
+    if (searchTerm !== '') {
+      filters.search = searchTerm
+    }
+    
+    if (dateFilter === 'custom' && startDate && endDate) {
+      filters.date_from = startDate
+      filters.date_to = endDate
+    } else if (dateFilter !== 'all') {
+      const now = new Date()
+      switch (dateFilter) {
+        case 'today':
+          filters.date_from = now.toISOString().split('T')[0]
+          filters.date_to = now.toISOString().split('T')[0]
+          break
+        case 'week':
+          const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+          filters.date_from = weekAgo.toISOString().split('T')[0]
+          filters.date_to = now.toISOString().split('T')[0]
+          break
+        case 'month':
+          const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+          filters.date_from = monthAgo.toISOString().split('T')[0]
+          filters.date_to = now.toISOString().split('T')[0]
+          break
+      }
+    }
+    
+    fetchEarnings(filters)
+  }, [statusFilter, dateFilter, startDate, endDate, searchTerm, fetchEarnings])
 
-  const handleViewEarning = (earning: EarningsData) => {
+  const handleViewEarning = (earning: any) => {
     setSelectedEarning(earning)
     setViewDialogOpen(true)
   }
@@ -240,8 +191,46 @@ const Earnings = () => {
   }
 
   const handleExport = () => {
-    console.log('Exporting earnings data...')
-    // Add export logic here
+    try {
+      // Create CSV content
+      const csvContent = [
+        // Header row
+        ['Reference Number', 'Booking ID', 'Earning Type', 'Company', 'Earned Date', 'Gross Amount (CHF)', 'Commission Rate (%)', 'Commission Amount (CHF)', 'Platform Fee (CHF)', 'Tax Amount (CHF)', 'Net Earnings (CHF)', 'Status', 'Payment Date', 'Notes'].join(','),
+        // Data rows
+        ...filteredEarnings.map(earning => [
+          `"${earning.reference_number || ''}"`,
+          `"${earning.booking?.booking_reference || 'N/A'}"`,
+          `"${earning.earnings_type?.replace('_', ' ').toUpperCase() || ''}"`,
+          `"${earning.company?.company_name || 'Unknown'}"`,
+          `"${new Date(earning.earned_at || earning.created_at).toLocaleDateString()}"`,
+          `"${earning.gross_amount || 0}"`,
+          `"${earning.commission_rate || 0}"`,
+          `"${earning.commission_amount || 0}"`,
+          `"${earning.platform_fee || 0}"`,
+          `"${earning.tax_amount || 0}"`,
+          `"${earning.net_earnings || 0}"`,
+          `"${earning.status || ''}"`,
+          `"${earning.paid_at ? new Date(earning.paid_at).toLocaleDateString() : 'Not Paid'}"`,
+          `"${earning.notes || ''}"`
+        ].join(','))
+      ].join('\n')
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+      link.setAttribute('href', url)
+      link.setAttribute('download', `company-earnings-${new Date().toISOString().split('T')[0]}.csv`)
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      
+      console.log(`Exported ${filteredEarnings.length} earnings records to CSV`)
+    } catch (error) {
+      console.error('Error exporting earnings:', error)
+      alert('Failed to export earnings data. Please try again.')
+    }
   }
 
   const getStatusColor = (status: string) => {
@@ -287,7 +276,7 @@ const Earnings = () => {
                     Total Earnings
                   </Typography>
                   <Typography variant="h4" color="primary.main">
-                    {formatCurrency(stats.total_earnings)}
+                    {statsLoading ? <CircularProgress size={24} /> : formatCurrency(stats?.totalAmount || 0)}
                   </Typography>
                 </Box>
                 <TrendingUp sx={{ fontSize: 40, color: 'primary.main', opacity: 0.7 }} />
@@ -304,7 +293,7 @@ const Earnings = () => {
                     Net Earnings
                   </Typography>
                   <Typography variant="h4" color="success.main">
-                    {formatCurrency(stats.net_earnings)}
+                    {statsLoading ? <CircularProgress size={24} /> : formatCurrency(stats?.totalAmount || 0)}
                   </Typography>
                 </Box>
                 <AttachMoney sx={{ fontSize: 40, color: 'success.main', opacity: 0.7 }} />
@@ -321,7 +310,7 @@ const Earnings = () => {
                     Pending Amount
                   </Typography>
                   <Typography variant="h4" color="warning.main">
-                    {formatCurrency(stats.pending_amount)}
+                    {statsLoading ? <CircularProgress size={24} /> : formatCurrency(stats?.byStatus?.pending?.amount || 0)}
                   </Typography>
                 </Box>
                 <AccountBalance sx={{ fontSize: 40, color: 'warning.main', opacity: 0.7 }} />
@@ -338,7 +327,7 @@ const Earnings = () => {
                     Total Rides
                   </Typography>
                   <Typography variant="h4" color="info.main">
-                    {stats.total_rides}
+                    {statsLoading ? <CircularProgress size={24} /> : (stats?.totalEarnings || 0)}
                   </Typography>
                 </Box>
                 <Receipt sx={{ fontSize: 40, color: 'info.main', opacity: 0.7 }} />
@@ -351,9 +340,9 @@ const Earnings = () => {
       {/* Commission Rate Info */}
       <Alert severity="info" sx={{ mb: 3 }}>
         <Typography variant="body2">
-          Current commission rate: <strong>{(stats.commission_rate * 100).toFixed(1)}%</strong>
+          Total Commission: <strong>{formatCurrency(stats?.totalCommission || 0)}</strong>
           {' • '}
-          Average ride value: <strong>{formatCurrency(stats.avg_ride_value)}</strong>
+          Total Earnings: <strong>{stats?.totalEarnings || 0} transactions</strong>
         </Typography>
       </Alert>
 
@@ -454,9 +443,9 @@ const Earnings = () => {
       )}
 
       {/* Error State */}
-      {error && (
+      {(error || statsError) && (
         <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
+          {error || statsError}
         </Alert>
       )}
 
@@ -497,32 +486,32 @@ const Earnings = () => {
                 <TableRow key={earning.id}>
                   <TableCell>
                     <Typography variant="body2" fontWeight="bold">
-                      {earning.booking_id}
+                      {earning.booking?.booking_reference || earning.reference_number}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Box>
                       <Typography variant="body2" fontWeight="bold">
-                        {earning.booking.pickup_location}
+                        {earning.earnings_type.replace('_', ' ').toUpperCase()}
                       </Typography>
                       <Typography variant="caption" color="textSecondary">
-                        → {earning.booking.dropoff_location}
+                        {earning.booking ? `Booking: ${earning.booking.booking_reference}` : 'No booking info'}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {earning.booking.customer_name}
+                      {earning.company?.company_name || 'Unknown'}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {new Date(earning.booking.ride_date).toLocaleDateString()}
+                      {new Date(earning.earned_at || earning.created_at).toLocaleDateString()}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" fontWeight="bold">
-                      {formatCurrency(earning.amount)}
+                      {formatCurrency(earning.gross_amount)}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -530,24 +519,24 @@ const Earnings = () => {
                       -{formatCurrency(earning.commission_amount)}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      ({(earning.commission_rate * 100).toFixed(1)}%)
+                      ({earning.commission_rate}%)
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" fontWeight="bold" color="success.main">
-                      {formatCurrency(earning.net_amount)}
+                      {formatCurrency(earning.net_earnings)}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Chip
-                      label={earning.payment_status}
-                      color={getStatusColor(earning.payment_status) as any}
+                      label={earning.status}
+                      color={getStatusColor(earning.status) as any}
                       size="small"
                     />
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {earning.payment_date ? new Date(earning.payment_date).toLocaleDateString() : '-'}
+                      {earning.paid_at ? new Date(earning.paid_at).toLocaleDateString() : '-'}
                     </Typography>
                   </TableCell>
                   <TableCell>
@@ -571,24 +560,32 @@ const Earnings = () => {
           {selectedEarning && (
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
-                <Typography variant="h6" gutterBottom>Booking Information</Typography>
-                <Typography><strong>Booking ID:</strong> {selectedEarning.booking_id}</Typography>
-                <Typography><strong>Customer:</strong> {selectedEarning.booking.customer_name}</Typography>
-                <Typography><strong>Ride Date:</strong> {new Date(selectedEarning.booking.ride_date).toLocaleDateString()}</Typography>
-                <Typography><strong>Pickup:</strong> {selectedEarning.booking.pickup_location}</Typography>
-                <Typography><strong>Dropoff:</strong> {selectedEarning.booking.dropoff_location}</Typography>
-                <Typography><strong>Status:</strong> {selectedEarning.booking.status}</Typography>
+                <Typography variant="h6" gutterBottom>Earning Information</Typography>
+                <Typography><strong>Reference:</strong> {selectedEarning.reference_number}</Typography>
+                <Typography><strong>Type:</strong> {selectedEarning.earnings_type?.replace('_', ' ').toUpperCase()}</Typography>
+                <Typography><strong>Date:</strong> {new Date(selectedEarning.earned_at || selectedEarning.created_at).toLocaleDateString()}</Typography>
+                {selectedEarning.booking && (
+                  <>
+                    <Typography><strong>Booking:</strong> {selectedEarning.booking.booking_reference}</Typography>
+                  </>
+                )}
+                <Typography><strong>Company:</strong> {selectedEarning.company?.company_name || 'Unknown'}</Typography>
+                <Typography><strong>Status:</strong> {selectedEarning.status}</Typography>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom>Payment Details</Typography>
-                <Typography><strong>Gross Amount:</strong> {formatCurrency(selectedEarning.amount)}</Typography>
-                <Typography><strong>Commission Rate:</strong> {(selectedEarning.commission_rate * 100).toFixed(1)}%</Typography>
+                <Typography><strong>Gross Amount:</strong> {formatCurrency(selectedEarning.gross_amount)}</Typography>
+                <Typography><strong>Commission Rate:</strong> {selectedEarning.commission_rate}%</Typography>
                 <Typography><strong>Commission Amount:</strong> -{formatCurrency(selectedEarning.commission_amount)}</Typography>
+                <Typography><strong>Platform Fee:</strong> -{formatCurrency(selectedEarning.platform_fee || 0)}</Typography>
+                <Typography><strong>Tax Amount:</strong> -{formatCurrency(selectedEarning.tax_amount || 0)}</Typography>
                 <Divider sx={{ my: 1 }} />
-                <Typography><strong>Net Amount:</strong> {formatCurrency(selectedEarning.net_amount)}</Typography>
-                <Typography><strong>Payment Status:</strong> {selectedEarning.payment_status}</Typography>
-                {selectedEarning.payment_date && (
-                  <Typography><strong>Payment Date:</strong> {new Date(selectedEarning.payment_date).toLocaleDateString()}</Typography>
+                <Typography><strong>Net Earnings:</strong> {formatCurrency(selectedEarning.net_earnings)}</Typography>
+                {selectedEarning.paid_at && (
+                  <Typography><strong>Paid At:</strong> {new Date(selectedEarning.paid_at).toLocaleDateString()}</Typography>
+                )}
+                {selectedEarning.notes && (
+                  <Typography><strong>Notes:</strong> {selectedEarning.notes}</Typography>
                 )}
               </Grid>
             </Grid>
@@ -608,7 +605,7 @@ const Earnings = () => {
           </Typography>
           <Alert severity="info" sx={{ mb: 2 }}>
             <Typography variant="body2">
-              Available for payout: <strong>{formatCurrency(stats.pending_amount)}</strong>
+              Available for payout: <strong>{formatCurrency(stats?.byStatus?.pending?.amount || 0)}</strong>
             </Typography>
           </Alert>
           <Typography variant="body2" color="textSecondary">
@@ -620,7 +617,7 @@ const Earnings = () => {
           <Button 
             variant="contained" 
             onClick={() => setPayoutDialogOpen(false)}
-            disabled={stats.pending_amount < 20}
+            disabled={(stats?.byStatus?.pending?.amount || 0) < 20}
           >
             Request Payout
           </Button>

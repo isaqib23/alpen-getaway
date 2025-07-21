@@ -251,8 +251,55 @@ const FleetCars = () => {
   }
 
   const handleExport = () => {
-    console.log('Exporting company cars...')
-    // Add export logic here with company filtering
+    try {
+      // Create CSV content
+      const csvContent = [
+        // Header row
+        ['Make', 'Model', 'Year', 'Color', 'License Plate', 'Category', 'Seats', 'Status', 'Odometer (km)', 'Last Service', 'Next Service', 'Features'].join(','),
+        // Data rows
+        ...filteredCars.map(car => {
+          const features = [];
+          if (car.has_wifi) features.push('WiFi');
+          if (car.has_ac) features.push('AC');
+          if (car.has_gps) features.push('GPS');
+          if (car.has_wheelchair_access) features.push('Wheelchair Access');
+          if (car.has_child_seat) features.push('Child Seat');
+          if (car.has_infant_seat) features.push('Infant Seat');
+          if (car.has_medical_equipment) features.push('Medical Equipment');
+          
+          return [
+            `"${car.make || ''}"`,
+            `"${car.model || ''}"`,
+            `"${car.year || ''}"`,
+            `"${car.color || ''}"`,
+            `"${car.license_plate || ''}"`,
+            `"${car.category?.name || 'Unknown'}"`,
+            `"${car.seats || ''}"`,
+            `"${car.status || ''}"`,
+            `"${car.odometer_reading || 0}"`,
+            `"${car.last_service_date ? new Date(car.last_service_date).toLocaleDateString() : ''}"`,
+            `"${car.next_service_date ? new Date(car.next_service_date).toLocaleDateString() : ''}"`,
+            `"${features.join(', ')}"`
+          ].join(',');
+        })
+      ].join('\n')
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+      link.setAttribute('href', url)
+      link.setAttribute('download', `company-fleet-cars-${new Date().toISOString().split('T')[0]}.csv`)
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      
+      console.log(`Exported ${filteredCars.length} cars to CSV`)
+    } catch (error) {
+      console.error('Error exporting cars:', error)
+      alert('Failed to export cars. Please try again.')
+    }
   }
 
   const getStatusColor = (status: string) => {

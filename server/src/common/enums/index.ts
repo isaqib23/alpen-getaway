@@ -1,5 +1,6 @@
 export enum UserType {
     CUSTOMER = 'customer',
+    DRIVER = 'driver',
     AFFILIATE = 'affiliate',
     B2B = 'b2b',
     ADMIN = 'admin',
@@ -133,4 +134,36 @@ export enum AuctionActivityType {
     CLOSED = 'closed',
     AWARDED = 'awarded',
     CANCELLED = 'cancelled',
+}
+
+export enum EarningsStatus {
+    PENDING = 'pending',
+    PROCESSED = 'processed',
+    PAID = 'paid',
+    CANCELLED = 'cancelled',
+}
+
+export enum EarningsType {
+    BOOKING_COMMISSION = 'booking_commission',
+    AUCTION_WIN = 'auction_win',
+    REFERRAL_BONUS = 'referral_bonus',
+    PLATFORM_BONUS = 'platform_bonus',
+}
+
+export enum PayoutStatus {
+    PENDING = 'pending',
+    REQUESTED = 'requested',
+    APPROVED = 'approved',
+    PROCESSING = 'processing',
+    PAID = 'paid',
+    FAILED = 'failed',
+    CANCELLED = 'cancelled',
+}
+
+export enum PayoutMethod {
+    BANK_TRANSFER = 'bank_transfer',
+    PAYPAL = 'paypal',
+    STRIPE = 'stripe',
+    WIRE_TRANSFER = 'wire_transfer',
+    CHECK = 'check',
 }

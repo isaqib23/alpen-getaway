@@ -1,11 +1,57 @@
-import { IsNotEmpty, IsDateString, IsOptional, IsEnum, IsBoolean } from 'class-validator';
+import { IsNotEmpty, IsDateString, IsOptional, IsEnum, IsBoolean, IsUUID, IsObject, ValidateNested, IsEmail, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { DriverStatus, BackgroundCheckStatus } from '@/common/enums';
 
-export class CreateDriverDto {
-    @ApiProperty({ example: 'uuid-user-id' })
+class CreateUserDto {
+    @ApiProperty({ example: 'John' })
     @IsNotEmpty()
-    user_id: string;
+    @IsString()
+    first_name: string;
+
+    @ApiProperty({ example: 'Doe' })
+    @IsNotEmpty()
+    @IsString()
+    last_name: string;
+
+    @ApiProperty({ example: 'john.doe@example.com' })
+    @IsNotEmpty()
+    @IsEmail()
+    email: string;
+
+    @ApiProperty({ example: '+1234567890' })
+    @IsNotEmpty()
+    @IsString()
+    phone: string;
+
+    @ApiProperty({ example: 'DRIVER' })
+    @IsNotEmpty()
+    @IsString()
+    user_type: string;
+
+    @ApiProperty({ example: 'password123' })
+    @IsNotEmpty()
+    @IsString()
+    password: string;
+}
+
+export class CreateDriverDto {
+    @ApiProperty({ example: 'uuid-user-id', required: false })
+    @IsOptional()
+    @IsUUID()
+    user_id?: string;
+
+    @ApiProperty({ type: CreateUserDto, required: false })
+    @IsOptional()
+    @IsObject()
+    @ValidateNested()
+    @Type(() => CreateUserDto)
+    user?: CreateUserDto;
+
+    @ApiProperty({ example: 'uuid-company-id', required: false })
+    @IsOptional()
+    @IsUUID()
+    company_id?: string;
 
     @ApiProperty({ example: 'DL123456789' })
     @IsNotEmpty()
@@ -67,3 +113,5 @@ export class CreateDriverDto {
     @IsEnum(DriverStatus)
     status?: DriverStatus;
 }
+
+export { CreateUserDto };

@@ -164,6 +164,24 @@ export const useAuth = () => {
     }
   }, [])
 
+  // Get current user's company ID
+  const getCurrentUserCompanyId = useCallback(() => {
+    const user = getCurrentUser()
+    return user?.company_id || null
+  }, [getCurrentUser])
+
+  // Check if current user is B2B or affiliate
+  const isB2BUser = useCallback(() => {
+    const user = getCurrentUser()
+    return user?.user_type === 'b2b' || user?.user_type === 'affiliate'
+  }, [getCurrentUser])
+
+  // Check if current user is admin
+  const isAdminUser = useCallback(() => {
+    const user = getCurrentUser()
+    return user?.user_type === 'admin'
+  }, [getCurrentUser])
+
   // Check if user is authenticated
   const isAuthenticated = useCallback(() => {
     const token = localStorage.getItem('authToken')
@@ -184,6 +202,9 @@ export const useAuth = () => {
     verifyEmail,
     resendVerification,
     getCurrentUser,
+    getCurrentUserCompanyId,
+    isB2BUser,
+    isAdminUser,
     isAuthenticated,
   }
 }

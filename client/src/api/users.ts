@@ -12,6 +12,12 @@ export interface User {
   phone_verified: boolean
   created_at: string
   updated_at: string
+  company?: {
+    id: string
+    company_name: string
+    company_type: string
+    status: string
+  }
 }
 
 export interface CreateUserRequest {
@@ -77,7 +83,7 @@ export interface UserFilters {
 }
 
 class UsersAPI {
-  private readonly basePath = '/api/v1/users'
+  private readonly basePath = '/users'
 
   async getUsers(filters: UserFilters = {}): Promise<UsersResponse> {
     const params = new URLSearchParams()

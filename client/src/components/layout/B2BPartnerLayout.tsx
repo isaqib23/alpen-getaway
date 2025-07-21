@@ -26,13 +26,10 @@ import {
   DirectionsCar,
   People,
   Euro,
-  BarChart,
-  Settings,
   Notifications,
   AccountCircle,
   Logout,
   Business,
-  Support,
 } from '@mui/icons-material'
 
 interface MenuItem {
@@ -80,22 +77,10 @@ const menuItems: MenuItem[] = [
     path: '/partner/earnings',
   },
   {
-    id: 'analytics',
-    title: 'Performance Analytics',
-    icon: BarChart,
-    path: '/partner/analytics',
-  },
-  {
     id: 'profile',
     title: 'Partner Profile',
     icon: Business,
     path: '/partner/profile',
-  },
-  {
-    id: 'support',
-    title: 'Help & Support',
-    icon: Support,
-    path: '/partner/support',
   },
 ]
 
@@ -238,30 +223,6 @@ const B2BPartnerLayout = ({ children }: B2BPartnerLayoutProps) => {
         })}
       </List>
 
-      <Divider sx={{ mt: 2 }} />
-
-      {/* Quick Stats */}
-      <Box sx={{ p: 2, bgcolor: 'grey.50' }}>
-        <Typography variant="caption" color="textSecondary" gutterBottom display="block">
-          Quick Stats
-        </Typography>
-        <Box display="flex" justifyContent="space-between" mb={1}>
-          <Typography variant="body2">Active Bookings</Typography>
-          <Typography variant="body2" fontWeight="bold">12</Typography>
-        </Box>
-        <Box display="flex" justifyContent="space-between" mb={1}>
-          <Typography variant="body2">This Month Revenue</Typography>
-          <Typography variant="body2" fontWeight="bold" color="success.main">
-            €18,420
-          </Typography>
-        </Box>
-        <Box display="flex" justifyContent="space-between">
-          <Typography variant="body2">Pending Payouts</Typography>
-          <Typography variant="body2" fontWeight="bold" color="warning.main">
-            €2,840
-          </Typography>
-        </Box>
-      </Box>
     </Box>
   )
 
@@ -328,12 +289,6 @@ const B2BPartnerLayout = ({ children }: B2BPartnerLayoutProps) => {
                 <AccountCircle fontSize="small" />
               </ListItemIcon>
               Partner Profile
-            </MenuItem>
-            <MenuItem onClick={() => navigate('/partner/settings')}>
-              <ListItemIcon>
-                <Settings fontSize="small" />
-              </ListItemIcon>
-              Settings
             </MenuItem>
             <Divider />
             <MenuItem onClick={handleLogout}>

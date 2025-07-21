@@ -167,6 +167,8 @@ export interface BookingStatsResponse {
     in_progress: number
     assigned: number
     pending?: number
+    in_auction?: number
+    auction_awarded?: number
   }
   byPaymentStatus: {
     refunded: number
@@ -195,6 +197,8 @@ export enum BookingStatus {
   PENDING = 'pending',
   CONFIRMED = 'confirmed',
   ASSIGNED = 'assigned',
+  IN_AUCTION = 'in_auction',
+  AUCTION_AWARDED = 'auction_awarded',
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
@@ -226,7 +230,7 @@ export interface BookingFilters {
 }
 
 class BookingsAPI {
-  private readonly basePath = '/api/v1/bookings'
+  private readonly basePath = '/bookings'
 
   async getBookings(filters: BookingFilters = {}): Promise<BookingsResponse> {
     const params = new URLSearchParams()

@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {Injectable, NotFoundException, ConflictException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Company} from './entities/company.entity';
@@ -14,6 +14,15 @@ export class CompaniesService {
     ) {}
 
     async create(createCompanyDto: CreateCompanyDto): Promise<Company> {
+        // Check if user already has a company
+        const existingCompany = await this.companiesRepository.findOne({
+            where: { user_id: createCompanyDto.user_id }
+        });
+
+        if (existingCompany) {
+            throw new ConflictException(`User with ID ${createCompanyDto.user_id} already has a company associated`);
+        }
+
         const company = this.companiesRepository.create(createCompanyDto);
         return this.companiesRepository.save(company);
     }
@@ -96,5 +105,29 @@ export class CompaniesService {
                 return acc;
             }, {}),
         };
+    }
+
+    // Partner Profile methods
+    async getPartnerProfile(companyId: string): Promise<Company> {
+        if (!companyId) {
+            throw new NotFoundException('Company ID not found in user context');
+        }
+
+        const company = await this.companiesRepository.findOne({
+            where: { id: companyId },
+            relations: ['user', 'cars', 'drivers'],
+        });
+
+        if (!company) {
+            throw new NotFoundException(`Company with ID ${companyId} not found`);
+        }
+
+        return company;
+    }
+
+    async updatePartnerProfile(companyId: string, updateCompanyDto: UpdateCompanyDto): Promise<Company> {
+        const company = await this.getPartnerProfile(companyId);
+        Object.assign(company, updateCompanyDto);
+        return this.companiesRepository.save(company);
     }
 }

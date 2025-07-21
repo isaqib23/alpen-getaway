@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, OneToMany, ManyToOne } from 'typeorm';
 import { DriverStatus, BackgroundCheckStatus } from '@/common/enums';
 import { User } from '@/users/entities/user.entity';
 import { DriverCarAssignment } from './driver-car-assignment.entity';
 import { Booking } from '@/bookings/entities/booking.entity';
 import { Review } from '@/reviews/entities/review.entity';
+import { Company } from '@/companies/entities/company.entity';
 
 @Entity('drivers')
 export class Driver {
@@ -12,6 +13,9 @@ export class Driver {
 
     @Column()
     user_id: string;
+
+    @Column({ nullable: true })
+    company_id: string;
 
     @Column({ unique: true })
     license_number: string;
@@ -68,9 +72,13 @@ export class Driver {
     updated_at: Date;
 
     // Relations
-    @OneToOne(() => User, user => user.driver)
+    @OneToOne(() => User, user => user.driver, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user: User;
+
+    @ManyToOne(() => Company, company => company.drivers, { nullable: true })
+    @JoinColumn({ name: 'company_id' })
+    company: Company;
 
     @OneToMany(() => DriverCarAssignment, assignment => assignment.driver)
     carAssignments: DriverCarAssignment[];

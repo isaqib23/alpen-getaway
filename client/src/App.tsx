@@ -55,6 +55,10 @@ import Payments from './pages/financial/Payments'
 import Commissions from './pages/financial/Commissions'
 import PaymentMethods from './pages/financial/PaymentMethods'
 
+// Earnings Management
+import EarningsManagement from './pages/earnings/EarningsManagement'
+import PayoutManagement from './pages/earnings/PayoutManagement'
+
 // Reviews & Ratings - DISABLED FOR LATER DEVELOPMENT
 // import AllReviews from './pages/reviews/AllReviews'
 // import PendingReviews from './pages/reviews/PendingReviews'
@@ -81,7 +85,7 @@ import PartnerBookings from './pages/partner/Bookings'
 import PartnerAuctions from './pages/partner/Auctions'
 import FleetCars from './pages/partner/FleetCars'
 import FleetDrivers from './pages/partner/FleetDrivers'
-import Earnings from './pages/partner/Earnings'
+import PartnerProfile from './pages/partner/Profile'
 
 // Auth check using real token
 const isAuthenticated = () => {
@@ -506,6 +510,26 @@ function App() {
         )
       } />
 
+      {/* Earnings Management Routes */}
+      <Route path="/financial/earnings" element={
+        authenticated ? (
+          <DashboardLayout>
+            <EarningsManagement />
+          </DashboardLayout>
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+      <Route path="/financial/payouts" element={
+        authenticated ? (
+          <DashboardLayout>
+            <PayoutManagement />
+          </DashboardLayout>
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+
       {/* Reviews & Ratings Routes - DISABLED FOR LATER DEVELOPMENT */}
       {/*
       <Route path="/reviews" element={
@@ -667,7 +691,33 @@ function App() {
         canRedirect ? (
           isB2BUser ? (
             <B2BPartnerLayout>
-              <Earnings />
+              <EarningsManagement />
+            </B2BPartnerLayout>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+      <Route path="/partner/payouts" element={
+        canRedirect ? (
+          isB2BUser ? (
+            <B2BPartnerLayout>
+              <PayoutManagement />
+            </B2BPartnerLayout>
+          ) : (
+            <Navigate to="/dashboard" replace />
+          )
+        ) : (
+          <Navigate to="/auth/login" replace />
+        )
+      } />
+      <Route path="/partner/profile" element={
+        canRedirect ? (
+          isB2BUser ? (
+            <B2BPartnerLayout>
+              <PartnerProfile />
             </B2BPartnerLayout>
           ) : (
             <Navigate to="/dashboard" replace />

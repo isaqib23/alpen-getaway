@@ -20,7 +20,7 @@ export const companiesAPI = {
     if (filters.search) params.append('search', filters.search)
 
     const queryString = params.toString()
-    const url = queryString ? `/api/v1/companies?${queryString}` : '/api/v1/companies'
+    const url = queryString ? `/companies?${queryString}` : '/companies'
     
     const response = await apiClient.get(url)
     return response.data
@@ -28,42 +28,42 @@ export const companiesAPI = {
 
   // Get company by ID
   getCompany: async (id: string): Promise<Company> => {
-    const response = await apiClient.get(`/api/v1/companies/${id}`)
+    const response = await apiClient.get(`/companies/${id}`)
     return response.data
   },
 
   // Create new company
   createCompany: async (data: CreateCompanyRequest): Promise<Company> => {
-    const response = await apiClient.post('/api/v1/companies', data)
+    const response = await apiClient.post('/companies', data)
     return response.data
   },
 
   // Update company
   updateCompany: async (id: string, data: UpdateCompanyRequest): Promise<Company> => {
-    const response = await apiClient.patch(`/api/v1/companies/${id}`, data)
+    const response = await apiClient.patch(`/companies/${id}`, data)
     return response.data
   },
 
   // Delete company
   deleteCompany: async (id: string): Promise<void> => {
-    await apiClient.delete(`/api/v1/companies/${id}`)
+    await apiClient.delete(`/companies/${id}`)
   },
 
   // Approve company
   approveCompany: async (id: string): Promise<Company> => {
-    const response = await apiClient.patch(`/api/v1/companies/${id}/approve`)
+    const response = await apiClient.patch(`/companies/${id}/approve`)
     return response.data
   },
 
   // Reject company
   rejectCompany: async (id: string): Promise<Company> => {
-    const response = await apiClient.patch(`/api/v1/companies/${id}/reject`)
+    const response = await apiClient.patch(`/companies/${id}/reject`)
     return response.data
   },
 
   // Get company statistics
   getCompanyStats: async (): Promise<CompanyStats> => {
-    const response = await apiClient.get('/api/v1/companies/stats')
+    const response = await apiClient.get('/companies/stats')
     return response.data
   },
 
@@ -76,11 +76,22 @@ export const companiesAPI = {
     if (filters.search) params.append('search', filters.search)
 
     const queryString = params.toString()
-    const url = queryString ? `/api/v1/companies/export?${queryString}` : '/api/v1/companies/export'
+    const url = queryString ? `/companies/export?${queryString}` : '/companies/export'
 
     const response = await apiClient.get(url, {
       responseType: 'blob'
     })
+    return response.data
+  },
+
+  // Partner Profile API methods
+  getPartnerProfile: async (): Promise<Company> => {
+    const response = await apiClient.get('/companies/profile/me')
+    return response.data
+  },
+
+  updatePartnerProfile: async (data: UpdateCompanyRequest): Promise<Company> => {
+    const response = await apiClient.patch('/companies/profile/me', data)
     return response.data
   }
 }

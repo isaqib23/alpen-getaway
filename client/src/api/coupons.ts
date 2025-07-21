@@ -165,7 +165,7 @@ export interface CouponUsageFilters {
 }
 
 class CouponsAPI {
-  private readonly basePath = '/api/v1/coupons'
+  private readonly basePath = '/coupons'
 
   async getCoupons(filters: CouponFilters = {}): Promise<CouponsResponse> {
     const params = new URLSearchParams()

@@ -6,7 +6,6 @@ import {
   Commission, 
   PaymentMethodConfig,
   PaymentStats,
-  CommissionStats,
   PaymentFilters,
   CommissionStatus,
   CreatePaymentDto,
@@ -159,7 +158,6 @@ export const usePayments = () => {
 // Commissions hook
 export const useCommissions = () => {
   const [commissions, setCommissions] = useState<Commission[]>([])
-  const [stats, setStats] = useState<CommissionStats | null>(null)
   const [loading, setLoading] = useState(false)
   const [pagination, setPagination] = useState({
     total: 0,
@@ -184,15 +182,6 @@ export const useCommissions = () => {
     }
   }, [showError])
 
-  const fetchCommissionStats = useCallback(async () => {
-    try {
-      const statsData = await financialAPI.getCommissionStats()
-      setStats(statsData)
-    } catch (error: any) {
-      console.error('Error fetching commission stats:', error)
-      showError('Failed to fetch commission statistics')
-    }
-  }, [showError])
 
   const approveCommission = useCallback(async (id: string): Promise<boolean> => {
     try {
@@ -232,11 +221,9 @@ export const useCommissions = () => {
 
   return {
     commissions,
-    stats,
     loading,
     pagination,
     fetchCommissions,
-    fetchCommissionStats,
     approveCommission,
     payCommission
   }

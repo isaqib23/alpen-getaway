@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react'
 import {
   Box,
@@ -35,7 +36,6 @@ import {
   Skeleton,
 } from '@mui/material'
 import {
-  Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   Search as SearchIcon,
@@ -51,10 +51,20 @@ import {
   AttachMoney as MoneyIcon,
 } from '@mui/icons-material'
 import { bookingsAPI, Booking, BookingFilters, BookingStatus, PaymentStatus, BookingStatsResponse } from '../../api/bookings'
+import { useUsers } from '../../hooks/useUsers'
+import { useDrivers } from '../../hooks/useDrivers'
+import { useCars } from '../../hooks/useCars'
 
 // Interface removed as it's imported from API
 
 const AllBookings = () => {
+  const { users, fetchUsers } = useUsers()
+  const { data: driversData } = useDrivers()
+  const { cars } = useCars()
+  
+  // Extract drivers from hook data and ensure it's an array
+  const drivers = Array.isArray(driversData?.data?.data) ? driversData.data.data : []
+  const carsArray = Array.isArray(cars) ? cars : []
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(0)
@@ -71,6 +81,9 @@ const AllBookings = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [openViewDialog, setOpenViewDialog] = useState(false)
   const [openAssignDialog, setOpenAssignDialog] = useState(false)
+  const [selectedDriverId, setSelectedDriverId] = useState('')
+  const [selectedCarId, setSelectedCarId] = useState('')
+  const [assignmentNotes, setAssignmentNotes] = useState('')
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [stats, setStats] = useState<BookingStatsResponse | null>(null)
   const [toast, setToast] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
@@ -78,11 +91,27 @@ const AllBookings = () => {
     message: '',
     severity: 'success'
   })
+  
+  // Form data for new booking
+  const [bookingFormData, setBookingFormData] = useState({
+    user_id: '',
+    passenger_name: '',
+    passenger_phone: '',
+    passenger_count: 1,
+    pickup_address: '',
+    dropoff_address: '',
+    pickup_datetime: '',
+    base_amount: 0,
+    total_amount: 0,
+    special_requirements: '',
+    notes: ''
+  })
 
   // Load data on component mount and when filters change
   useEffect(() => {
     loadBookings()
     loadStats()
+    fetchUsers() // Fetch users for the dropdown
   }, [page, rowsPerPage, searchTerm, statusFilter, typeFilter, paymentStatusFilter, dateFilter])
 
   const showToast = (message: string, severity: 'success' | 'error' = 'success') => {
@@ -172,21 +201,29 @@ const AllBookings = () => {
   }
 
   const handleConfirmAssignment = async () => {
-    if (!selectedBooking) return
+    if (!selectedBooking || !selectedDriverId || !selectedCarId) {
+      showToast('Please select both driver and vehicle', 'error')
+      return
+    }
     
     try {
       setActionLoading('assign')
-      // TODO: Get actual driver and car IDs from form
       await bookingsAPI.assignDriverAndCar(selectedBooking.id, {
-        driver_id: 'driver1', // This should come from form
-        car_id: 'car1' // This should come from form
+        driver_id: selectedDriverId,
+        car_id: selectedCarId
       })
       showToast('Driver and car assigned successfully')
       loadBookings()
       setOpenAssignDialog(false)
-    } catch (error) {
+      // Reset form
+      setSelectedDriverId('')
+      setSelectedCarId('')
+      setAssignmentNotes('')
+    } catch (error: any) {
       console.error('Failed to assign driver and car:', error)
-      showToast('Failed to assign driver and car', 'error')
+      // Show backend error message if available
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to assign driver and car'
+      showToast(errorMessage, 'error')
     } finally {
       setActionLoading(null)
     }
@@ -233,30 +270,65 @@ const AllBookings = () => {
   const handleCreateBooking = async () => {
     try {
       setActionLoading('create')
-      // TODO: Get actual booking data from form
+      
+      if (!bookingFormData.user_id) {
+        showToast('Please select a user for this booking', 'error')
+        return
+      }
+      
       const bookingData = {
-        user_id: 'user1', // This should come from form
-        route_fare_id: 'route1', // This should come from form
-        passenger_name: 'John Doe', // This should come from form
-        passenger_phone: '+1234567890', // This should come from form
-        passenger_count: 1,
-        pickup_datetime: new Date().toISOString(),
-        pickup_address: 'Pickup Location',
-        dropoff_address: 'Dropoff Location',
+        user_id: bookingFormData.user_id,
+        route_fare_id: 'route1', // TODO: Add route selection
+        passenger_name: bookingFormData.passenger_name,
+        passenger_phone: bookingFormData.passenger_phone,
+        passenger_count: bookingFormData.passenger_count,
+        pickup_datetime: bookingFormData.pickup_datetime,
+        pickup_address: bookingFormData.pickup_address,
+        dropoff_address: bookingFormData.dropoff_address,
         fare_used: 'sale_fare' as any,
-        base_amount: 100,
-        total_amount: 100,
+        base_amount: bookingFormData.base_amount,
+        total_amount: bookingFormData.total_amount,
+        special_instructions: bookingFormData.special_requirements,
       }
       await bookingsAPI.createBooking(bookingData)
       showToast('Booking created successfully')
       loadBookings()
       setOpenAddDialog(false)
+      // Reset form
+      setBookingFormData({
+        user_id: '',
+        passenger_name: '',
+        passenger_phone: '',
+        passenger_count: 1,
+        pickup_address: '',
+        dropoff_address: '',
+        pickup_datetime: '',
+        base_amount: 0,
+        total_amount: 0,
+        special_requirements: '',
+        notes: ''
+      })
     } catch (error) {
       console.error('Failed to create booking:', error)
       showToast('Failed to create booking', 'error')
     } finally {
       setActionLoading(null)
     }
+  }
+
+  const handleFormChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.type === 'number' ? parseFloat(event.target.value) || 0 : event.target.value
+    setBookingFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleFormSelectChange = (field: string) => (event: any) => {
+    setBookingFormData(prev => ({
+      ...prev,
+      [field]: event.target.value
+    }))
   }
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -397,13 +469,13 @@ const AllBookings = () => {
           >
             Export
           </Button>
-          <Button
+          {/* <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={handleAddBooking}
           >
             New Booking
-          </Button>
+          </Button> */}
         </Box>
       </Box>
 
@@ -695,13 +767,13 @@ const AllBookings = () => {
                           <AssignmentIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      <IconButton
+                      {/* <IconButton
                         size="small"
                         onClick={() => handleEditBooking(booking)}
                         color="primary"
                       >
                         <EditIcon fontSize="small" />
-                      </IconButton>
+                      </IconButton> */}
                       <IconButton
                         size="small"
                         onClick={() => handleDeleteBooking(booking)}
@@ -734,67 +806,107 @@ const AllBookings = () => {
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>Customer Information</Typography>
-              <TextField fullWidth label="Customer Name" sx={{ mb: 2 }} />
-              <TextField fullWidth label="Customer Email" type="email" sx={{ mb: 2 }} />
-              <TextField fullWidth label="Customer Phone" sx={{ mb: 2 }} />
-              <TextField
-                fullWidth
-                select
-                label="Booking Type"
-                defaultValue="direct"
-                sx={{ mb: 2 }}
-              >
-                <MenuItem value="direct">Direct</MenuItem>
-                <MenuItem value="affiliate">Affiliate</MenuItem>
-                <MenuItem value="b2b">B2B</MenuItem>
-              </TextField>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel>Select User</InputLabel>
+                <Select
+                  value={bookingFormData.user_id}
+                  onChange={handleFormSelectChange('user_id')}
+                  label="Select User"
+                >
+                  {users.map((user) => (
+                    <MenuItem key={user.id} value={user.id}>
+                      {user.first_name} {user.last_name} - {user.email}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField 
+                fullWidth 
+                label="Passenger Name" 
+                value={bookingFormData.passenger_name}
+                onChange={handleFormChange('passenger_name')}
+                sx={{ mb: 2 }} 
+              />
+              <TextField 
+                fullWidth 
+                label="Passenger Phone" 
+                value={bookingFormData.passenger_phone}
+                onChange={handleFormChange('passenger_phone')}
+                sx={{ mb: 2 }} 
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>Route Information</Typography>
-              <TextField fullWidth label="From Location" sx={{ mb: 2 }} />
-              <TextField fullWidth label="To Location" sx={{ mb: 2 }} />
+              <TextField 
+                fullWidth 
+                label="From Location" 
+                value={bookingFormData.pickup_address}
+                onChange={handleFormChange('pickup_address')}
+                sx={{ mb: 2 }} 
+              />
+              <TextField 
+                fullWidth 
+                label="To Location" 
+                value={bookingFormData.dropoff_address}
+                onChange={handleFormChange('dropoff_address')}
+                sx={{ mb: 2 }} 
+              />
               <TextField
                 fullWidth
                 label="Pickup Date & Time"
                 type="datetime-local"
+                value={bookingFormData.pickup_datetime}
+                onChange={handleFormChange('pickup_datetime')}
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
               />
-              <TextField
-                fullWidth
-                select
-                label="Vehicle Type"
-                defaultValue="economy"
-                sx={{ mb: 2 }}
-              >
-                <MenuItem value="economy">Economy</MenuItem>
-                <MenuItem value="business">Business</MenuItem>
-                <MenuItem value="luxury">Luxury</MenuItem>
-                <MenuItem value="van">Van</MenuItem>
-              </TextField>
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>Booking Details</Typography>
-              <TextField fullWidth label="Passenger Count" type="number" defaultValue={1} sx={{ mb: 2 }} />
-              <TextField fullWidth label="Luggage Count" type="number" defaultValue={0} sx={{ mb: 2 }} />
-              <TextField fullWidth label="Quoted Fare (€)" type="number" sx={{ mb: 2 }} />
+              <TextField 
+                fullWidth 
+                label="Passenger Count" 
+                type="number" 
+                value={bookingFormData.passenger_count}
+                onChange={handleFormChange('passenger_count')}
+                sx={{ mb: 2 }} 
+              />
+              <TextField 
+                fullWidth 
+                label="Base Amount (€)" 
+                type="number" 
+                value={bookingFormData.base_amount}
+                onChange={handleFormChange('base_amount')}
+                sx={{ mb: 2 }} 
+              />
+              <TextField 
+                fullWidth 
+                label="Total Amount (€)" 
+                type="number" 
+                value={bookingFormData.total_amount}
+                onChange={handleFormChange('total_amount')}
+                sx={{ mb: 2 }} 
+              />
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>Additional Options</Typography>
-              <TextField
-                fullWidth
-                select
-                label="Payment Status"
-                defaultValue="pending"
-                sx={{ mb: 2 }}
-              >
-                <MenuItem value="pending">Pending</MenuItem>
-                <MenuItem value="paid">Paid</MenuItem>
-                <MenuItem value="failed">Failed</MenuItem>
-                <MenuItem value="refunded">Refunded</MenuItem>
-              </TextField>
-              <TextField fullWidth label="Special Requirements" multiline rows={2} sx={{ mb: 2 }} />
-              <TextField fullWidth label="Notes" multiline rows={2} />
+              <TextField 
+                fullWidth 
+                label="Special Requirements" 
+                multiline 
+                rows={2} 
+                value={bookingFormData.special_requirements}
+                onChange={handleFormChange('special_requirements')}
+                sx={{ mb: 2 }} 
+              />
+              <TextField 
+                fullWidth 
+                label="Notes" 
+                multiline 
+                rows={2} 
+                value={bookingFormData.notes}
+                onChange={handleFormChange('notes')}
+              />
             </Grid>
           </Grid>
         </DialogContent>
@@ -1071,25 +1183,45 @@ const AllBookings = () => {
                     fullWidth
                     select
                     label="Select Driver"
-                    defaultValue=""
+                    value={selectedDriverId}
+                    onChange={(e) => setSelectedDriverId(e.target.value)}
                     sx={{ mb: 2 }}
+                    required
                   >
-                    <MenuItem value="driver1">John Smith (★4.8) - Available</MenuItem>
-                    <MenuItem value="driver2">Jane Doe (★4.9) - Available</MenuItem>
-                    <MenuItem value="driver3">Mike Johnson (★4.7) - Available</MenuItem>
-                    <MenuItem value="driver4">Sarah Wilson (★4.6) - Available</MenuItem>
+                    <MenuItem value="">
+                      <em>Select a driver...</em>
+                    </MenuItem>
+                    {drivers
+                      .filter(driver => driver.status === 'active')
+                      .map((driver) => (
+                        <MenuItem key={driver.id} value={driver.id}>
+                          {driver.user?.first_name || 'Unknown'} {driver.user?.last_name || 'Driver'} 
+                          (★{parseFloat(driver.average_rating || '0').toFixed(1)}) 
+                          - {driver.status}
+                        </MenuItem>
+                      ))
+                    }
                   </TextField>
                   <TextField
                     fullWidth
                     select
                     label="Select Vehicle"
-                    defaultValue=""
+                    value={selectedCarId}
+                    onChange={(e) => setSelectedCarId(e.target.value)}
                     sx={{ mb: 2 }}
+                    required
                   >
-                    <MenuItem value="car1">Mercedes E-Class (ABC-123)</MenuItem>
-                    <MenuItem value="car2">BMW 5 Series (DEF-456)</MenuItem>
-                    <MenuItem value="car3">Audi A6 (GHI-789)</MenuItem>
-                    <MenuItem value="car4">VW Passat (JKL-012)</MenuItem>
+                    <MenuItem value="">
+                      <em>Select a vehicle...</em>
+                    </MenuItem>
+                    {carsArray
+                      .filter(car => car.status === 'active')
+                      .map((car) => (
+                        <MenuItem key={car.id} value={car.id}>
+                          {car.make} {car.model} ({car.license_plate}) - {car.status}
+                        </MenuItem>
+                      ))
+                    }
                   </TextField>
                   <TextField
                     fullWidth
@@ -1097,6 +1229,8 @@ const AllBookings = () => {
                     multiline
                     rows={3}
                     placeholder="Any special instructions for the driver..."
+                    value={assignmentNotes}
+                    onChange={(e) => setAssignmentNotes(e.target.value)}
                   />
                 </Grid>
               </Grid>

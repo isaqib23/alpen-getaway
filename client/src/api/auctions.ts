@@ -41,7 +41,7 @@ export interface AuctionBid {
   bidder_user_id: string
   bid_amount: number
   estimated_completion_time?: string
-  additional_services?: string
+  additional_services?: string[] // Server returns array of strings
   notes?: string
   proposed_driver_id?: string
   proposed_car_id?: string
@@ -112,7 +112,7 @@ export interface CreateBidData {
   auction_id: string
   bid_amount: number
   estimated_completion_time?: string
-  additional_services?: string
+  additional_services?: string[] // Server expects array of strings
   notes?: string
   proposed_driver_id?: string
   proposed_car_id?: string
@@ -153,41 +153,41 @@ export const auctionsApi = {
       })
     }
     const queryString = params.toString()
-    const response = await apiClient.get(`/api/v1/auctions${queryString ? `?${queryString}` : ''}`)
+    const response = await apiClient.get(`/auctions${queryString ? `?${queryString}` : ''}`)
     return response.data
   },
 
   getAuctionById: async (id: string): Promise<Auction> => {
-    return apiClient.get(`/api/v1/auctions/${id}`)
+    return apiClient.get(`/auctions/${id}`)
   },
 
   createAuction: async (data: CreateAuctionData): Promise<Auction> => {
-    return apiClient.post('/api/v1/auctions', data)
+    return apiClient.post('/auctions', data)
   },
 
   updateAuction: async (id: string, data: UpdateAuctionData): Promise<Auction> => {
-    return apiClient.patch(`/api/v1/auctions/${id}`, data)
+    return apiClient.patch(`/auctions/${id}`, data)
   },
 
   deleteAuction: async (id: string): Promise<void> => {
-    return apiClient.delete(`/api/v1/auctions/${id}`)
+    return apiClient.delete(`/auctions/${id}`)
   },
 
   // Auction Control
   startAuction: async (id: string): Promise<Auction> => {
-    return apiClient.post(`/api/v1/auctions/${id}/start`)
+    return apiClient.post(`/auctions/${id}/start`)
   },
 
   closeAuction: async (id: string): Promise<Auction> => {
-    return apiClient.post(`/api/v1/auctions/${id}/close`)
+    return apiClient.post(`/auctions/${id}/close`)
   },
 
   cancelAuction: async (id: string, reason?: string): Promise<Auction> => {
-    return apiClient.post(`/api/v1/auctions/${id}/cancel`, { reason })
+    return apiClient.post(`/auctions/${id}/cancel`, { reason })
   },
 
   awardAuction: async (id: string, data: AwardAuctionData): Promise<Auction> => {
-    return apiClient.post(`/api/v1/auctions/${id}/award`, data)
+    return apiClient.post(`/auctions/${id}/award`, data)
   },
 
   // Bid Management
@@ -201,7 +201,7 @@ export const auctionsApi = {
       })
     }
     const queryString = params.toString()
-    const response = await apiClient.get(`/api/v1/auctions/bids/search${queryString ? `?${queryString}` : ''}`)
+    const response = await apiClient.get(`/auctions/bids/search${queryString ? `?${queryString}` : ''}`)
     return response.data
   },
 
@@ -215,25 +215,25 @@ export const auctionsApi = {
       })
     }
     const queryString = params.toString()
-    const response = await apiClient.get(`/api/v1/auctions/${auctionId}/bids${queryString ? `?${queryString}` : ''}`)
+    const response = await apiClient.get(`/auctions/${auctionId}/bids${queryString ? `?${queryString}` : ''}`)
     return response.data
   },
 
   createBid: async (data: CreateBidData): Promise<AuctionBid> => {
-    return apiClient.post('/api/v1/auctions/bids', data)
+    return apiClient.post('/auctions/bids', data)
   },
 
   updateBid: async (id: string, data: Partial<CreateBidData>): Promise<AuctionBid> => {
-    return apiClient.patch(`/api/v1/auctions/bids/${id}`, data)
+    return apiClient.patch(`/auctions/bids/${id}`, data)
   },
 
   withdrawBid: async (id: string): Promise<AuctionBid> => {
-    return apiClient.post(`/api/v1/auctions/bids/${id}/withdraw`)
+    return apiClient.post(`/auctions/bids/${id}/withdraw`)
   },
 
   // Stats and Analytics
   getAuctionStats: async (): Promise<AuctionStats> => {
-    return apiClient.get('/api/v1/auctions/stats')
+    return apiClient.get('/auctions/stats')
   },
 
   getAuctionLiveStatus: async (id: string): Promise<{
@@ -244,7 +244,36 @@ export const auctionsApi = {
     highest_bid_amount: number
     is_expired: boolean
   }> => {
-    return apiClient.get(`/api/v1/auctions/${id}/live-status`)
+    return apiClient.get(`/auctions/${id}/live-status`)
+  },
+
+  // B2B Company specific endpoints
+  getCompanyAuctions: async (companyId: string, filters?: AuctionFilters): Promise<AuctionsResponse> => {
+    const params = new URLSearchParams()
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined) {
+          params.append(key, value.toString())
+        }
+      })
+    }
+    const queryString = params.toString()
+    const response = await apiClient.get(`/auctions/company/${companyId}/auctions${queryString ? `?${queryString}` : ''}`)
+    return response.data
+  },
+
+  getCompanyBids: async (companyId: string, filters?: BidFilters): Promise<{ data: AuctionBid[], total: number, page: number, limit: number, totalPages: number }> => {
+    const params = new URLSearchParams()
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined) {
+          params.append(key, value.toString())
+        }
+      })
+    }
+    const queryString = params.toString()
+    const response = await apiClient.get(`/auctions/company/${companyId}/bids${queryString ? `?${queryString}` : ''}`)
+    return response.data
   },
 }
 

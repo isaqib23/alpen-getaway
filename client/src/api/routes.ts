@@ -11,46 +11,46 @@ export const routesAPI = {
         }
       })
     }
-    const url = `/api/v1/route-fares?${params.toString()}`
+    const url = `/route-fares?${params.toString()}`
     console.log('🌐 routesAPI.getAll calling:', url)
     const response = await apiClient.get(url)
     return response.data
   },
 
   getById: async (id: string): Promise<RouteFare> => {
-    const response = await apiClient.get(`/api/v1/route-fares/${id}`)
+    const response = await apiClient.get(`/route-fares/${id}`)
     return response.data
   },
 
   create: async (routeData: CreateRouteFareRequest): Promise<RouteFare> => {
-    const response = await apiClient.post('/api/v1/route-fares', routeData)
+    const response = await apiClient.post('/route-fares', routeData)
     return response.data
   },
 
   update: async (id: string, routeData: Partial<CreateRouteFareRequest>): Promise<RouteFare> => {
-    const url = `/api/v1/route-fares/${id}`
+    const url = `/route-fares/${id}`
     console.log('🌐 routesAPI.update calling:', url, 'with ID type:', typeof id)
     const response = await apiClient.patch(url, routeData)
     return response.data
   },
 
   delete: async (id: string) => {
-    const response = await apiClient.delete(`/api/v1/route-fares/${id}`)
+    const response = await apiClient.delete(`/route-fares/${id}`)
     return response.data
   },
 
   getStatistics: async () => {
-    const response = await apiClient.get('/api/v1/route-fares/stats')
+    const response = await apiClient.get('/route-fares/stats')
     return response.data
   },
 
   getLocations: async () => {
-    const response = await apiClient.get('/api/v1/route-fares/locations')
+    const response = await apiClient.get('/route-fares/locations')
     return response.data
   },
 
   getVehicles: async () => {
-    const response = await apiClient.get('/api/v1/route-fares/vehicles')
+    const response = await apiClient.get('/route-fares/vehicles')
     return response.data
   },
 
@@ -61,12 +61,12 @@ export const routesAPI = {
     if (searchData.vehicle) {
       params.append('vehicle', searchData.vehicle)
     }
-    const response = await apiClient.get(`/api/v1/route-fares/search?${params.toString()}`)
+    const response = await apiClient.get(`/route-fares/search?${params.toString()}`)
     return response.data
   },
 
   importRoutes: async (routesData: CreateRouteFareRequest[]) => {
-    const response = await apiClient.post('/api/v1/route-fares/import', routesData)
+    const response = await apiClient.post('/route-fares/import', routesData)
     return response.data
   },
 

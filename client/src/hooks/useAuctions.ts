@@ -15,13 +15,14 @@ export const useAuctions = (filters?: AuctionFilters) => {
       setLoading(true)
       setError(null)
       const response: AuctionsResponse = await auctionsApi.getAuctions(filters)
-      setAuctions(response.data)
-      setTotal(response.total)
-      setPage(response.page)
-      setLimit(response.limit)
-      setTotalPages(response.totalPages)
+      setAuctions(response.data || [])
+      setTotal(response.total || 0)
+      setPage(response.page || 1)
+      setLimit(response.limit || 10)
+      setTotalPages(response.totalPages || 0)
     } catch (err: any) {
       setError(err.message || 'Failed to fetch auctions')
+      setAuctions([])
       console.error('Error fetching auctions:', err)
     } finally {
       setLoading(false)
@@ -98,10 +99,11 @@ export const useAuctionBids = (auctionId: string, filters?: BidFilters) => {
       setLoading(true)
       setError(null)
       const response = await auctionsApi.getAuctionBids(auctionId, filters)
-      setBids(response.data)
-      setTotal(response.total)
+      setBids(response.data || [])
+      setTotal(response.total || 0)
     } catch (err: any) {
       setError(err.message || 'Failed to fetch bids')
+      setBids([])
       console.error('Error fetching bids:', err)
     } finally {
       setLoading(false)

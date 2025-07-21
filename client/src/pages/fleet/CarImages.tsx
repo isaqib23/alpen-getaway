@@ -29,10 +29,8 @@ import {
   Visibility,
   PhotoCamera,
   CloudUpload,
-  GetApp,
   CheckCircle,
   Warning,
-  Image,
   Collections,
 } from '@mui/icons-material'
 import { useCarImages } from '../../hooks/useCarImages'
@@ -70,9 +68,15 @@ const CarImages = () => {
 
   const {
     images,
-    stats,
     cars,
-    loading
+    loading,
+    fetchImages,
+    createImage,
+    updateImage,
+    deleteImage,
+    approveImage,
+    rejectImage,
+    bulkUpload
   } = useCarImages()
 
   // Constants
@@ -89,8 +93,9 @@ const CarImages = () => {
   const filteredImages = images.filter(image => {
     const matchesSearch = searchTerm === '' || 
       (image.alt_text && image.alt_text.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (image.carDetails?.make?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (image.carDetails?.model?.toLowerCase().includes(searchTerm.toLowerCase()))
+      (image.car?.make?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (image.car?.model?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (image.car?.license_plate?.toLowerCase().includes(searchTerm.toLowerCase()))
     
     const matchesStatus = statusFilter === 'all' || (image.status && image.status === statusFilter)
     const matchesType = typeFilter === 'all' || image.image_type === typeFilter
@@ -130,6 +135,18 @@ const CarImages = () => {
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size cannot exceed 5MB')
+        return
+      }
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file')
+        return
+      }
+      
       setFormData({ ...formData, file })
     }
   }
@@ -140,21 +157,34 @@ const CarImages = () => {
     setUploading(true)
     setUploadProgress(0)
 
-    // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setUploading(false)
-          setUploadDialogOpen(false)
-          return 100
-        }
-        return prev + 10
-      })
-    }, 200)
+    try {
+      const success = editDialogOpen
+        ? await updateImage(selectedImage?.id || '', {
+            image_type: formData.image_type,
+            alt_text: formData.alt_text,
+            is_primary: formData.is_primary
+          })
+        : await createImage(
+            {
+              carId: formData.carId,
+              image_type: formData.image_type,
+              alt_text: formData.alt_text,
+              is_primary: formData.is_primary,
+              file: formData.file
+            },
+            setUploadProgress
+          )
 
-    console.log('Uploading image:', formData)
-    // Add actual upload logic here
+      if (success) {
+        setUploadDialogOpen(false)
+        setEditDialogOpen(false)
+        fetchImages() // Refresh the list
+      }
+    } catch (error) {
+      console.error('Upload failed:', error)
+    } finally {
+      setUploading(false)
+    }
   }
 
   const handleDelete = (image: CarImageType) => {
@@ -162,10 +192,12 @@ const CarImages = () => {
     setDeleteDialogOpen(true)
   }
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (imageToDelete) {
-      console.log('Deleting image:', imageToDelete.id)
-      // Add API call here
+      const success = await deleteImage(imageToDelete.id)
+      if (success) {
+        fetchImages() // Refresh the list
+      }
       setDeleteDialogOpen(false)
       setImageToDelete(null)
     }
@@ -175,19 +207,47 @@ const CarImages = () => {
     setBulkUploadOpen(true)
   }
 
-  const handleExport = () => {
-    console.log('Exporting image data...')
-    // Add export logic here
+  const handleBulkFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || [])
+    if (files.length === 0) return
+
+    if (!formData.carId) {
+      alert('Please select a car first')
+      return
+    }
+
+    // Validate each file
+    for (const file of files) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`File ${file.name} exceeds 5MB limit`)
+        return
+      }
+      if (!file.type.startsWith('image/')) {
+        alert(`File ${file.name} is not a valid image file`)
+        return
+      }
+    }
+    
+    const success = await bulkUpload(formData.carId, files)
+    if (success) {
+      setBulkUploadOpen(false)
+      fetchImages() // Refresh the list
+    }
   }
 
-  const handleApprove = (id: string) => {
-    console.log('Approving image:', id)
-    // Add API call here
+
+  const handleApprove = async (id: string) => {
+    const success = await approveImage(id)
+    if (success) {
+      fetchImages() // Refresh the list
+    }
   }
 
-  const handleReject = (id: string) => {
-    console.log('Rejecting image:', id)
-    // Add API call here
+  const handleReject = async (id: string) => {
+    const success = await rejectImage(id)
+    if (success) {
+      fetchImages() // Refresh the list
+    }
   }
 
   const getStatusColor = (status: string) => {
@@ -207,6 +267,17 @@ const CarImages = () => {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
+  const getImageUrl = (imageUrl: string) => {
+    // If the image URL is relative, prepend the backend server URL
+    if (imageUrl.startsWith('/uploads/')) {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3010'
+      // Remove /api/v1 suffix if present since uploads are served from root
+      const serverUrl = baseUrl.replace('/api/v1', '')
+      return `${serverUrl}${imageUrl}`
+    }
+    return imageUrl
+  }
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
@@ -214,9 +285,6 @@ const CarImages = () => {
           Car Images Management
         </Typography>
         <Box display="flex" gap={2}>
-          <Button variant="outlined" startIcon={<GetApp />} onClick={handleExport}>
-            Export
-          </Button>
           <Button variant="outlined" startIcon={<Collections />} onClick={handleBulkUpload}>
             Bulk Upload
           </Button>
@@ -226,77 +294,6 @@ const CarImages = () => {
         </Box>
       </Box>
 
-      {/* Summary Cards */}
-      <Grid container spacing={3} mb={3}>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box>
-                  <Typography color="textSecondary" gutterBottom>
-                    Total Images
-                  </Typography>
-                  <Typography variant="h4">
-                    {stats?.total || 0}
-                  </Typography>
-                </Box>
-                <Image sx={{ fontSize: 40, color: 'primary.main', opacity: 0.7 }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box>
-                  <Typography color="textSecondary" gutterBottom>
-                    Approved
-                  </Typography>
-                  <Typography variant="h4" color="success.main">
-                    {stats?.approved || 0}
-                  </Typography>
-                </Box>
-                <CheckCircle sx={{ fontSize: 40, color: 'success.main', opacity: 0.7 }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box>
-                  <Typography color="textSecondary" gutterBottom>
-                    Pending Review
-                  </Typography>
-                  <Typography variant="h4" color="warning.main">
-                    {stats?.pending || 0}
-                  </Typography>
-                </Box>
-                <Warning sx={{ fontSize: 40, color: 'warning.main', opacity: 0.7 }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <Card>
-            <CardContent>
-              <Box display="flex" alignItems="center" justifyContent="space-between">
-                <Box>
-                  <Typography color="textSecondary" gutterBottom>
-                    Total Storage
-                  </Typography>
-                  <Typography variant="h4" color="info.main">
-                    {formatFileSize(stats?.totalSize || 0)}
-                  </Typography>
-                </Box>
-                <PhotoCamera sx={{ fontSize: 40, color: 'info.main', opacity: 0.7 }} />
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
 
       {/* Filters */}
       <Paper sx={{ p: 2, mb: 3 }}>
@@ -401,20 +398,20 @@ const CarImages = () => {
               <CardMedia
                 component="img"
                 height="200"
-                image={image.image_url}
+                image={getImageUrl(image.image_url)}
                 alt={image.alt_text || 'Car image'}
               />
               <CardContent>
                 <Box display="flex" justifyContent="space-between" alignItems="start" mb={1}>
                   <Typography variant="h6" component="div" noWrap>
-                    {image.carDetails?.make || 'Unknown'} {image.carDetails?.model || 'Model'}
+                    {image.car?.make || 'Unknown'} {image.car?.model || 'Model'}
                   </Typography>
                   {image.is_primary && (
                     <Chip label="Primary" size="small" color="primary" />
                   )}
                 </Box>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
-                  {image.carDetails?.licensePlate || 'N/A'}
+                  {image.car?.license_plate || 'N/A'}
                 </Typography>
                 <Typography variant="body2" gutterBottom noWrap>
                   {image.alt_text || 'No description'}
@@ -434,7 +431,7 @@ const CarImages = () => {
                   )}
                 </Box>
                 <Typography variant="caption" color="textSecondary">
-                  {image.fileSize ? formatFileSize(image.fileSize) : 'Unknown size'} • {image.dimensions ? `${image.dimensions.width}x${image.dimensions.height}` : 'Unknown dimensions'}
+                  {image.file_size ? formatFileSize(image.file_size) : 'Unknown size'} • {(image.width && image.height) ? `${image.width}x${image.height}` : 'Unknown dimensions'}
                 </Typography>
               </CardContent>
               <CardActions>
@@ -473,21 +470,21 @@ const CarImages = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <img
-                  src={selectedImage.image_url}
+                  src={getImageUrl(selectedImage.image_url)}
                   alt={selectedImage.alt_text || 'Car image'}
                   style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom>Image Information</Typography>
-                <Typography><strong>Car:</strong> {selectedImage.carDetails?.make || 'Unknown'} {selectedImage.carDetails?.model || 'Model'}</Typography>
-                <Typography><strong>License Plate:</strong> {selectedImage.carDetails?.licensePlate || 'N/A'}</Typography>
+                <Typography><strong>Car:</strong> {selectedImage.car?.make || 'Unknown'} {selectedImage.car?.model || 'Model'}</Typography>
+                <Typography><strong>License Plate:</strong> {selectedImage.car?.license_plate || 'N/A'}</Typography>
                 <Typography><strong>Type:</strong> {selectedImage.image_type}</Typography>
                 <Typography><strong>Description:</strong> {selectedImage.alt_text || 'No description'}</Typography>
                 {selectedImage.status && <Typography><strong>Status:</strong> {selectedImage.status}</Typography>}
                 <Typography><strong>Primary Image:</strong> {selectedImage.is_primary ? 'Yes' : 'No'}</Typography>
-                {selectedImage.fileSize && <Typography><strong>File Size:</strong> {formatFileSize(selectedImage.fileSize)}</Typography>}
-                {selectedImage.dimensions && <Typography><strong>Dimensions:</strong> {selectedImage.dimensions.width}x{selectedImage.dimensions.height}</Typography>}
+                {selectedImage.file_size && <Typography><strong>File Size:</strong> {formatFileSize(selectedImage.file_size)}</Typography>}
+                {(selectedImage.width && selectedImage.height) && <Typography><strong>Dimensions:</strong> {selectedImage.width}x{selectedImage.height}</Typography>}
                 <Typography><strong>Created:</strong> {new Date(selectedImage.created_at).toLocaleString()}</Typography>
               </Grid>
             </Grid>
@@ -600,14 +597,31 @@ const CarImages = () => {
         <DialogTitle>Bulk Image Upload</DialogTitle>
         <DialogContent>
           <Alert severity="info" sx={{ mb: 3 }}>
-            Select multiple images to upload. Make sure each image is named with the car ID and image type (e.g., car-1-exterior.jpg).
+            Select multiple images to upload (max 5MB each). All images will be uploaded as 'exterior' type by default.
           </Alert>
+          <Box sx={{ mb: 3 }}>
+            <TextField
+              fullWidth
+              select
+              label="Select Car"
+              value={formData.carId}
+              onChange={(e) => setFormData({...formData, carId: e.target.value})}
+              sx={{ mb: 2 }}
+            >
+              {mockCars.map((car) => (
+                <MenuItem key={car.id} value={car.id}>
+                  {car.make} {car.model} - {car.licensePlate}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
           <input
             accept="image/*"
             style={{ display: 'none' }}
             id="bulk-upload"
             type="file"
             multiple
+            onChange={handleBulkFileSelect}
           />
           <label htmlFor="bulk-upload">
             <Button variant="outlined" component="span" startIcon={<Collections />} fullWidth>
@@ -617,7 +631,6 @@ const CarImages = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setBulkUploadOpen(false)}>Cancel</Button>
-          <Button variant="contained">Start Bulk Upload</Button>
         </DialogActions>
       </Dialog>
 
@@ -626,7 +639,7 @@ const CarImages = () => {
         <DialogTitle>Delete Image</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete this image for "{imageToDelete?.carDetails?.make || 'Unknown'} {imageToDelete?.carDetails?.model || 'Model'}"? This action cannot be undone.
+            Are you sure you want to delete this image for "{imageToDelete?.car?.make || 'Unknown'} {imageToDelete?.car?.model || 'Model'}"? This action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>

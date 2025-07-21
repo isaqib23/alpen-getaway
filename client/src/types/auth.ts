@@ -13,6 +13,7 @@ export interface User {
   first_name: string
   last_name: string
   user_type: UserType
+  company_id?: string
   company?: {
     id: string
     name: string

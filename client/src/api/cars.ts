@@ -8,6 +8,7 @@ export interface Car {
   color: string
   license_plate: string
   category_id: string
+  company_id?: string
   seats: number
   status: 'active' | 'maintenance' | 'inactive'
   has_wifi: boolean
@@ -123,32 +124,32 @@ export const carsAPI = {
         }
       })
     }
-    return apiClient.get(`/api/v1/cars?${params.toString()}`)
+    return apiClient.get(`/cars?${params.toString()}`)
   },
 
   getById: async (id: string): Promise<Car> => {
-    return apiClient.get(`/api/v1/cars/${id}`)
+    return apiClient.get(`/cars/${id}`)
   },
 
   create: async (carData: CreateCarRequest): Promise<Car> => {
-    return apiClient.post('/api/v1/cars', carData)
+    return apiClient.post('/cars', carData)
   },
 
   update: async (id: string, carData: Partial<CreateCarRequest>): Promise<Car> => {
-    return apiClient.patch(`/api/v1/cars/${id}`, carData)
+    return apiClient.patch(`/cars/${id}`, carData)
   },
 
   delete: async (id: string): Promise<void> => {
-    return apiClient.delete(`/api/v1/cars/${id}`)
+    return apiClient.delete(`/cars/${id}`)
   },
 
   getStats: async (): Promise<CarStats> => {
-    return apiClient.get('/api/v1/cars/stats')
+    return apiClient.get('/cars/stats')
   },
 
   // Car Images
   addImage: async (carId: string, imageData: FormData): Promise<CarImage> => {
-    return apiClient.post(`/api/v1/cars/${carId}/images`, imageData, {
+    return apiClient.post(`/cars/${carId}/images`, imageData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -156,6 +157,6 @@ export const carsAPI = {
   },
 
   removeImage: async (imageId: string): Promise<void> => {
-    return apiClient.delete(`/api/v1/cars/images/${imageId}`)
+    return apiClient.delete(`/cars/images/${imageId}`)
   }
 }

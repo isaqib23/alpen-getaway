@@ -52,6 +52,7 @@ import {
 
 import { Company, CompanyType, CompanyStatus, CreateCompanyRequest, UpdateCompanyRequest } from '../../types/api'
 import { useCompanies } from '../../hooks/useCompanies'
+import { useUsers } from '../../hooks/useUsers'
 
 const AllCompanies = () => {
   const {
@@ -787,7 +788,9 @@ const AllCompanies = () => {
 // Add Company Form Component
 const AddCompanyForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { createCompany } = useCompanies()
+  const { users, fetchUsers } = useUsers()
   const [loading, setLoading] = useState(false)
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([])
   const [formData, setFormData] = useState<CreateCompanyRequest>({
     user_id: '', // This should be populated from user selection or current user
     company_name: '',
@@ -809,6 +812,27 @@ const AddCompanyForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     commission_rate: 0
   })
 
+  // Filter users based on company type and exclude users who already have companies
+  useEffect(() => {
+    if (formData.company_type && users.length > 0) {
+      const filtered = users.filter(user => {
+        // Filter by user type
+        const matchesType = formData.company_type === 'affiliate' ? user.user_type === 'affiliate' : user.user_type === 'b2b'
+        // Exclude users who already have a company
+        const hasNoCompany = !user.company
+        return matchesType && hasNoCompany
+      })
+      setFilteredUsers(filtered)
+    } else {
+      setFilteredUsers([])
+    }
+  }, [formData.company_type, users])
+
+  // Fetch users on component mount
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
   const handleChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
       ...prev,
@@ -817,10 +841,20 @@ const AddCompanyForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   }
 
   const handleSelectChange = (field: string) => (event: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: event.target.value
-    }))
+    if (field === 'user_id') {
+      // When user is selected, also update company_representative with the user's name
+      const selectedUser = filteredUsers.find(user => user.id === event.target.value)
+      setFormData(prev => ({
+        ...prev,
+        [field]: event.target.value,
+        company_representative: selectedUser ? `${selectedUser.first_name} ${selectedUser.last_name}` : ''
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [field]: event.target.value
+      }))
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -915,13 +949,27 @@ const AddCompanyForm: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         </Grid>
         
         <Grid item xs={12} md={6}>
-          <TextField
-            required
-            fullWidth
-            label="Company Representative"
-            value={formData.company_representative}
-            onChange={handleChange('company_representative')}
-          />
+          <FormControl fullWidth required>
+            <InputLabel>Company Representative</InputLabel>
+            <Select
+              value={formData.user_id}
+              onChange={handleSelectChange('user_id')}
+              label="Company Representative"
+            >
+              <MenuItem value="">Select a user</MenuItem>
+              {filteredUsers.length === 0 && formData.company_type ? (
+                <MenuItem disabled>
+                  No available {formData.company_type} users without companies
+                </MenuItem>
+              ) : (
+                filteredUsers.map((user) => (
+                  <MenuItem key={user.id} value={user.id}>
+                    {user.first_name} {user.last_name} - {user.email}
+                  </MenuItem>
+                ))
+              )}
+            </Select>
+          </FormControl>
         </Grid>
         
         <Grid item xs={12} md={6}>

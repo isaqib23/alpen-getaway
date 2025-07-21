@@ -180,42 +180,42 @@ export const financialAPI = {
       ...(filters?.date_to && { date_to: filters.date_to })
     })
     
-    const response = await apiClient.get(`/api/v1/payments?${params}`)
+    const response = await apiClient.get(`/payments?${params}`)
     return response.data
   },
 
   async getPaymentById(id: string): Promise<Payment> {
-    const response = await apiClient.get(`/api/v1/payments/${id}`)
+    const response = await apiClient.get(`/payments/${id}`)
     return response.data
   },
 
   async createPayment(data: CreatePaymentDto): Promise<Payment> {
-    const response = await apiClient.post('/api/v1/payments', data)
+    const response = await apiClient.post('/payments', data)
     return response.data
   },
 
   async updatePayment(id: string, data: UpdatePaymentDto): Promise<Payment> {
-    const response = await apiClient.patch(`/api/v1/payments/${id}`, data)
+    const response = await apiClient.patch(`/payments/${id}`, data)
     return response.data
   },
 
   async markPaymentAsPaid(id: string): Promise<Payment> {
-    const response = await apiClient.patch(`/api/v1/payments/${id}/mark-paid`)
+    const response = await apiClient.patch(`/payments/${id}/mark-paid`)
     return response.data
   },
 
   async markPaymentAsFailed(id: string, failure_reason: string): Promise<Payment> {
-    const response = await apiClient.patch(`/api/v1/payments/${id}/mark-failed`, { failure_reason })
+    const response = await apiClient.patch(`/payments/${id}/mark-failed`, { failure_reason })
     return response.data
   },
 
   async refundPayment(id: string): Promise<Payment> {
-    const response = await apiClient.patch(`/api/v1/payments/${id}/refund`)
+    const response = await apiClient.patch(`/payments/${id}/refund`)
     return response.data
   },
 
   async getPaymentStats(): Promise<PaymentStats> {
-    const response = await apiClient.get('/api/v1/payments/stats')
+    const response = await apiClient.get('/payments/stats')
     return response.data
   },
 
@@ -227,47 +227,47 @@ export const financialAPI = {
       ...(status && { status })
     })
     
-    const response = await apiClient.get(`/api/v1/payments/commissions?${params}`)
+    const response = await apiClient.get(`/payments/commissions?${params}`)
     return response.data
   },
 
   async getCommissionStats(): Promise<CommissionStats> {
-    const response = await apiClient.get('/api/v1/payments/commissions/stats')
+    const response = await apiClient.get('/payments/commissions/stats')
     return response.data
   },
 
   async approveCommission(id: string): Promise<Commission> {
-    const response = await apiClient.patch(`/api/v1/payments/commissions/${id}/approve`)
+    const response = await apiClient.patch(`/payments/commissions/${id}/approve`)
     return response.data
   },
 
   async payCommission(id: string): Promise<Commission> {
-    const response = await apiClient.patch(`/api/v1/payments/commissions/${id}/pay`)
+    const response = await apiClient.patch(`/payments/commissions/${id}/pay`)
     return response.data
   },
 
   // Payment Methods CRUD
   async getPaymentMethods(): Promise<PaymentMethodConfig[]> {
-    const response = await apiClient.get('/api/v1/payment-methods')
+    const response = await apiClient.get('/payment-methods')
     return response.data
   },
 
   async getPaymentMethodById(id: string): Promise<PaymentMethodConfig> {
-    const response = await apiClient.get(`/api/v1/payment-methods/${id}`)
+    const response = await apiClient.get(`/payment-methods/${id}`)
     return response.data
   },
 
   async createPaymentMethod(data: CreatePaymentMethodDto): Promise<PaymentMethodConfig> {
-    const response = await apiClient.post('/api/v1/payment-methods', data)
+    const response = await apiClient.post('/payment-methods', data)
     return response.data
   },
 
   async updatePaymentMethod(id: string, data: UpdatePaymentMethodDto): Promise<PaymentMethodConfig> {
-    const response = await apiClient.patch(`/api/v1/payment-methods/${id}`, data)
+    const response = await apiClient.patch(`/payment-methods/${id}`, data)
     return response.data
   },
 
   async deletePaymentMethod(id: string): Promise<void> {
-    await apiClient.delete(`/api/v1/payment-methods/${id}`)
+    await apiClient.delete(`/payment-methods/${id}`)
   }
 }
