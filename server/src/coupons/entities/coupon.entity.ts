@@ -53,6 +53,34 @@ export class Coupon {
     @Column({ type: 'enum', enum: CouponStatus, default: CouponStatus.ACTIVE })
     status: CouponStatus;
 
+    // Additional fields for public API
+    @Column({ default: true })
+    active: boolean;
+
+    @Column({ nullable: true })
+    discountType: string;
+
+    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    discountValue: number;
+
+    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    maxDiscount: number;
+
+    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    minimumAmount: number;
+
+    @Column('timestamp', { nullable: true })
+    validFrom: Date;
+
+    @Column('timestamp', { nullable: true })
+    validTo: Date;
+
+    @Column({ nullable: true })
+    usageLimit: number;
+
+    @Column({ default: 0 })
+    usedCount: number;
+
     @CreateDateColumn()
     created_at: Date;
 

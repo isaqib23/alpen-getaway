@@ -111,4 +111,39 @@ export class PaymentsController {
     refund(@Param('id') id: string) {
         return this.paymentsService.refund(id);
     }
+
+    // Stripe Integration Endpoints
+    @ApiOperation({ summary: 'Create Stripe checkout session' })
+    @Post('stripe/checkout-session')
+    createStripeCheckoutSession(@Body() body: {
+        bookingId: string;
+        amount: number;
+        currency?: string;
+        successUrl: string;
+        cancelUrl: string;
+    }) {
+        return this.paymentsService.createStripeCheckoutSession(body);
+    }
+
+    @ApiOperation({ summary: 'Get Stripe session status' })
+    @Get('stripe/session/:sessionId/status')
+    getStripeSessionStatus(@Param('sessionId') sessionId: string) {
+        return this.paymentsService.getStripeSessionStatus(sessionId);
+    }
+
+    @ApiOperation({ summary: 'Create Stripe payment intent' })
+    @Post('stripe/payment-intent')
+    createStripePaymentIntent(@Body() body: {
+        bookingId: string;
+        amount: number;
+        currency?: string;
+    }) {
+        return this.paymentsService.createStripePaymentIntent(body);
+    }
+
+    @ApiOperation({ summary: 'Handle Stripe webhook' })
+    @Post('stripe/webhook')
+    handleStripeWebhook(@Body() body: any) {
+        return this.paymentsService.handleStripeWebhook(body);
+    }
 }

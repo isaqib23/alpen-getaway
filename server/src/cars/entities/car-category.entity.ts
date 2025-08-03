@@ -27,6 +27,28 @@ export class CarCategory {
     @Column({ type: 'enum', enum: ['active', 'inactive'], default: 'active' })
     status: string;
 
+    // Additional fields for public API
+    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    basePrice: number;
+
+    @Column('decimal', { precision: 6, scale: 2, nullable: true })
+    pricePerKm: number;
+
+    @Column('decimal', { precision: 10, scale: 2, nullable: true })
+    pricePerHour: number;
+
+    @Column('json', { nullable: true })
+    features: string[];
+
+    @Column({ nullable: true })
+    passengerCapacity: number;
+
+    @Column({ nullable: true })
+    luggageCapacity: number;
+
+    @Column({ default: true })
+    active: boolean;
+
     @CreateDateColumn()
     created_at: Date;
 

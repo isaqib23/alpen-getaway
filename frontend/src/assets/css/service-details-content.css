@@ -1,0 +1,217 @@
+.service-featured-image {
+  margin-bottom: 30px;
+}
+
+.service-featured-image figure {
+  display: block;
+  border-radius: 30px;
+}
+
+.service-featured-image img {
+  border-radius: 30px;
+}
+
+.service-entry {
+  border-bottom: 1px solid var(--divider-color);
+  padding-bottom: 50px;
+  /* margin-bottom: 50px; */
+}
+
+.service-entry h2 {
+  font-size: 44px;
+  margin-bottom: 30px;
+}
+
+.service-entry h3 {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.service-entry p {
+  margin-bottom: 30px;
+}
+
+.service-entry p:last-child {
+  margin-bottom: 0px;
+}
+
+.service-entry ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.service-entry ul li {
+  position: relative;
+  width: calc(50% - 10px);
+  color: var(--primary-color);
+  font-size: 18px;
+  font-weight: 500;
+  text-transform: capitalize;
+  padding-left: 30px;
+}
+
+.service-entry ul li:before {
+  content: "\f058";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--accent-color);
+  display: inline-block;
+  line-height: normal;
+  position: absolute;
+  top: 2px;
+  left: 0;
+}
+
+.service-gallery a {
+  cursor: none;
+}
+
+.service-gallery figure {
+  border-radius: 30px;
+}
+
+.service-gallery img {
+  aspect-ratio: 1 / 1.1;
+  object-fit: cover;
+  border-radius: 30px;
+}
+.rental-condition-accordion .accordion-item {
+  border: 1px solid var(--divider-color);
+  border-radius: 12px;
+  margin-bottom: 25px;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.rental-condition-accordion .accordion-item:last-child {
+  margin-bottom: 0;
+}
+
+.rental-condition-accordion .accordion-header .accordion-button {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2em;
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+  padding: 20px 50px 20px 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.rental-condition-accordion .accordion-button:not(.collapsed) {
+  background-color: var(--accent-color);
+  color: var(--white-color);
+  border-bottom: 1px solid var(--dark-divider-color);
+}
+
+.rental-condition-accordion .accordion-header .accordion-button.collapsed {
+  background-color: var(--white-color);
+  color: var(--primary-color);
+}
+
+.rental-condition-accordion .accordion-item .accordion-button::after,
+.rental-condition-accordion .accordion-item .accordion-button.collapsed::after {
+  content: "\f068";
+  font-family: "Font Awesome 6 Free";
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  bottom: auto;
+  transform: translate(0px, -10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  padding: 5px;
+  color: var(--white-color);
+}
+
+.rental-condition-accordion .accordion-item .accordion-button.collapsed::after {
+  content: "\f067";
+  color: var(--primary-color);
+}
+
+.rental-condition-accordion .accordion-item .accordion-body {
+  background-color: var(--accent-color);
+  padding: 20px 50px 20px 20px;
+}
+
+.rental-condition-accordion .accordion-item .accordion-body p {
+  color: var(--white-color);
+  margin: 0;
+}
+@media only screen and (max-width: 991px) {
+  .service-entry {
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+  }
+
+  .service-entry h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+
+  .service-entry p {
+    margin-bottom: 20px;
+  }
+
+  .service-entry ul {
+    margin-bottom: 20px;
+  }
+
+  .service-gallery {
+    margin-bottom: 30px;
+  }
+
+  .service-gallery a {
+    cursor: none;
+  }
+
+  .service-gallery img {
+    aspect-ratio: 1 / 0.85;
+  }
+  .rental-condition-accordion .accordion-header .accordion-button {
+    padding: 15px 40px 15px 15px;
+  }
+
+  .rental-condition-accordion .accordion-item .accordion-body {
+    padding: 15px 40px 15px 15px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .service-entry h2 {
+    font-size: 28px;
+  }
+
+  .service-entry h3 {
+    font-size: 18px;
+  }
+
+  .service-entry ul {
+    display: block;
+  }
+
+  .service-entry ul li {
+    width: 100%;
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .service-entry ul li:last-child {
+    margin-bottom: 0;
+  }
+
+  .service-entry ul li:before {
+    font-size: 18px;
+    top: 4px;
+  }
+}
