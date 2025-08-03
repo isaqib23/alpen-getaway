@@ -17,7 +17,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     <div 
       className="page-header bg-section"
       style={{
-        backgroundImage: `url(${image ? `cdn/cars/${image}` : "/img/about_us/about.jpg"})`,
+        backgroundImage: `url(${image ? `cdn/cars/${image}` : "/assets/images/about_us/about.jpg"})`,
         backgroundPosition: "center center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat"

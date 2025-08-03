@@ -94,7 +94,7 @@ const ServicesList: React.FC = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src={`/img/icons/${service.icon}`}
+                      src={`/assets/images/icons/${service.icon}`}
                       alt={service.title}
                     />
                   </div>
@@ -105,7 +105,7 @@ const ServicesList: React.FC = () => {
                   <div className="service-footer">
                     <Link to="/service-details" className="section-icon-btn">
                       <img
-                        src="/img/icons/arrow-white.svg"
+                        src="/assets/images/icons/arrow-white.svg"
                         alt="Arrow"
                       />
                     </Link>

@@ -24,7 +24,7 @@ const Testimonials: React.FC = () => {
       text: strings.TEXT,
       author: "floyd miles",
       position: strings.MANAGER,
-      image: "/img/about_us/driver_1.jpg",
+      image: "/assets/images/about_us/driver_1.jpg",
     },
     {
       id: 2,
@@ -32,7 +32,7 @@ const Testimonials: React.FC = () => {
       text: strings.TEXT,
       author: "annette black",
       position: strings.MANAGER,
-      image: "/img/about_us/driver_2.jpg",
+      image: "/assets/images/about_us/driver_2.jpg",
     },
     {
       id: 3,
@@ -40,7 +40,7 @@ const Testimonials: React.FC = () => {
       text: strings.TEXT,
       author: "leslie alexander",
       position: strings.MANAGER,
-      image: "/img/about_us/driver_3.jpg",
+      image: "/assets/images/about_us/driver_3.jpg",
     },
     {
       id: 4,
@@ -48,7 +48,7 @@ const Testimonials: React.FC = () => {
       text: strings.TEXT,
       author: "alis white",
       position: strings.MANAGER,
-      image: "/img/about_us/driver_4.jpg",
+      image: "/assets/images/about_us/driver_4.jpg",
     },
   ]);
   
@@ -70,7 +70,7 @@ const Testimonials: React.FC = () => {
             text: review.comment || strings.TEXT,
             author: review.customerName || "Customer",
             position: "Verified Customer",
-            image: `/img/about_us/driver_${(index % 4) + 1}.jpg`, // Cycle through available images
+            image: `/assets/images/about_us/driver_${(index % 4) + 1}.jpg`, // Cycle through available images
             isServerData: true,
           }));
           

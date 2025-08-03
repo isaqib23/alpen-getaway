@@ -488,28 +488,28 @@ const FleetsCollection = ({
                         <ul>
                           <li>
                             <img
-                              src="/img/icons/icon-fleet-list-1.svg"
+                              src="/assets/images/icons/icon-fleet-list-1.svg"
                               alt=""
                             />
                             {car.seats}
                           </li>
                           <li>
                             <img
-                              src="/img/icons/icon-fleet-list-2.svg"
+                              src="/assets/images/icons/icon-fleet-list-2.svg"
                               alt=""
                             />
                             {car.doors}
                           </li>
                           <li>
                             <img
-                              src="/img/icons/icon-fleet-list-3.svg"
+                              src="/assets/images/icons/icon-fleet-list-3.svg"
                               alt=""
                             />
                             {car.aircon === true ? strings.YES : strings.NO}
                           </li>
                           <li>
                             <img
-                              src="/img/icons/icon-fleet-list-4.svg"
+                              src="/assets/images/icons/icon-fleet-list-4.svg"
                               alt=""
                             />
                             {car.gearbox === bookcarsTypes.GearboxType.Manual
@@ -559,7 +559,7 @@ const FleetsCollection = ({
                             ].map((amenity, index) => (
                               <li key={index}>
                                 <img
-                                  src={`/img/icons/amenity-${
+                                  src={`/assets/images/icons/amenity-${
                                     amenity.included
                                       ? "included"
                                       : "purchasable"
@@ -596,7 +596,7 @@ const FleetsCollection = ({
                         >
                           <Link to="" className="section-icon-btn">
                             <img
-                              src="/img/icons/arrow-white.svg"
+                              src="/assets/images/icons/arrow-white.svg"
                               alt="arrow"
                             />
                           </Link>

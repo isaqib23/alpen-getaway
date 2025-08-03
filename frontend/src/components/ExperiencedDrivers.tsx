@@ -7,7 +7,7 @@ const teamMembers = [
   {
     name: "john smith",
     role: strings.SENIOR,
-    imageSrc: "/img/about_us/driver_1.jpg",
+    imageSrc: "/assets/images/about_us/driver_1.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -18,7 +18,7 @@ const teamMembers = [
   {
     name: "taylor smith",
     role: strings.GUIDE,
-    imageSrc: "/img/about_us/driver_2.jpg",
+    imageSrc: "/assets/images/about_us/driver_2.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -29,7 +29,7 @@ const teamMembers = [
   {
     name: "jordan brown",
     role: strings.DISTANCE,
-    imageSrc: "/img/about_us/driver_3.jpg",
+    imageSrc: "/assets/images/about_us/driver_3.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -40,7 +40,7 @@ const teamMembers = [
   {
     name: "davis casey",
     role: strings.SPECIALIST,
-    imageSrc: "/img/about_us/driver_4.jpg",
+    imageSrc: "/assets/images/about_us/driver_4.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },

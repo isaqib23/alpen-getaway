@@ -50,7 +50,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
   const fetchData = async (
     _page: number,
     _keyword: string,
-    onFetch?: bookcarsTypes.DataEvent<bookcarsTypes.Location>
+    onFetch?: (event: { rows: bookcarsTypes.Location[]; rowCount: number }) => void
   ) => {
     try {
       if (fetch || _page === 1) {
@@ -60,19 +60,36 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
           _page,
           env.PAGE_SIZE
         );
-        const _data =
-          data && data.length > 0
-            ? data[0]
-            : { pageInfo: { totalRecord: 0 }, resultData: [] };
+        
+        // Handle the Result<Location> type properly
+        let _data: bookcarsTypes.Result<bookcarsTypes.Location>;
+        if (Array.isArray(data) && data.length > 0) {
+          // Legacy API response format
+          _data = data[0] as bookcarsTypes.Result<bookcarsTypes.Location>;
+        } else if (data && 'pageInfo' in data && 'resultData' in data) {
+          // New API response format
+          _data = data as bookcarsTypes.Result<bookcarsTypes.Location>;
+        } else {
+          // Fallback
+          _data = { 
+            pageInfo: { 
+              totalRecords: 0, 
+              totalPages: 0, 
+              pageSize: 0, 
+              pageNumber: 0,
+              hasNextPage: false,
+              hasPreviousPage: false
+            }, 
+            resultData: [] 
+          };
+        }
+
         if (!_data) {
           return;
         }
-        const totalRecords =
-          Array.isArray(_data.pageInfo) && _data.pageInfo.length > 0
-            ? _data.pageInfo[0].totalRecords
-            : 0;
-        const _rows =
-          _page === 1 ? _data.resultData : [...rows, ..._data.resultData];
+
+        const totalRecords = _data.pageInfo?.totalRecords || 0;
+        const _rows = _page === 1 ? _data.resultData : [...rows, ..._data.resultData];
 
         setRows(_rows);
         setFetch(_data.resultData.length > 0);
@@ -254,7 +271,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="src/assets/images/icon-rent-details-2.svg"
+                          src="/assets/images/icon-rent-details-2.svg"
                           alt="Pickup Location"
                         />
                       </div> */}
@@ -268,7 +285,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                           <option value="" disabled>
                             {`📌 ${strings.SELECT}`}
                           </option>
-                          {rows.map((row, index) => (
+                          {rows && rows.map((row, index) => (
                             <option key={index} value={row._id}>
                               {`📌 ${row.name}`}
                             </option>
@@ -281,7 +298,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="src/assets/images/icon-rent-details-2.svg"
+                          src="/assets/images/icon-rent-details-2.svg"
                           alt="Dropoff Location"
                         />
                       </div> */}
@@ -296,7 +313,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                           <option value="" disabled>
                             {`📌 ${strings.SELECT}`}
                           </option>
-                          {rows.map((row, index) => (
+                          {rows && rows.map((row, index) => (
                             <option key={index} value={row._id}>
                               {`📌 ${row.name}`}
                             </option>

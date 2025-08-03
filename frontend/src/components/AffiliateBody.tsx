@@ -75,14 +75,14 @@ const AffiliateBody: React.FC = () => {
               <div className="about-img-1">
                 <RevealImage
                   className="reveal custom-figure h-100"
-                  src="/img/affiliate/1.jpg"
+                  src="/assets/images/affiliate/1.jpg"
                   alt="Our Service"
                 />
               </div>
               <div className="about-img-2">
                 <RevealImage
                   className="reveal custom-figure h-100"
-                  src="/img/affiliate/2.jpg"
+                  src="/assets/images/affiliate/2.jpg"
                   alt="Why Choose Us"
                 />
               </div>

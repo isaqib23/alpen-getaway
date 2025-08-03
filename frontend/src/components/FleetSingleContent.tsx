@@ -35,10 +35,10 @@ interface FleetsSingleContentProps {
 
 // Dummy data for sliders, benefits, amenities, and rental conditions
 const sliderImages = [
-  "/img/our_fleet/Transperent Car Images/e_class.png",
-  "/img/our_fleet/Transperent Car Images/s_class.png",
-  "/img/our_fleet/Transperent Car Images/v_class.png",
-  "/img/our_fleet/Transperent Car Images/vito.png",
+  "/assets/images/our_fleet/transparent_car_images/e_class.png",
+  "/assets/images/our_fleet/transparent_car_images/s_class.png",
+  "/assets/images/our_fleet/transparent_car_images/v_class.png",
+  "/assets/images/our_fleet/transparent_car_images/vito.png",
 ];
 
 const rentalConditions = [
@@ -174,12 +174,12 @@ const FleetSingleContent: React.FC<FleetsSingleContentProps> = ({
 
   const benefits = [
     {
-      icon: "/img/icons/icon-fleets-benefits-1.svg",
+      icon: "/assets/images/icons/icon-fleets-benefits-1.svg",
       title: strings.MILEAGE,
       description: strings.MILEAGE_DESCRIPTION,
     },
     {
-      icon: "/img/icons/icon-fleets-benefits-2.svg",
+      icon: "/assets/images/icons/icon-fleets-benefits-2.svg",
       title: strings.FUEL_POLICY,
       description:
         car?.fuelPolicy === "likeForlike"

@@ -9,7 +9,7 @@ const visionMissionData = [
     subtitle: strings.SUBTITLE,
     content: strings.INNOVATE,
     listItems: [strings.PRIORITY, strings.QUALITY, strings.BEST],
-    imageSrc: "/img/about_us/2.png",
+    imageSrc: "/assets/images/about_us/2.png",
     active: true,
   },
   {
@@ -22,7 +22,7 @@ const visionMissionData = [
       strings.QUALITY_MISSION,
       strings.BEST_MISSION,
     ],
-    imageSrc: "/img/about_us/2.png",
+    imageSrc: "/assets/images/about_us/2.png",
     active: false,
   },
   {
@@ -35,7 +35,7 @@ const visionMissionData = [
       strings.QUALITY_APPROACH,
       strings.BEST_APPROACH,
     ],
-    imageSrc: "/img/about_us/2.png",
+    imageSrc: "/assets/images/about_us/2.png",
     active: false,
   },
 ];

@@ -186,7 +186,7 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
                 <div className="container">
                   {/* Logo Start */}
                   <Link className="navbar-brand" to="/">
-                    <img src="/img/logo.png" alt="Logo" />
+                    <img src="/assets/images/logo.png" alt="Logo" />
                   </Link>
                   {/* Logo End */}
 
