@@ -8,7 +8,7 @@
 
 .hero-section.bg-section {
   position: relative;
-  background: url("/img/about_us/about.jpg") no-repeat;
+  background: url("/assets/images/home_bg.png") no-repeat;
   background-position: center center;
   background-size: cover;
   background-attachment: fixed;
@@ -50,7 +50,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url("/img/about_us/about.jpg") no-repeat;
+  background: url("/assets/images/about_us/about.jpg") no-repeat;
   background-position: center center;
   background-size: cover;
 }
@@ -298,7 +298,7 @@
 }
 
 .rent-details-content .datepicker {
-  background: transparent url(/img/icons/icon-calendar.svg) no-repeat right
+  background: transparent url(/assets/images/icons/icon-calendar.svg) no-repeat right
     center;
   background-size: auto 14px;
   border: none;

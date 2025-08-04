@@ -30,12 +30,6 @@
   padding-bottom: 20px;
 }
 
-.service-catagery-list ul li img {
-  width: 35px;
-  height: 35px;
-  margin-right: 10px;
-}
-
 .service-catagery-list ul li:last-child {
   border: none;
   margin-bottom: 0;
@@ -89,15 +83,6 @@
   padding: 40px 30px;
 }
 
-.cta-contact-item .icon-box {
-  margin-bottom: 30px;
-}
-
-.cta-contact-item .icon-box img {
-  max-width: 65px;
-  margin: 0 auto;
-}
-
 .cta-contact-content {
   margin-bottom: 30px;
 }
@@ -135,10 +120,6 @@
     padding: 30px 20px;
   }
 
-  .cta-contact-item .icon-box {
-    margin-bottom: 20px;
-  }
-
   .cta-contact-content {
     margin-bottom: 20px;
   }
@@ -151,10 +132,6 @@
 @media only screen and (max-width: 767px) {
   .service-catagery-list h3 {
     font-size: 18px;
-  }
-
-  .cta-contact-item .icon-box img {
-    max-width: 55px;
   }
 
   .cta-contact-content h2 {

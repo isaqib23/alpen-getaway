@@ -21,7 +21,7 @@ const strings = new LocalizedStrings({
       "Alpen Getaway is a Gateway to Alpen Scenic Destinations for Travelers across the world.",
     AFFILIATE_TITLE: "Affiliate Booking System",
     AFFILIATE_CONTENT:
-      "Here businesses & travel agencies from all over the world, that would like to book a ride for their customers on behalf of their company. They can get a special ducount on their first booking. If they want further discounts on more rides, then they can contact in fer further cooperation. We will offer a special discounts to all the companies that want to book a transfer with us for the special event, fests, seminars and other occasions across Europe.",
+      "Here businesses & travel agencies from all over the world, that would like to book a ride for their customers on behalf of their company. They can get a special discount on their first booking. If they want further discounts on more rides, then they can contact us for further cooperation. We will offer a special discount to all the Businesses and travel agencies, that want to book a transfer with us for the special events, fests, seminars and other occasions across Europe. If you are interested then fill the form on your right.",
     B2B_TITLE: "B2B Partnership",
     B2B_CONTENT:
       "Every transport company that would like to use our platform needs to regieter with us to gain access to our website CRM. This registration process needs some steps to be completed according to our agreement requirements eligibility criteria such as Cars, Drivers and Company History.",

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
 
@@ -7,126 +8,72 @@ import ServiceDetailsSidebar from "../components/ServiceDetailsSidebar";
 import ServiceDetailsContent from "../components/ServiceDetailsContent";
 
 import { strings } from "../lang/service-details";
+import { serviceLinks, ServiceId, ServiceData } from "../config/services";
 
 // services-data.ts
 const servicesData: Record<ServiceId, ServiceData> = {
   "airport-transfer": {
     title: strings.AIRPORT_TITLE,
     paragraphs: strings.AIRPORT_PARAGRAPHS,
+    imageFolder: "airport_transfer",
   },
   "economy-services": {
     title: strings.ECONOMY_TITLE,
     paragraphs: strings.ECONOMY_PARAGRAPHS,
+    imageFolder: "economy_services",
   },
   "business-transfers": {
     title: strings.BUSINESS_TITLE,
     paragraphs: strings.BUSINESS_PARAGRAPHS,
+    imageFolder: "business_transfers",
   },
   "vip-transfer": {
     title: strings.VIP_TITLE,
     paragraphs: strings.VIP_PARAGRAPHS,
+    imageFolder: "vip_transfer",
   },
   "private-transfer": {
     title: strings.PRIVATE_TITLE,
     paragraphs: strings.PRIVATE_PARAGRAPHS,
+    imageFolder: "private_transfer",
   },
   "flexible-payment-options": {
     title: strings.FLEXIBLE_TITLE,
     paragraphs: strings.FLEXIBLE_PARAGRAPHS,
+    imageFolder: "flexible_payment_options",
   },
   "live-rides": {
     title: strings.LIVE_TITLE,
     paragraphs: strings.LIVE_PARAGRAPHS,
+    imageFolder: "live_rides",
   },
   "roadside-assistance": {
     title: strings.ROADSIE_TITLE,
     paragraphs: strings.ROADSIE_PARAGRAPHS,
+    imageFolder: "roadside_assistance",
   },
   "chauffeur-services": {
     title: strings.CHAUFFEUR_TITLE,
     paragraphs: strings.CHAUFFEUR_PARAGRAPHS,
+    imageFolder: "chauffeur_services",
   },
 };
 
-const serviceLinks: ServiceLink[] = [
-  {
-    id: "airport-transfer",
-    name: "Airport Transfer",
-    icon: "icon-service-3.svg",
-  },
-  {
-    id: "economy-services",
-    name: "Economy Services",
-    icon: "icon-about-trusted-2.svg",
-  },
-  {
-    id: "business-transfers",
-    name: "Business Transfers",
-    icon: "icon-service-2.svg",
-  },
-  {
-    id: "vip-transfer",
-    name: "VIP Transfer",
-    icon: "icon-service-1.svg",
-  },
-  {
-    id: "private-transfer",
-    name: "Private Transfer",
-    icon: "icon-service-5.svg",
-  },
-  {
-    id: "flexible-payment-options",
-    name: "Flexible Payment Options",
-    icon: "icon-service-6.svg",
-  },
-  {
-    id: "live-rides",
-    name: "Live Rides (GPS) Tracking",
-    icon: "icon-location.svg",
-    iconStyle: {
-      filter:
-        "invert(95%) sepia(96%) saturate(2441%) hue-rotate(163deg) brightness(97%) contrast(101%)",
-    },
-  },
-  {
-    id: "roadside-assistance",
-    name: "Roadside Assistance",
-    icon: "icon-service-7.svg",
-  },
-  {
-    id: "chauffeur-services",
-    name: "Chauffeur Services",
-    icon: "icon-service-4.svg",
-  },
-];
-
-type ServiceId =
-  | "airport-transfer"
-  | "economy-services"
-  | "business-transfers"
-  | "vip-transfer"
-  | "private-transfer"
-  | "flexible-payment-options"
-  | "live-rides"
-  | "roadside-assistance"
-  | "chauffeur-services";
-
-interface ServiceLink {
-  id: ServiceId;
-  name: string;
-  icon: string;
-  iconStyle?: React.CSSProperties;
-}
-
-interface ServiceData {
-  title: string;
-  paragraphs: string[];
-}
-
 const ServiceDetails = () => {
+  const [searchParams] = useSearchParams();
+  const serviceFromUrl = searchParams.get('service') as ServiceId;
+  
   const [selectedService, setSelectedService] = useState<ServiceId>(
-    serviceLinks[0].id
+    serviceFromUrl && serviceLinks.find(s => s.id === serviceFromUrl) 
+      ? serviceFromUrl 
+      : serviceLinks[0].id
   );
+
+  useEffect(() => {
+    if (serviceFromUrl && serviceLinks.find(s => s.id === serviceFromUrl)) {
+      setSelectedService(serviceFromUrl);
+    }
+  }, [serviceFromUrl]);
 
   return (
     <Layout>

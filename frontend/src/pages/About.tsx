@@ -7,6 +7,7 @@ import ExperiencedDrivers from "../components/ExperiencedDrivers";
 import VisionMission from "../components/VisionMission";
 import { strings } from "../lang/common";
 import BriefAbout from "../components/BriefAbout";
+import AboutTrustedPartner from "../components/AboutTrustedPartner";
 import { usePageLoading } from "../common/usePageLoading";
 import { publicApi } from "../api/client";
 
@@ -63,6 +64,9 @@ const AboutPage = () => {
   return (
     <Layout>
       <PageHeader title={strings.ABOUT_US} breadcrumb={[]} />
+      
+      {/* About Trusted Partner Section - First Section */}
+      <AboutTrustedPartner />
       
       {/* Dynamic CMS Content Section */}
       {cmsContent && !cmsError && (

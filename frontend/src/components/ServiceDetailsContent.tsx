@@ -12,6 +12,7 @@ interface ServiceDetailsContentProps {
   serviceData: {
     title: string;
     paragraphs: string[];
+    imageFolder: string;
   };
 }
 
@@ -48,7 +49,7 @@ const ServiceDetailsContent: React.FC<ServiceDetailsContentProps> = ({
         <div className="service-featured-image">
           <RevealImage
             className="image-anime"
-            src="/assets/images/our_service_details/airport_transfer/1.png"
+            src={`/assets/images/our_service_details/${serviceData.imageFolder}/1.jpg`}
             alt="Service Featured"
           ></RevealImage>
         </div>
@@ -124,11 +125,11 @@ const ServiceDetailsContent: React.FC<ServiceDetailsContentProps> = ({
                         delay: isLaptop ? index * 0.2 : (index % 2) * 0.2,
                       }}
                     >
-                      <a href={`/assets/images/our_service_details/airport_transfer/${num}${num === 4 ? '.jpg' : '.png'}`}>
+                      <a href={`/assets/images/our_service_details/${serviceData.imageFolder}/${num}.jpg`}>
                         <figure className="image-anime">
                           <img
-                            src={`/assets/images/our_service_details/airport_transfer/${num}${num === 4 ? '.jpg' : '.png'}`}
-                            alt={`Airport Transfer Service ${num}`}
+                            src={`/assets/images/our_service_details/${serviceData.imageFolder}/${num}.jpg`}
+                            alt={`${serviceData.title} Service ${num}`}
                           />
                         </figure>
                       </a>

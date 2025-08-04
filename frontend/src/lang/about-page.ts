@@ -36,7 +36,7 @@ const strings = new LocalizedStrings({
     GUIDE: "city tour guide",
     SENIOR: "senior chauffeur",
     FLEXIBILITY:
-      "We are offenng our honored costumers a booking management system where they can Edit/Change their already booked rides, by clicking (Mange My Booking) button.",
+      "We are offering our honored customers a booking management system where they can Edit/Change their already booked rides, by clicking (Manage My Booking) button.",
     FREE_CANCELLATION:
       "We are the company in the market that are offering free cancellation on their rides/transfers due to some unexpected incidents and change of plans. They will receive their refund in case they have paid for their booked rides/transters.",
   },

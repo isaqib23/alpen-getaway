@@ -56,9 +56,9 @@ const ExperiencedDrivers: React.FC = () => {
       <div className="container">
         <div className="row align-items-center section-row">
           <div className="col-lg-12">
-            <div className="section-title">
-              <h3>{strings.DRIVERS_HEADING}</h3>
-              <h2>{strings.DRIVERS_DESCRIPTION}</h2>
+            <div className="section-title" style={{ textAlign: 'center', marginBottom: '50px' }}>
+              <h3 style={{ marginBottom: '20px', fontSize: '28px', fontWeight: '700' }}>{strings.DRIVERS_HEADING}</h3>
+              <p style={{ fontSize: '16px', lineHeight: '1.6', color: '#666', margin: '0 auto', maxWidth: '800px' }}>{strings.DRIVERS_DESCRIPTION}</p>
             </div>
           </div>
         </div>
@@ -69,18 +69,7 @@ const ExperiencedDrivers: React.FC = () => {
               <div className="team-member-item">
                 <div className="team-image">
                   <img src={member.imageSrc} alt={member.name} />
-                  
-                  <div className="team-social-icon">
-                    <ul>
-                      {member.social.map((social, i) => (
-                        <li key={i}>
-                          <Link to={social.link} className="social-icon">
-                            <i className={social.icon}></i>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {/* Social icons removed */}
                 </div>
 
                 <div className="team-content">

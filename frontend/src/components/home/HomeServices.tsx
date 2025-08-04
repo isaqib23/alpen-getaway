@@ -8,21 +8,25 @@ import { strings } from "../../lang/services";
 
 const services = [
   {
+    id: "airport-transfer",
     icon: <Plane size={32} />,
     title: strings.AIRPORT,
     description: strings.AIRPORT_DESCRIPTION,
   },
   {
+    id: "business-transfers",
     icon: <UserCheck size={32} />,
     title: strings.DRIVER,
     description: strings.DRIVER_DESCRIPTION,
   },
   {
+    id: "private-transfer",
     icon: <Car size={32} />,
     title: strings.RENTAL,
     description: strings.RENTAL_DESCRIPTION,
   },
   {
+    id: "chauffeur-services",
     icon: <Crown size={32} />,
     title: strings.CHAUFFEUR,
     description: strings.CHAUFFEUR_DESCRIPTION,
@@ -54,7 +58,7 @@ const HomeServices: React.FC = () => {
                   <p>{service.description}</p>
                 </div>
                 <div className="service-footer">
-                  <Link to="/service-details" className="section-icon-btn">
+                  <Link to={`/service-details?service=${service.id}`} className="section-icon-btn">
                     <ArrowRight size={16} />
                   </Link>
                 </div>
@@ -66,7 +70,7 @@ const HomeServices: React.FC = () => {
         <div className="col-lg-12">
           <div className="services-box-footer">
             <p>{strings.FOOTER}</p>
-            <Link to="#" className="btn-default">
+            <Link to="/services" className="btn-default">
               {strings.BUTTON}
             </Link>
           </div>

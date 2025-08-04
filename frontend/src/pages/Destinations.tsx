@@ -5,7 +5,11 @@ import PageHeader from "../components/PageHeader";
 const Destinations = () => {
   return (
     <Layout>
-      <PageHeader title="Destinations" breadcrumb={[]} />
+      <PageHeader 
+        title="Destinations" 
+        subtitle="Alpen Getaway is a Getaway to the Europe's most beautiful Tourist Destinations"
+        breadcrumb={[]} 
+      />
       <DestinationsContent />
     </Layout>
   );

@@ -95,9 +95,9 @@ const Testimonials: React.FC = () => {
       <div className="container">
         <div className="row section-row">
           <div className="col-lg-12">
-            <div className="section-title">
-              <h3>{strings.HEADING}</h3>
-              <h2>{strings.DESCRIPTION}</h2>
+            <div className="section-title" style={{ textAlign: 'center', marginBottom: '50px' }}>
+              <h3 style={{ marginBottom: '20px', fontSize: '28px', fontWeight: '700' }}>{strings.HEADING}</h3>
+              <p style={{ fontSize: '18px', lineHeight: '1.6', color: '#333', margin: '0 auto', maxWidth: '800px' }}>{strings.DESCRIPTION}</p>
             </div>
           </div>
         </div>
