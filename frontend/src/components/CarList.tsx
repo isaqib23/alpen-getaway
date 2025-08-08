@@ -22,7 +22,7 @@ import * as CarService from "../services/CarService";
 import * as UserService from "../services/UserService";
 import Pager from "./Pager";
 
-import DoorsIcon from "/img/icons/car-door.png";
+import DoorsIcon from "../assets/images/icons/car-door.png";
 
 import "../assets/css/car-list.css";
 

@@ -5,14 +5,14 @@ import "../assets/css/pricing-details.css";
 
 const pricingItems = [
   {
-    image: "/img/our_fleet/Transperent Car Images/e_class.png",
+    image: "/assets/images/our_fleet/transparent_car_images/e_class.png",
     title: "Luxury Car",
     description: "Premium comfort and elegance for your special occasions and business trips.",
     price: 29,
     delay: 0,
   },
   {
-    image: "/img/our_fleet/Transperent Car Images/s_class.png",
+    image: "/assets/images/our_fleet/transparent_car_images/s_class.png",
     title: "Convertible Car",
     description: "Experience the thrill of open-air driving with our premium convertible fleet.",
     price: 49,
@@ -20,7 +20,7 @@ const pricingItems = [
     highlighted: true,
   },
   {
-    image: "/img/our_fleet/Transperent Car Images/v_class.png",
+    image: "/assets/images/our_fleet/transparent_car_images/v_class.png",
     title: "Sport Car",
     description: "High-performance vehicles designed for adrenaline seekers and speed enthusiasts.",
     price: 79,

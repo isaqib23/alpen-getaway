@@ -9,7 +9,7 @@ const teamMembers = [
   {
     name: "john smith",
     role: "senior chauffeur",
-    imageSrc: "/img/about_us/driver_1.jpg",
+    imageSrc: "/assets/images/about_us/driver_1.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -21,7 +21,7 @@ const teamMembers = [
   {
     name: "taylor smith",
     role: "city tour guide",
-    imageSrc: "/img/about_us/driver_2.jpg",
+    imageSrc: "/assets/images/about_us/driver_2.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -33,7 +33,7 @@ const teamMembers = [
   {
     name: "jordan brown",
     role: "distance driver",
-    imageSrc: "/img/about_us/driver_3.jpg",
+    imageSrc: "/assets/images/about_us/driver_3.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -45,7 +45,7 @@ const teamMembers = [
   {
     name: "davis casey",
     role: "travel specialist",
-    imageSrc: "/img/about_us/driver_4.jpg",
+    imageSrc: "/assets/images/about_us/driver_4.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -57,7 +57,7 @@ const teamMembers = [
   {
     name: "morgan lee",
     role: "travel consultant",
-    imageSrc: "/img/about_us/driver_1.jpg",
+    imageSrc: "/assets/images/about_us/driver_1.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -69,7 +69,7 @@ const teamMembers = [
   {
     name: "carlos mendes",
     role: "airport transfer",
-    imageSrc: "/img/about_us/driver_2.jpg",
+    imageSrc: "/assets/images/about_us/driver_2.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -81,7 +81,7 @@ const teamMembers = [
   {
     name: "riley walker",
     role: "executive chauffeur",
-    imageSrc: "/img/about_us/driver_3.jpg",
+    imageSrc: "/assets/images/about_us/driver_3.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -93,7 +93,7 @@ const teamMembers = [
   {
     name: "avery hall",
     role: "shuttle driver",
-    imageSrc: "/img/about_us/driver_4.jpg",
+    imageSrc: "/assets/images/about_us/driver_4.jpg",
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -110,6 +110,8 @@ const DestinationsContent: React.FC = () => {
   return (
     <div className="our-team bg-section">
       <div className="container">
+        {/* Driver Section - Commented Out */}
+        {/*
         <div className="row">
           {teamMembers.map((member, index) => {
             const [ref, inView] = useInView({
@@ -119,7 +121,6 @@ const DestinationsContent: React.FC = () => {
 
             return (
               <div className="col-lg-3 col-md-6" key={index}>
-                {/* Team Member Item Start */}
                 <motion.div
                   ref={ref}
                   className="team-member-item"
@@ -130,13 +131,11 @@ const DestinationsContent: React.FC = () => {
                     delay: isLaptop ? member.delay : 0,
                   }}
                 >
-                  {/* Team Image Start */}
                   <div className="team-image">
                     <figure className="image-anime">
                       <img src={member.imageSrc} alt={member.name} />
                     </figure>
 
-                    {/* Team Social Icon Start */}
                     <div className="team-social-icon">
                       <ul>
                         {member.social.map((social, i) => (
@@ -148,22 +147,18 @@ const DestinationsContent: React.FC = () => {
                         ))}
                       </ul>
                     </div>
-                    {/* Team Social Icon End */}
                   </div>
-                  {/* Team Image End */}
 
-                  {/* Team Content Start */}
                   <div className="team-content">
                     <h3>{member.name}</h3>
                     <p>{member.role}</p>
                   </div>
-                  {/* Team Content End */}
                 </motion.div>
-                {/* Team Member Item End */}
               </div>
             );
           })}
         </div>
+        */}
       </div>
     </div>
   );

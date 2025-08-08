@@ -20,22 +20,22 @@ const HomeWhyChooseUs: React.FC = () => {
   // Array of "Why Choose Us" items
   const whyChooseItems = [
     {
-      icon: "/img/icons/icon-why-choose-1.svg",
+      icon: "/assets/images/icons/icon-why-choose-1.svg",
       title: strings.FLEET,
       description: strings.FLEET_DESCRIPTION,
     },
     {
-      icon: "/img/icons/icon-why-choose-2.svg",
+      icon: "/assets/images/icons/icon-why-choose-2.svg",
       title: strings.CUSTOMER_SERVICE,
       description: strings.CUSTOMER_SERVICE_DESCRIPTION,
     },
     {
-      icon: "/img/icons/icon-why-choose-3.svg",
+      icon: "/assets/images/icons/icon-why-choose-3.svg",
       title: strings.LOCATIONS,
       description: strings.LOCATIONS_DESCRIPTION,
     },
     {
-      icon: "/img/icons/icon-why-choose-4.svg",
+      icon: "/assets/images/icons/icon-why-choose-4.svg",
       title: strings.RELIALBILITY,
       description: strings.RELIALBILITY_DESCRIPTION,
     },

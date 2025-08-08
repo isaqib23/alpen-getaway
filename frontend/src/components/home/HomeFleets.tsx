@@ -194,7 +194,7 @@ const HomeFleets: React.FC = () => {
                       <div className="perfect-fleet-item">
                         <div className="image-box">
                           <img 
-                            src={car.image || "/img/our_fleet/Transperent Car Images/e_class.png"} 
+                            src={car.image || "/assets/images/our_fleet/transparent_car_images/e_class.png"} 
                             alt={car.name} 
                           />
                         </div>

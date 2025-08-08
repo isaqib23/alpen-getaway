@@ -52,12 +52,11 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
     }
   };
 
-  const handleLangMenuClose = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleLangMenuClose = async (code?: string) => {
     setLangAnchorEl(null);
 
-    const { code } = event.currentTarget.dataset;
     if (code) {
-      setLang(helper.getLanguage(code));
+      setLang(helper.getLanguage(code)); 
       const currentLang = UserService.getLanguage();
       if (isSignedIn && user) {
         // Update user language
@@ -143,35 +142,70 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
     const jQueryScript = document.createElement("script");
     jQueryScript.src = "https://code.jquery.com/jquery-3.6.0.min.js";
     jQueryScript.async = true;
-    document.body.appendChild(jQueryScript);
+    
+    // Check if jQuery is already loaded
+    if (!(window as any).$) {
+      document.body.appendChild(jQueryScript);
+    }
 
-    // Load SlickNav script after jQuery
-    jQueryScript.onload = () => {
+    const initializeScripts = () => {
+      // Load SlickNav script after jQuery
       const slickNavScript = document.createElement("script");
       slickNavScript.src = "/js/jquery.slicknav.js";
       slickNavScript.async = true;
-      document.body.appendChild(slickNavScript);
+      
+      // Check if SlickNav script already exists
+      const existingSlickNav = document.querySelector(`script[src="/js/jquery.slicknav.js"]`);
+      if (!existingSlickNav) {
+        document.body.appendChild(slickNavScript);
+      }
 
-      slickNavScript.onload = () => {
+      const initializeSlickNav = () => {
         // Initialize SlickNav and other functionalities
-        (window as any).$(() => {
-          (window as any).$("#menu").slicknav({
-            label: "",
-            prependTo: ".responsive-menu",
-          });
+        if ((window as any).$) {
+          (window as any).$(() => {
+            // Check if slicknav is available
+            if ((window as any).$.fn.slicknav) {
+              (window as any).$("#menu").slicknav({
+                label: "",
+                prependTo: ".responsive-menu",
+              });
+            }
 
-          // Scroll to top functionality
-          (window as any).$("a[href='#top']").click(() => {
-            (window as any).$("html, body").animate({ scrollTop: 0 }, "slow");
-            return false;
+            // Scroll to top functionality
+            (window as any).$("a[href='#top']").click(() => {
+              (window as any).$("html, body").animate({ scrollTop: 0 }, "slow");
+              return false;
+            });
           });
-        });
+        }
       };
+
+      if (existingSlickNav) {
+        initializeSlickNav();
+      } else {
+        slickNavScript.onload = initializeSlickNav;
+      }
     };
 
+    if ((window as any).$) {
+      initializeScripts();
+    } else {
+      jQueryScript.onload = initializeScripts;
+    }
+
+    // Cleanup function
     return () => {
-      document.body.removeChild(jQueryScript);
-      // Clean up the SlickNav script if needed
+      // Only remove scripts if they were added by this component
+      const addedJQuery = document.querySelector(`script[src="https://code.jquery.com/jquery-3.6.0.min.js"]`);
+      const addedSlickNav = document.querySelector(`script[src="/js/jquery.slicknav.js"]`);
+      
+      if (addedJQuery && addedJQuery.parentNode) {
+        addedJQuery.parentNode.removeChild(addedJQuery);
+      }
+      if (addedSlickNav && addedSlickNav.parentNode) {
+        addedSlickNav.parentNode.removeChild(addedSlickNav);
+      }
     };
   }, []);
 
@@ -186,7 +220,7 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
                 <div className="container">
                   {/* Logo Start */}
                   <Link className="navbar-brand" to="/">
-                    <img src="/img/logo.png" alt="Logo" />
+                    <img src="/assets/images/logo.png" alt="Logo" />
                   </Link>
                   {/* Logo End */}
 
@@ -319,7 +353,7 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
                       {isLoaded && !loading && (
                         <div className="dropdown">
                           <button
-                            className="btn btn-link p-0 border-0 bg-transparent"
+                            className="btn btn-link p-0 border-0 bg-transparent d-flex align-items-center"
                             type="button"
                             id="languageDropdown"
                             data-bs-toggle="dropdown"
@@ -327,18 +361,19 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
                             title="Select Language"
                             style={{ color: '#000', marginLeft: '15px' }}
                           >
-                            <i className="fas fa-globe fs-5"></i>
+                            <i className="fas fa-globe fs-5 me-1"></i>
+                            <span className="small text-uppercase">{lang?.code || 'EN'}</span>
                           </button>
                           <ul className="dropdown-menu" aria-labelledby="languageDropdown">
                             {env._LANGUAGES.map((language) => (
                               <li key={language.code}>
                                 <button
-                                  className="dropdown-item"
+                                  className={`dropdown-item ${language.code === lang?.code ? 'active' : ''}`}
                                   type="button"
-                                  onClick={handleLangMenuClose}
-                                  data-code={language.code}
+                                  onClick={() => handleLangMenuClose(language.code)}
                                 >
-                                  {language.label}
+                                  <span className="me-2">{language.label}</span>
+                                  {language.code === lang?.code && <i className="fas fa-check text-success"></i>}
                                 </button>
                               </li>
                             ))}

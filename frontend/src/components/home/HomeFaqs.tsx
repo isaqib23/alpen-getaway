@@ -38,7 +38,7 @@ const HomeFAQs: React.FC = () => {
               <div className="faqs-img-1">
                 <figure className="image-anime">
                   <img
-                    src="/img/b2b_partner/1.jpg"
+                    src="/assets/images/b2b_partner/1.jpg"
                     alt="FAQ Image 1"
                   />
                 </figure>
@@ -47,7 +47,7 @@ const HomeFAQs: React.FC = () => {
               <div className="faqs-img-2">
                 <figure className="image-anime">
                   <img
-                    src="/img/b2b_partner/2.jpg"
+                    src="/assets/images/b2b_partner/2.jpg"
                     alt="FAQ Image 2"
                   />
                 </figure>

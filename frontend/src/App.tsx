@@ -41,9 +41,11 @@ const Settings = lazy(() => import("./pages/Settings"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Affiliate = lazy(() => import("./pages/Affiliate"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const LegalNotice = lazy(() => import("./pages/LegalNotice"));
+const DSGVO = lazy(() => import("./pages/DSGVO"));
 
 // Pages without Backend and Api support
-// const Services = lazy(() => import("./pages/Services"));
 // const CarTypes = lazy(() => import("./pages/CarTypes"));
 // const Blog = lazy(() => import("./pages/Blog"));
 // const BlogDetails = lazy(() => import("./pages/BlogDetails"));
@@ -99,6 +101,7 @@ const AppContent = () => {
               }
             />
             <Route path="/cars" element={<Cars />} />
+            <Route path="/fleet" element={<Cars />} />
             <Route path="/car-details" element={<CarDetails />} />
             <Route path="/destinations" element={<Destinations />} />
             <Route path="/change-password" element={
@@ -120,12 +123,15 @@ const AppContent = () => {
             } />
             <Route path="/contact" element={<Contact />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/legal-notice" element={<LegalNotice />} />
+            <Route path="/dsgvo" element={<DSGVO />} />
+            <Route path="/services" element={<ServiceDetails />} />
+            <Route path="/service-details" element={<ServiceDetails />} />
                 <Route path="*" element={<NotFound />} />
-                <Route path="/services" element={<ServiceDetails />} />
 
-                {/* Routes without Backend & Api support */}
-                {/* <Route path="/services" element={<Services />} /> */}
-                {/*<Route path="/car-types" element={<CarTypes />} />
+                {/* Routes without Backend & Api support
+                <Route path="/car-types" element={<CarTypes />} />
                 <Route path="/blog-details" element={<BlogDetails />} />
                 <Route path="/blog" element={<BlogDetails />} />
                 <Route path="/driver-details" element={<DriverDetails />} />

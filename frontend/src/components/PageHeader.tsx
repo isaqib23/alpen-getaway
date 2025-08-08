@@ -4,12 +4,14 @@ import "../assets/css/page-header.css";
 
 interface PageHeaderProps {
   title: string;
+  subtitle?: string;
   breadcrumb?: string[];
   image?: string;
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
   title,
+  subtitle,
   breadcrumb = [],
   image,
 }) => {
@@ -17,7 +19,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     <div 
       className="page-header bg-section"
       style={{
-        backgroundImage: `url(${image ? `cdn/cars/${image}` : "/img/about_us/about.jpg"})`,
+        backgroundImage: `url(${image ? `cdn/cars/${image}` : "/assets/images/about_us/about.jpg"})`,
         backgroundPosition: "center center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat"
@@ -28,6 +30,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           <div className="col-lg-12">
             <div className="page-header-box">
               <h1>{title}</h1>
+              {subtitle && (
+                <p className="page-subtitle">{subtitle}</p>
+              )}
               {breadcrumb.length > 0 && (
                 <nav>
                   <ol className="breadcrumb">

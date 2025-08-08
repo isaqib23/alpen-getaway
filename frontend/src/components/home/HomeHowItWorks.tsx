@@ -56,7 +56,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/img/about_us/1.jpg"
+                      src="/assets/images/about_us/1.jpg"
                       alt="Browse and Select"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -93,7 +93,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/img/about_us/2.png"
+                      src="/assets/images/about_us/2.png"
                       alt="Book and Confirm"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -131,7 +131,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/img/about_us/driver_2.jpg"
+                      src="/assets/images/about_us/driver_2.jpg"
                       alt="Book and Enjoy"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -175,7 +175,7 @@ const HomeHowItWorks = () => {
               <div className="how-work-img">
                 <RevealImage
                   className="reveal custom-figure"
-                  src="/img/about_us/about.jpg"
+                  src="/assets/images/about_us/about.jpg"
                   alt="How It Works"
                 />
               </div>
@@ -191,7 +191,7 @@ const HomeHowItWorks = () => {
                 </div>
                 <div className="trusted-client--image">
                   <img
-                    src="/img/about_us/driver_1.jpg"
+                    src="/assets/images/about_us/driver_1.jpg"
                     alt="Trusted Clients"
                   />
                 </div>

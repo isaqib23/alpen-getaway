@@ -14,6 +14,14 @@ const LANGUAGES = [
     code: "fr",
     label: "Français",
   },
+  {
+    code: "de",
+    label: "Deutsch",
+  },
+  {
+    code: "it",
+    label: "Italiano",
+  },
 ];
 
 const env = {
@@ -71,7 +79,7 @@ const env = {
   PAGINATION_MODE:
     (import.meta.env.VITE_BC_PAGINATION_MODE &&
       import.meta.env.VITE_BC_PAGINATION_MODE.toUpperCase()) ===
-    Const.PAGINATION_MODE.INFINITE_SCROLL
+      Const.PAGINATION_MODE.INFINITE_SCROLL
       ? Const.PAGINATION_MODE.INFINITE_SCROLL
       : Const.PAGINATION_MODE.CLASSIC,
   STRIPE_PUBLISHABLE_KEY: String(

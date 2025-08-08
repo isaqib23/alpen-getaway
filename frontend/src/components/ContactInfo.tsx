@@ -60,7 +60,7 @@ const ContactInfo: React.FC = () => {
                       animate={iconRefs[index].inView ? "visible" : "hidden"}
                     >
                       <div className="icon-box">
-                        <img src={`/img/icons/${item.icon}`} alt="" />
+                        <img src={`/assets/images/icons/${item.icon}`} alt="" />
                       </div>
                       <div className="contact-info-content">
                         <p>{item.content}</p>

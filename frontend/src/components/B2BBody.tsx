@@ -125,14 +125,14 @@ const B2BBody: React.FC = () => {
               <div className="about-img-1">
                 <RevealImage
                   className="reveal custom-figure h-100"
-                  src="/img/b2b_partner/1.jpg"
+                  src="/assets/images/b2b_partner/1.jpg"
                   alt="About Us 1"
                 />
               </div>
               <div className="about-img-2">
                 <RevealImage
                   className="reveal custom-figure h-100"
-                  src="/img/b2b_partner/2.jpg"
+                  src="/assets/images/b2b_partner/2.jpg"
                   alt="About Us 2"
                 />
               </div>

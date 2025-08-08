@@ -32,6 +32,17 @@
   margin-bottom: 20px;
 }
 
+.page-header-box .page-subtitle {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--white-color);
+  margin-bottom: 20px;
+  line-height: 1.4;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .page-header-box ol {
   margin: 0;
   padding: 0;
@@ -67,6 +78,11 @@
     font-size: 54px;
     margin-bottom: 10px;
   }
+
+  .page-header-box .page-subtitle {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
 }
 
 @media only screen and (max-width: 767px) {
@@ -78,6 +94,11 @@
 
   .page-header-box h1 {
     font-size: 30px;
+  }
+
+  .page-header-box .page-subtitle {
+    font-size: 16px;
+    margin-bottom: 10px;
   }
 
   .page-header-box ol li.breadcrumb-item {

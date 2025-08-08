@@ -27,7 +27,7 @@ const NotFound = () => {
               transition={{ duration: 0.5, delay: 0.25 }}
               className="error-page-image"
             >
-              <img src="/img/assets/404-error-img.png" alt="Error" />
+              <img src="/assets/images/assets/404-error-img.png" alt="Error" />
             </motion.div>
             <div className="error-page-content">
               <div className="error-page-content-heading">

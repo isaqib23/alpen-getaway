@@ -15,8 +15,8 @@ const Footer: React.FC = () => {
               {/* Footer Logo Start */}
               <div className="footer-logo">
                 <img
-                  src="/img/logo_black.png"
-                  alt="Novaride Logo"
+                  src="/assets/images/logo_black.png"
+                  alt="Alpen Getaway Logo"
                 />
               </div>
               {/* Footer Logo End */}
@@ -36,16 +36,16 @@ const Footer: React.FC = () => {
               <h3>{strings.LEGAL}</h3>
               <ul>
                 <li>
-                  <Link to="#">{strings.TERMS}</Link>
+                  <Link to="/terms">{strings.TERMS}</Link>
                 </li>
                 <li>
-                  <Link to="#">{strings.PRIVACY}</Link>
+                  <Link to="/privacy-policy">{strings.PRIVACY}</Link>
                 </li>
                 <li>
-                  <Link to="#">{strings.LEGAL_NOTICE}</Link>
+                  <Link to="/legal-notice">{strings.LEGAL_NOTICE}</Link>
                 </li>
                 <li>
-                  <Link to="#">{strings.ACCESSIBILITY}</Link>
+                  <Link to="/dsgvo">{strings.ACCESSIBILITY}</Link>
                 </li>
               </ul>
             </div>
@@ -92,7 +92,7 @@ const Footer: React.FC = () => {
                     />
                     <button type="submit" className="section-icon-btn">
                       <img
-                        src="/img/icons/arrow-white.svg"
+                        src="/assets/images/icons/arrow-white.svg"
                         alt="Submit"
                       />
                     </button>

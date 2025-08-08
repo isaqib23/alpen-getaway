@@ -49,6 +49,63 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
   });
 
 
+  const fetchData = async (
+    _page: number,
+    _keyword: string,
+    onFetch?: (event: { rows: bookcarsTypes.Location[]; rowCount: number }) => void
+  ) => {
+    try {
+      if (fetch || _page === 1) {
+        setLoading(true);
+        const data = await LocationService.getLocations(
+          _keyword,
+          _page,
+          env.PAGE_SIZE
+        );
+        
+        // Handle the Result<Location> type properly
+        let _data: bookcarsTypes.Result<bookcarsTypes.Location>;
+        if (Array.isArray(data) && data.length > 0) {
+          // Legacy API response format
+          _data = data[0] as bookcarsTypes.Result<bookcarsTypes.Location>;
+        } else if (data && 'pageInfo' in data && 'resultData' in data) {
+          // New API response format
+          _data = data as bookcarsTypes.Result<bookcarsTypes.Location>;
+        } else {
+          // Fallback
+          _data = { 
+            pageInfo: { 
+              totalRecords: 0, 
+              totalPages: 0, 
+              pageSize: 0, 
+              pageNumber: 0,
+              hasNextPage: false,
+              hasPreviousPage: false
+            }, 
+            resultData: [] 
+          };
+        }
+
+        if (!_data) {
+          return;
+        }
+
+        const totalRecords = _data.pageInfo?.totalRecords || 0;
+        const _rows = _page === 1 ? _data.resultData : [...rows, ..._data.resultData];
+
+        setRows(_rows);
+        setFetch(_data.resultData.length > 0);
+
+        if (onFetch) {
+          onFetch({ rows: _data.resultData, rowCount: totalRecords });
+        }
+      }
+    } catch (err) {
+      helper.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const isLaptop = useMediaQuery({ query: "(min-width: 992px)" });
   const navigate = useNavigate();
@@ -283,7 +340,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="src/assets/images/icon-rent-details-2.svg"
+                          src="/assets/images/icon-rent-details-2.svg"
                           alt="Pickup Location"
                         />
                       </div> */}
@@ -298,6 +355,11 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                           <option value="" disabled>
                             {locationsLoading ? '⏳ Loading locations...' : `📌 ${strings.SELECT}`}
                           </option>
+                          {rows && rows.map((row, index) => (
+                            <option key={index} value={row._id}>
+                              {`📌 ${row.name}`}
+                            </option>
+                          ))}
                           {rows.map((row, index) => {
                             const selectedDropOffLocation = rows.find(r => r._id === dropOffLocation);
                             const isDisabled = isLocationDisabled(
@@ -330,7 +392,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="src/assets/images/icon-rent-details-2.svg"
+                          src="/assets/images/icon-rent-details-2.svg"
                           alt="Dropoff Location"
                         />
                       </div> */}
@@ -345,6 +407,11 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                           <option value="" disabled>
                             {locationsLoading ? '⏳ Loading locations...' : `📌 ${strings.SELECT}`}
                           </option>
+                          {rows && rows.map((row, index) => (
+                            <option key={index} value={row._id}>
+                              {`📌 ${row.name}`}
+                            </option>
+                          ))}
                           {rows.map((row, index) => {
                             const selectedPickupLocation = rows.find(r => r._id === pickupLocation);
                             const isDisabled = isLocationDisabled(

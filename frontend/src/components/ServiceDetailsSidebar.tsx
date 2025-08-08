@@ -6,76 +6,40 @@ import "../assets/css/service-details-sidebar.css";
 import { Link } from "react-router-dom";
 
 import { strings } from "../lang/service-details";
+import { serviceLinks, ServiceId } from "../config/services";
 
-const serviceLinks: ServiceLink[] = [
-  {
-    id: "airport-transfer",
-    name: strings.AIRPORT_LINK,
-    icon: "icon-service-3.svg",
-  },
-  {
-    id: "economy-services",
-    name: strings.ECONOMY_LINK,
-    icon: "icon-about-trusted-2.svg",
-  },
-  {
-    id: "business-transfers",
-    name: strings.BUSINESS_LINK,
-    icon: "icon-service-2.svg",
-  },
-  {
-    id: "vip-transfer",
-    name: strings.VIP_LINK,
-    icon: "icon-service-1.svg",
-  },
-  {
-    id: "private-transfer",
-    name: strings.PRIVATE_LINK,
-    icon: "icon-service-5.svg",
-  },
-  {
-    id: "flexible-payment-options",
-    name: strings.FLEXIBLE_LINK,
-    icon: "icon-service-6.svg",
-  },
-  {
-    id: "live-rides",
-    name: strings.LIVE_LINK,
-    icon: "icon-location.svg",
-    iconStyle: {
-      filter:
-        "invert(95%) sepia(96%) saturate(2441%) hue-rotate(163deg) brightness(97%) contrast(101%)",
-    },
-  },
-  {
-    id: "roadside-assistance",
-    name: strings.ROADSIE_LINK,
-    icon: "icon-service-7.svg",
-  },
-  {
-    id: "chauffeur-services",
-    name: strings.CHAUFFEUR_LINK,
-    icon: "icon-service-4.svg",
-  },
-];
+// Map service IDs to localized names
+const getLocalizedServiceLinks = () => {
+  return serviceLinks.map(service => ({
+    ...service,
+    name: getLocalizedServiceName(service.id)
+  }));
+};
 
-type ServiceId =
-  | "airport-transfer"
-  | "economy-services"
-  | "business-transfers"
-  | "vip-transfer"
-  | "private-transfer"
-  | "flexible-payment-options"
-  | "live-rides"
-  | "roadside-assistance"
-  | "chauffeur-services";
-
-interface ServiceLink {
-  id: ServiceId;
-  name: string;
-  icon: string;
-  iconStyle?: React.CSSProperties;
-}
+const getLocalizedServiceName = (serviceId: ServiceId): string => {
+  switch (serviceId) {
+    case "airport-transfer":
+      return strings.AIRPORT_LINK;
+    case "economy-services":
+      return strings.ECONOMY_LINK;
+    case "business-transfers":
+      return strings.BUSINESS_LINK;
+    case "vip-transfer":
+      return strings.VIP_LINK;
+    case "private-transfer":
+      return strings.PRIVATE_LINK;
+    case "flexible-payment-options":
+      return strings.FLEXIBLE_LINK;
+    case "live-rides":
+      return strings.LIVE_LINK;
+    case "roadside-assistance":
+      return strings.ROADSIE_LINK;
+    case "chauffeur-services":
+      return strings.CHAUFFEUR_LINK;
+    default:
+      return serviceId;
+  }
+};
 
 interface ServiceDetailsSidebarProps {
   selectedService: ServiceId;
@@ -95,6 +59,8 @@ const ServiceDetailsSidebar: React.FC<ServiceDetailsSidebarProps> = ({
     threshold: 0.1,
   });
 
+  const localizedServiceLinks = getLocalizedServiceLinks();
+
   return (
     <div className="col-lg-4">
       {/* Service Sidebar Start */}
@@ -111,7 +77,7 @@ const ServiceDetailsSidebar: React.FC<ServiceDetailsSidebarProps> = ({
         >
           <h3>Our Services</h3>
           <ul>
-            {serviceLinks.map((service) => (
+            {localizedServiceLinks.map((service) => (
               <li key={service.id}>
                 <Link
                   to="#"
@@ -121,11 +87,6 @@ const ServiceDetailsSidebar: React.FC<ServiceDetailsSidebarProps> = ({
                   }}
                   className={selectedService === service.id ? "active" : ""}
                 >
-                  <img
-                    src={`src/assets/images/${service.icon}`}
-                    alt={service.name}
-                    style={service.iconStyle || {}}
-                  />
                   {service.name}
                 </Link>
               </li>
@@ -146,12 +107,6 @@ const ServiceDetailsSidebar: React.FC<ServiceDetailsSidebarProps> = ({
         >
           {/* CTA Contact Item Start */}
           <div className="cta-contact-item">
-            <div className="icon-box">
-              <img
-                src="src/assets/images/icon-sidebar-cta.svg"
-                alt="Contact Icon"
-              />
-            </div>
             <div className="cta-contact-content">
               <h2>{strings.HELP}</h2>
               <p>{strings.EVERYTIME}</p>
