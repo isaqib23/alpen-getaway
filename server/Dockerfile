@@ -31,7 +31,7 @@ COPY package*.json ./
 # Authenticate NPM registry
 
 # Install runtime dependencies (without dev/test dependencies)
-RUN npm ci --legacy-peer-deps --omit=dev --production
+RUN npm ci --omit=dev
 
 # Copy production build and .hbs files from development stage
 COPY --from=development /app/dist/ ./dist/
