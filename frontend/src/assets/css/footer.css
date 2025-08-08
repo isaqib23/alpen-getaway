@@ -1,0 +1,214 @@
+/************************************/
+/***        16. Footer css        ***/
+/************************************/
+
+.main-footer {
+  background: var(--primary-color) url("/img/assets/footer-bg.svg") no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+  padding: 70px 0 25px;
+  margin-bottom: 50px;
+}
+
+.about-footer {
+  padding-right: 40px;
+}
+
+.about-footer .footer-logo {
+  margin-bottom: 30px;
+}
+
+.about-footer .about-footer-content p {
+  color: var(--white-color);
+  margin: 0;
+}
+
+.footer-links {
+  margin-left: 70px;
+}
+
+.footer-links h3,
+.footer-newsletter h3 {
+  color: var(--white-color);
+  font-size: 20px;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: 25px;
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links ul li {
+  margin-bottom: 10px;
+}
+
+.footer-links ul li:last-child {
+  margin-bottom: 0;
+}
+
+.footer-links ul li a {
+  color: var(--white-color);
+  text-transform: capitalize;
+  transition: all 0.3s ease-in-out;
+}
+
+.footer-links ul li:hover a {
+  color: var(--accent-color);
+}
+
+.footer-newsletter-form .form-group {
+  width: 100%;
+  display: flex;
+  position: relative;
+}
+
+.footer-newsletter-form .form-group .form-control {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--dark-divider-color);
+  color: var(--white-color);
+  border: none;
+  border-radius: 100px;
+  box-shadow: none;
+}
+
+.footer-newsletter-form .form-group .form-control::placeholder {
+  color: var(--white-color);
+}
+
+.footer-newsletter-form .form-group .section-icon-btn {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 50px;
+  transform: translate(48px, -50%);
+  border: none;
+  padding: 0;
+}
+
+.footer-newsletter-form .section-icon-btn:hover {
+  background-color: var(--primary-color);
+  transform: translate(48px, -50%);
+}
+
+.footer-newsletter-form .section-icon-btn:hover img {
+  transform: rotate(45deg);
+}
+
+.footer-copyright {
+  border-top: 1px solid var(--dark-divider-color);
+  padding: 25px 0;
+  margin-top: 50px;
+}
+
+.footer-copyright .footer-copyright-text p {
+  color: var(--white-color);
+  margin: 0;
+}
+
+.footer-copyright .footer-social-links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: end;
+}
+
+.footer-copyright .footer-social-links ul li {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.footer-copyright .footer-social-links ul li:last-child {
+  margin-right: 0;
+}
+
+.footer-copyright .footer-social-links ul li a {
+  background-color: transparent;
+  color: var(--white-color);
+  border: 2px solid var(--white-color);
+  height: 36px;
+  width: 36px;
+  border-radius: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.footer-copyright .footer-social-links ul li a i {
+  font-size: 16px;
+}
+
+.footer-copyright .footer-social-links ul li a:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+@media only screen and (max-width: 1820px) {
+  .main-footer {
+    margin-bottom: 50px;
+  }
+}
+@media only screen and (max-width: 1366px) {
+  .main-footer {
+    margin-bottom: 15px;
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  .main-footer {
+    padding: 50px 0 0;
+    margin: 0;
+  }
+
+  .about-footer .footer-logo {
+    margin-bottom: 20px;
+  }
+
+  .about-footer {
+    padding-right: 0;
+    margin-bottom: 40px;
+  }
+
+  .footer-links {
+    margin-left: 0px;
+  }
+
+  .footer-links h3,
+  .footer-newsletter h3 {
+    margin-bottom: 20px;
+  }
+
+  .footer-newsletter-form .form-group .form-control {
+    padding: 12px 20px;
+  }
+
+  .footer-copyright {
+    padding: 20px 0;
+    margin-top: 40px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .footer-links {
+    margin-bottom: 40px;
+  }
+
+  .footer-copyright {
+    margin-top: 40px;
+  }
+
+  .footer-copyright-text {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .footer-copyright .footer-social-links ul {
+    text-align: center;
+  }
+}
