@@ -10,8 +10,6 @@ import {
   HiOutlineCog6Tooth,
   HiOutlineArrowRight 
 } from "react-icons/hi2";
-import { useLoading } from '../../context/LoadingContext';
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -30,7 +28,6 @@ const HomeFleets: React.FC = () => {
   const { ref, inView } = useInView({ triggerOnce: true });
   const [cars, setCars] = useState<bookcarsTypes.Car[]>([]);
   const [loading, setLoading] = useState(true);
-  const { addLoadingTask, removeLoadingTask } = useLoading();
 
   const getCarTypeLabel = (carType: bookcarsTypes.CarType) => {
     switch (carType) {
@@ -63,15 +60,20 @@ const HomeFleets: React.FC = () => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+    
     const fetchCars = async () => {
+      if (!isMounted) return;
+      
       try {
         setLoading(true);
-        addLoadingTask('home-fleets');
         console.log('Fetching cars for home page...');
         
         // First get all suppliers
         const suppliersData = await SupplierService.getAllSuppliers();
         console.log('Suppliers data:', suppliersData);
+        
+        if (!isMounted) return;
         
         if (suppliersData && suppliersData.length > 0) {
           const supplierIds = suppliersData.map(supplier => supplier._id!);
@@ -87,6 +89,8 @@ const HomeFleets: React.FC = () => {
           const data = await CarService.getCars(payload, 1, 10);
           console.log('Cars data response:', data);
           
+          if (!isMounted) return;
+          
           const _data = data && data.length > 0 ? data[0] : { pageInfo: { totalRecord: 0 }, resultData: [] };
           
           if (_data && _data.resultData && _data.resultData.length > 0) {
@@ -98,19 +102,28 @@ const HomeFleets: React.FC = () => {
           }
         } else {
           console.log('No suppliers found');
-          setCars([]);
+          if (isMounted) {
+            setCars([]);
+          }
         }
       } catch (err) {
         console.error('Error fetching cars:', err);
         helper.error(err);
-        setCars([]);
+        if (isMounted) {
+          setCars([]);
+        }
       } finally {
-        setLoading(false);
-        removeLoadingTask('home-fleets');
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchCars();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

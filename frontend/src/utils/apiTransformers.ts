@@ -143,24 +143,39 @@ export const transformCarResponse = (serverCar: any): bookcarsTypes.Car => {
   // @ts-ignore - Legacy type compatibility
   return {
     _id: serverCar.id,
-    name: serverCar.name,
-    image: serverCar.image || '',
-    price: serverCar.pricePerDay || 0,
+    id: serverCar.id,
+    name: serverCar.name || `${serverCar.make || ''} ${serverCar.model || ''}`.trim() || 'Car',
+    image: serverCar.image || (serverCar.images && serverCar.images.length > 0 ? serverCar.images[0].url : ''),
+    price: serverCar.price || serverCar.pricePerDay || 100, // Default price for display
     available: serverCar.available !== false,
-    type: serverCar.type || '',
-    gearbox: serverCar.gearbox || '',
-    aircon: serverCar.aircon || false,
+    type: serverCar.type || serverCar.category?.name || 'Economy',
+    gearbox: serverCar.gearbox || 'automatic',
+    aircon: serverCar.aircon || serverCar.hasAC || false,
     doors: serverCar.doors || 4,
     seats: serverCar.seats || 5,
-    fuelPolicy: serverCar.fuelPolicy || '',
-    mileage: serverCar.mileage || '',
+    seat: serverCar.seats || 5, // Legacy alias
+    fuelPolicy: serverCar.fuelPolicy || 'likeForlike',
+    mileage: serverCar.mileage || 0,
     cancellation: serverCar.cancellation || 0,
     amendments: serverCar.amendments || 0,
     theftProtection: serverCar.theftProtection || 0,
     collisionDamageWaiver: serverCar.collisionDamageWaiver || 0,
     fullInsurance: serverCar.fullInsurance || 0,
     additionalDriver: serverCar.additionalDriver || 0,
-    company: serverCar.companyId,
+    minimumAge: serverCar.minimumAge || 21,
+    supplier: serverCar.company || { id: '', name: '', fullName: '', type: 'company', approved: true },
+    rating: serverCar.rating || 4.5,
+    extra: serverCar.extra || 0,
+    // Additional fields for the new API format
+    make: serverCar.make || '',
+    model: serverCar.model || '',
+    year: serverCar.year || new Date().getFullYear(),
+    color: serverCar.color || '',
+    hasWifi: serverCar.hasWifi || false,
+    hasGPS: serverCar.hasGPS || false,
+    category: serverCar.category || { id: '', name: 'Economy' },
+    features: serverCar.features,
+    images: serverCar.images || [],
   };
 };
 
@@ -173,13 +188,19 @@ export const transformPaginatedResponse = <T>(
   serverResponse: any,
   itemTransformer: (item: any) => T
 ): bookcarsTypes.Result<T> => {
+  // Handle the new API response structure with pagination field
+  const pagination = serverResponse.pagination || {};
+  const total = pagination.total || serverResponse.total || 0;
+  const limit = pagination.limit || serverResponse.limit || 10;
+  const page = pagination.page || serverResponse.page || 1;
+  
   // @ts-ignore - Legacy type compatibility
   return {
     pageInfo: {
-      totalRecords: serverResponse.total || 0,
-      totalPages: Math.ceil((serverResponse.total || 0) / (serverResponse.limit || 10)),
-      pageSize: serverResponse.limit || 10,
-      pageNumber: serverResponse.page || 1,
+      totalRecords: total,
+      totalPages: Math.ceil(total / limit),
+      pageSize: limit,
+      pageNumber: page,
       hasNextPage: false,
       hasPreviousPage: false,
     },
@@ -207,10 +228,14 @@ export const transformValidationError = (serverError: any): any => {
  */
 export const transformLocationResponse = (serverLocation: any): any => {
   return {
-    _id: serverLocation.id,
+    _id: serverLocation._id || serverLocation.id,
+    id: serverLocation.id || serverLocation._id,
     name: serverLocation.name,
     latitude: serverLocation.latitude,
     longitude: serverLocation.longitude,
+    country: serverLocation.country,
+    type: serverLocation.type,
+    values: serverLocation.values || [serverLocation.name],
   };
 };
 

@@ -55,14 +55,14 @@ export interface Car {
   supplier: Company;
   minimumAge: number;
   available: boolean;
-  type: CarType;
-  gearbox: GearboxType;
+  type: CarType | string;
+  gearbox: GearboxType | string;
   aircon: boolean;
   image?: string;
   seat: number;
   seats?: number; // Legacy field alias
   doors: number;
-  fuelPolicy: FuelPolicy;
+  fuelPolicy: FuelPolicy | string;
   mileage: number;
   cancellation: number;
   amendments: number;
@@ -75,6 +75,16 @@ export interface Car {
   rating?: number;
   extra?: number;
   price: number;
+  // Additional fields for new API
+  make?: string;
+  model?: string;
+  year?: number;
+  color?: string;
+  hasWifi?: boolean;
+  hasGPS?: boolean;
+  category?: any;
+  features?: any;
+  images?: any[];
 }
 
 export enum CarType {
@@ -112,11 +122,24 @@ export enum FuelPolicy {
   FreeTank = 'freeTank'
 }
 
+export enum Mileage {
+  Limited = 'limited',
+  Unlimited = 'unlimited'
+}
+
 export enum CarRange {
   Mini = 'mini',
   Midi = 'midi',
   Maxi = 'maxi',
   Scooter = 'scooter'
+}
+
+export interface CarSpecs {
+  seats?: number;
+  doors?: number;
+  aircon?: boolean;
+  transmission?: string;
+  fuelType?: string;
 }
 
 export interface Company {
@@ -217,14 +240,22 @@ export interface GetCarsPayload {
   from?: Date;
   to?: Date;
   fuel?: string[];
-  gearbox?: string[];
-  mileage?: string[];
+  gearbox?: string[] | GearboxType[];
+  mileage?: string[] | Mileage[];
   deposit?: number;
   aircon?: boolean;
   moreThanFourDoors?: boolean;
   moreThanFiveSeats?: boolean;
-  carType?: CarType;
-  fuelPolicy?: FuelPolicy;
+  carType?: string[] | CarType[];
+  fuelPolicy?: string[] | FuelPolicy[];
+  carSpecs?: CarSpecs;
+}
+
+export interface CarFilter {
+  pickupLocation?: Location;
+  dropOffLocation?: Location;
+  from?: Date;
+  to?: Date;
 }
 
 export interface CheckoutPayload {

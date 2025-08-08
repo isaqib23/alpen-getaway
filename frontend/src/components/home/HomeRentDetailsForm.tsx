@@ -6,9 +6,9 @@ import { useMediaQuery } from "react-responsive";
 
 import * as bookcarsTypes from "../../types/bookcars-types";
 import * as bookcarsHelper from "../../utils/bookcars-helper";
-import * as LocationService from "../../services/LocationService";
 import * as UserService from "../../services/UserService";
 import * as SupplierService from "../../services/SupplierService";
+import * as LocationService from "../../services/LocationService";
 import env from "../../config/env.config";
 import * as helper from "../../common/helper";
 
@@ -23,15 +23,20 @@ import { fr, enUS } from "date-fns/locale";
 import { FaUser, FaMagnifyingGlass } from "react-icons/fa6";
 
 const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
-  const [init, setInit] = useState(false);
-  const [loading, setLoading] = useState(false);
+  // Dynamic locations from API
   const [rows, setRows] = useState<bookcarsTypes.Location[]>([]);
-  const [fetch, setFetch] = useState(true);
-  const [page, setPage] = useState(1);
-  const [keyword, setKeyword] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState<
-    bookcarsTypes.Location[]
-  >([]);
+  const [locationsLoading, setLocationsLoading] = useState(true);
+
+  // Helper function to check if location is already selected in the other field
+  const isLocationDisabled = (locationId: string, otherLocationId: string, locationName: string, otherLocationName: string) => {
+    // Check by ID first
+    if (locationId === otherLocationId) return true;
+    
+    // Also check by name to handle cases where same location has different IDs
+    if (locationName && otherLocationName && locationName.toLowerCase() === otherLocationName.toLowerCase()) return true;
+    
+    return false;
+  };
 
   const [showPassengerForm, setShowPassengerForm] = useState(false);
   const [passengerData, setPassengerData] = useState({
@@ -43,50 +48,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
     specialEquipment: 0,
   });
 
-  useEffect(() => {
-    fetchData(1, keyword);
-  }, []);
 
-  const fetchData = async (
-    _page: number,
-    _keyword: string,
-    onFetch?: bookcarsTypes.DataEvent<bookcarsTypes.Location>
-  ) => {
-    try {
-      if (fetch || _page === 1) {
-        setLoading(true);
-        const data = await LocationService.getLocations(
-          _keyword,
-          _page,
-          env.PAGE_SIZE
-        );
-        const _data =
-          data && data.length > 0
-            ? data[0]
-            : { pageInfo: { totalRecord: 0 }, resultData: [] };
-        if (!_data) {
-          return;
-        }
-        const totalRecords =
-          Array.isArray(_data.pageInfo) && _data.pageInfo.length > 0
-            ? _data.pageInfo[0].totalRecords
-            : 0;
-        const _rows =
-          _page === 1 ? _data.resultData : [...rows, ..._data.resultData];
-
-        setRows(_rows);
-        setFetch(_data.resultData.length > 0);
-
-        if (onFetch) {
-          onFetch({ rows: _data.resultData, rowCount: totalRecords });
-        }
-      }
-    } catch (err) {
-      helper.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const isLaptop = useMediaQuery({ query: "(min-width: 992px)" });
   const navigate = useNavigate();
@@ -109,6 +71,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
   const [sameLocation, setSameLocation] = useState(true);
   const [fromError, setFromError] = useState(false);
   const [toError, setToError] = useState(false);
+  const [locationError, setLocationError] = useState("");
   const [suppliers, setSuppliers] = useState<bookcarsTypes.User[]>([]);
 
   useEffect(() => {
@@ -134,12 +97,33 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
     setTo(_to);
 
     const init = async () => {
-      let _suppliers = await SupplierService.getAllSuppliers();
-      _suppliers = _suppliers.filter(
-        (supplier) => supplier.avatar && !/no-image/i.test(supplier.avatar)
-      );
-      bookcarsHelper.shuffle(_suppliers);
-      setSuppliers(_suppliers);
+      try {
+        // Load suppliers
+        let _suppliers = await SupplierService.getAllSuppliers();
+        _suppliers = _suppliers.filter(
+          (supplier) => supplier.avatar && !/no-image/i.test(supplier.avatar)
+        );
+        bookcarsHelper.shuffle(_suppliers);
+        setSuppliers(_suppliers);
+
+        // Load locations from API
+        const locationsResult = await LocationService.getLocations('', 0, 100);
+        
+        if (locationsResult && locationsResult.resultData && Array.isArray(locationsResult.resultData)) {
+          setRows(locationsResult.resultData);
+        } else if (locationsResult && locationsResult.data && Array.isArray(locationsResult.data)) {
+          // Handle direct array response from fallback API
+          setRows(locationsResult.data);
+        } else if (locationsResult && Array.isArray(locationsResult)) {
+          // Handle direct array response
+          setRows(locationsResult);
+        }
+        setLocationsLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setSuppliers([]);
+        setLocationsLoading(false);
+      }
     };
 
     init();
@@ -153,29 +137,59 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
     }
   }, [from]);
 
-  const handlePickupLocationChange = async (values: bookcarsTypes.Option[]) => {
-    const _pickupLocation = (values.length > 0 && values[0]._id) || "";
-    setPickupLocation(_pickupLocation);
-
-    if (_pickupLocation) {
-      const location = await LocationService.getLocation(_pickupLocation);
-      setSelectedPickupLocation(location);
-    } else {
-      setSelectedPickupLocation(undefined);
+  const handlePickupLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const locationId = e.target.value;
+    const location = rows.find(row => row._id === locationId);
+    
+    setPickupLocation(locationId);
+    setSelectedPickupLocation(location);
+    setLocationError(""); // Clear any previous error
+    
+    // If drop-off location is the same as the new pickup location (by ID or name), clear it
+    if (location && selectedDropOffLocation) {
+      const shouldClear = isLocationDisabled(
+        locationId,
+        dropOffLocation,
+        location.name,
+        selectedDropOffLocation.name
+      );
+      
+      if (shouldClear) {
+        setDropOffLocation("");
+        setSelectedDropOffLocation(undefined);
+        setLocationError(`Drop-off location cleared as it was the same as pickup location (${location.name})`);
+        
+        // Clear the message after 3 seconds
+        setTimeout(() => setLocationError(""), 3000);
+      }
     }
   };
 
-  const handleDropOffLocationChange = async (
-    values: bookcarsTypes.Option[]
-  ) => {
-    const _dropOffLocation = (values.length > 0 && values[0]._id) || "";
-    setDropOffLocation(_dropOffLocation);
-
-    if (_dropOffLocation) {
-      const location = await LocationService.getLocation(_dropOffLocation);
-      setSelectedDropOffLocation(location);
-    } else {
-      setSelectedDropOffLocation(undefined);
+  const handleDropOffLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const locationId = e.target.value;
+    const location = rows.find(row => row._id === locationId);
+    
+    setDropOffLocation(locationId);
+    setSelectedDropOffLocation(location);
+    setLocationError(""); // Clear any previous error
+    
+    // If pickup location is the same as the new drop-off location (by ID or name), clear it
+    if (location && selectedPickupLocation) {
+      const shouldClear = isLocationDisabled(
+        locationId,
+        pickupLocation,
+        location.name,
+        selectedPickupLocation.name
+      );
+      
+      if (shouldClear) {
+        setPickupLocation("");
+        setSelectedPickupLocation(undefined);
+        setLocationError(`Pickup location cleared as it was the same as drop-off location (${location.name})`);
+        
+        // Clear the message after 3 seconds
+        setTimeout(() => setLocationError(""), 3000);
+      }
     }
   };
 
@@ -250,6 +264,21 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
               <div className="col-md-12">
                 <div className="rent-details-box">
                   <div className="rent-details-form">
+                    {/* Location Error Message */}
+                    {locationError && (
+                      <div style={{
+                        backgroundColor: '#fff3cd',
+                        borderLeft: '4px solid #ffc107',
+                        padding: '8px 12px',
+                        marginBottom: '15px',
+                        borderRadius: '4px',
+                        color: '#856404',
+                        fontSize: '14px',
+                        fontWeight: '500'
+                      }}>
+                        ℹ️ {locationError}
+                      </div>
+                    )}
                     {/* Rent Details Item Start */}
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
@@ -263,16 +292,36 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                         <select
                           className="rent-details-form form-select"
                           value={pickupLocation}
-                          onChange={(e) => setPickupLocation(e.target.value)}
+                          onChange={handlePickupLocationChange}
+                          disabled={locationsLoading}
                         >
                           <option value="" disabled>
-                            {`📌 ${strings.SELECT}`}
+                            {locationsLoading ? '⏳ Loading locations...' : `📌 ${strings.SELECT}`}
                           </option>
-                          {rows.map((row, index) => (
-                            <option key={index} value={row._id}>
-                              {`📌 ${row.name}`}
-                            </option>
-                          ))}
+                          {rows.map((row, index) => {
+                            const selectedDropOffLocation = rows.find(r => r._id === dropOffLocation);
+                            const isDisabled = isLocationDisabled(
+                              row._id, 
+                              dropOffLocation, 
+                              row.name, 
+                              selectedDropOffLocation?.name || ''
+                            );
+                            
+                            return (
+                              <option 
+                                key={index} 
+                                value={row._id}
+                                disabled={isDisabled}
+                                style={{ 
+                                  color: isDisabled ? '#999' : 'inherit',
+                                  fontStyle: isDisabled ? 'italic' : 'normal',
+                                  backgroundColor: isDisabled ? '#f5f5f5' : 'inherit'
+                                }}
+                              >
+                                {`📌 ${row.name}${isDisabled ? ' (Selected as Drop-off)' : ''}`}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
                     </div>
@@ -290,17 +339,36 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                         <select
                           className="rent-details-form form-select"
                           value={dropOffLocation}
-                          onChange={(e) => setDropOffLocation(e.target.value)}
-                          onFocus={() => {}}
+                          onChange={handleDropOffLocationChange}
+                          disabled={locationsLoading}
                         >
                           <option value="" disabled>
-                            {`📌 ${strings.SELECT}`}
+                            {locationsLoading ? '⏳ Loading locations...' : `📌 ${strings.SELECT}`}
                           </option>
-                          {rows.map((row, index) => (
-                            <option key={index} value={row._id}>
-                              {`📌 ${row.name}`}
-                            </option>
-                          ))}
+                          {rows.map((row, index) => {
+                            const selectedPickupLocation = rows.find(r => r._id === pickupLocation);
+                            const isDisabled = isLocationDisabled(
+                              row._id, 
+                              pickupLocation, 
+                              row.name, 
+                              selectedPickupLocation?.name || ''
+                            );
+                            
+                            return (
+                              <option 
+                                key={index} 
+                                value={row._id}
+                                disabled={isDisabled}
+                                style={{ 
+                                  color: isDisabled ? '#999' : 'inherit',
+                                  fontStyle: isDisabled ? 'italic' : 'normal',
+                                  backgroundColor: isDisabled ? '#f5f5f5' : 'inherit'
+                                }}
+                              >
+                                {`📌 ${row.name}${isDisabled ? ' (Selected as Pickup)' : ''}`}
+                              </option>
+                            );
+                          })}
                         </select>
                       </div>
                     </div>

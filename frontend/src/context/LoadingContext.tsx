@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 
 interface LoadingContextType {
   isLoading: boolean;
@@ -20,17 +20,17 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
   const [loadingTasks, setLoadingTasks] = useState<Set<string>>(new Set(['app-initial']));
   const [isPageLoading, setIsPageLoading] = useState(true);
 
-  const addLoadingTask = (taskId: string) => {
+  const addLoadingTask = useCallback((taskId: string) => {
     setLoadingTasks(prev => new Set(prev).add(taskId));
-  };
+  }, []);
 
-  const removeLoadingTask = (taskId: string) => {
+  const removeLoadingTask = useCallback((taskId: string) => {
     setLoadingTasks(prev => {
       const newTasks = new Set(prev);
       newTasks.delete(taskId);
       return newTasks;
     });
-  };
+  }, []);
   
   // Remove initial loading task after a very short delay to allow React to mount
   useEffect(() => {
@@ -41,13 +41,13 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
     return () => clearTimeout(timer);
   }, []);
 
-  const setIsLoading = (loading: boolean) => {
+  const setIsLoading = useCallback((loading: boolean) => {
     if (loading) {
       addLoadingTask('global');
     } else {
       removeLoadingTask('global');
     }
-  };
+  }, [addLoadingTask, removeLoadingTask]);
 
   // Show loading when we have active tasks
   const isLoading = loadingTasks.size > 0;
