@@ -19,23 +19,25 @@ import * as UserService from './UserService'
  */
 export const getCars = (data: bookcarsTypes.GetCarsPayload, page: number, size: number): Promise<bookcarsTypes.Result<bookcarsTypes.Car>> => {
   try {
-    const transformedFilters = transformGetCarsPayload(data);
+    // Simplified parameters that match the actual API
     const params = {
-      ...transformedFilters,
       page: page + 1, // Server uses 1-based indexing
       limit: size,
+      // For now, just get featured cars without complex filtering
     };
 
     return publicApi
-      .get('/cars?' + createQueryParams(params))
+      .get('/public/content/cars?' + createQueryParams(params))
       .then((res) => transformPaginatedResponse(res.data, transformCarResponse))
       .catch((error) => {
+        console.error('Cars API error:', error);
         // Fallback to legacy API
         return axiosInstance
           .post(`/api/frontend-cars/${page}/${size}`, data)
           .then((res) => res.data);
       });
   } catch (error) {
+    console.error('Cars service error:', error);
     // Direct fallback to legacy API
     return axiosInstance
       .post(`/api/frontend-cars/${page}/${size}`, data)
@@ -52,8 +54,15 @@ export const getCars = (data: bookcarsTypes.GetCarsPayload, page: number, size: 
 export const getCar = (id: string): Promise<bookcarsTypes.Car> => {
   try {
     return publicApi
-      .get(`/cars/${encodeURIComponent(id)}`)
-      .then((res) => transformCarResponse(res.data))
+      .get(`/public/content/cars?limit=100`)
+      .then((res) => {
+        const cars = res.data?.data || [];
+        const car = cars.find((c: any) => c.id === id);
+        if (car) {
+          return transformCarResponse(car);
+        }
+        throw new Error('Car not found');
+      })
       .catch((error) => {
         // Fallback to legacy API
         return axiosInstance

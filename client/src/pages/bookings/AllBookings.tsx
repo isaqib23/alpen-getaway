@@ -49,6 +49,7 @@ import {
   TrendingUp as TrendingUpIcon,
   Receipt as ReceiptIcon,
   AttachMoney as MoneyIcon,
+  Add as AddIcon,
 } from '@mui/icons-material'
 import { bookingsAPI, Booking, BookingFilters, BookingStatus, PaymentStatus, BookingStatsResponse } from '../../api/bookings'
 import { useUsers } from '../../hooks/useUsers'
@@ -469,13 +470,13 @@ const AllBookings = () => {
           >
             Export
           </Button>
-          {/* <Button
+          <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={handleAddBooking}
           >
             New Booking
-          </Button> */}
+          </Button>
         </Box>
       </Box>
 
@@ -767,13 +768,13 @@ const AllBookings = () => {
                           <AssignmentIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
-                      {/* <IconButton
+                      <IconButton
                         size="small"
                         onClick={() => handleEditBooking(booking)}
                         color="primary"
                       >
                         <EditIcon fontSize="small" />
-                      </IconButton> */}
+                      </IconButton>
                       <IconButton
                         size="small"
                         onClick={() => handleDeleteBooking(booking)}

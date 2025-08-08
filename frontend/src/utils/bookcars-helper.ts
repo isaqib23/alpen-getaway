@@ -50,6 +50,41 @@ export const uuid = (): string => {
   });
 };
 
+export const shuffle = <T>(array: T[]): T[] => {
+  if (!Array.isArray(array)) return [];
+  
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+// Flatten suppliers for compatibility with the UI components
+export const flattenSuppliers = (suppliers: any[]): string[] => {
+  return suppliers.map(supplier => supplier._id || supplier.id).filter(Boolean);
+};
+
+// Get all car types - placeholder for now
+export const getAllCarTypes = (): string[] => {
+  return ['Economy', 'Compact', 'Mid-size', 'Full-size', 'SUV', 'Luxury', 'Van'];
+};
+
+// Array equality check
+export const arrayEqual = <T>(a: T[], b: T[]): boolean => {
+  if (a.length !== b.length) return false;
+  return a.every((val, index) => val === b[index]);
+};
+
+// Calculate days between two dates
+export const days = (from: Date, to: Date): number => {
+  if (!from || !to) return 0;
+  const diffTime = Math.abs(to.getTime() - from.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+};
+
 // Export as default object for compatibility
 const helper = {
   joinURL,
@@ -57,7 +92,12 @@ const helper = {
   formatPrice,
   formatDatePart,
   capitalize,
-  uuid
+  uuid,
+  shuffle,
+  flattenSuppliers,
+  getAllCarTypes,
+  arrayEqual,
+  days
 };
 
 export default helper;

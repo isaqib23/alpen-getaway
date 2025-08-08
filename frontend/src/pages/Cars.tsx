@@ -119,13 +119,11 @@ const Cars = () => {
 
   const onLoad = async (user?: bookcarsTypes.User) => {
     const { state } = location;
-    console.log('Cars onLoad - state:', state);
     
     // If no state is provided, show fleet without search parameters
     if (!state) {
       try {
         setLoading(true);
-        console.log('Cars onLoad - fetching suppliers without state');
         
         // Get all suppliers without requiring location/date filters
         const payload: bookcarsTypes.GetCarsPayload = {
@@ -138,9 +136,7 @@ const Cars = () => {
         };
         
         const _allSuppliers = await SupplierService.getFrontendSuppliers(payload);
-        console.log('Cars onLoad - suppliers fetched:', _allSuppliers);
         const _suppliers = bookcarsHelper.flattenSuppliers(_allSuppliers);
-        console.log('Cars onLoad - flattened suppliers:', _suppliers);
 
         setAllSuppliers(_allSuppliers);
         setSuppliers(_suppliers);
@@ -148,7 +144,6 @@ const Cars = () => {
         
         if (!user || (user && user.verified)) {
           setVisible(true);
-          console.log('Cars onLoad - setting visible to true');
         }
         return;
       } catch (err) {
@@ -174,28 +169,59 @@ const Cars = () => {
     let _pickupLocation;
     let _dropOffLocation;
     try {
-      _pickupLocation = await LocationService.getLocation(pickupLocationId);
+      // Try to get pickup location
+      try {
+        _pickupLocation = await LocationService.getLocation(pickupLocationId);
+      } catch (error) {
+        console.warn('Failed to fetch pickup location by ID, trying to find by name:', error);
+        // If fetching by ID fails, try to find location in our loaded locations by name
+        const locations = await LocationService.getLocations('', 0, 100);
+        const allLocations = locations?.resultData || locations?.data || [];
+        _pickupLocation = allLocations.find((loc: any) => 
+          loc._id === pickupLocationId || 
+          loc.id === pickupLocationId || 
+          loc.name === pickupLocationId
+        );
+      }
 
       if (!_pickupLocation) {
+        console.warn('Pickup location not found:', pickupLocationId);
         setLoading(false);
         setNoMatch(true);
         return;
       }
 
+      // Try to get drop-off location
       if (dropOffLocationId !== pickupLocationId) {
-        _dropOffLocation = await LocationService.getLocation(dropOffLocationId);
+        try {
+          _dropOffLocation = await LocationService.getLocation(dropOffLocationId);
+        } catch (error) {
+          console.warn('Failed to fetch drop-off location by ID, trying to find by name:', error);
+          // If fetching by ID fails, try to find location in our loaded locations by name
+          const locations = await LocationService.getLocations('', 0, 100);
+          const allLocations = locations?.resultData || locations?.data || [];
+          _dropOffLocation = allLocations.find((loc: any) => 
+            loc._id === dropOffLocationId || 
+            loc.id === dropOffLocationId || 
+            loc.name === dropOffLocationId
+          );
+        }
       } else {
         _dropOffLocation = _pickupLocation;
       }
 
       if (!_dropOffLocation) {
+        console.warn('Drop-off location not found:', dropOffLocationId);
         setLoading(false);
         setNoMatch(true);
         return;
       }
 
       const payload: bookcarsTypes.GetCarsPayload = {
-        pickupLocation: _pickupLocation._id,
+        pickupLocation: _pickupLocation._id || _pickupLocation.id,
+        dropoffLocation: _dropOffLocation._id || _dropOffLocation.id,
+        from: _from,
+        to: _to,
         carSpecs,
         carType,
         gearbox,
@@ -221,7 +247,6 @@ const Cars = () => {
     }
   };
 
-  console.log('Cars render - visible:', visible, 'suppliers:', suppliers, 'loading:', loading, 'noMatch:', noMatch);
   return (
     <Layout onLoad={onLoad} strict={false}>
       <PageHeader
