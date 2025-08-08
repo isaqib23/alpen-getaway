@@ -18,6 +18,8 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { AuctionsModule } from './auctions/auctions.module';
 import { EarningsModule } from './earnings/earnings.module';
+import { PublicModule } from './public/public.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
 
 // Entities
 import { User } from './users/entities/user.entity';
@@ -105,6 +107,8 @@ import {SeederModule} from "@/database/seeds/seeder.module";
         AnalyticsModule,
         AuctionsModule,
         EarningsModule,
+        PublicModule,
+        SuppliersModule,
         SeederModule
     ],
 })

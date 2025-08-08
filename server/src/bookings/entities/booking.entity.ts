@@ -61,6 +61,12 @@ export class Booking {
     @Column('text', { nullable: true })
     special_instructions: string;
 
+    @Column({ nullable: true })
+    flight_number: string;
+
+    @Column({ type: 'enum', enum: ['ONLINE', 'CASH'], nullable: true })
+    payment_method: 'ONLINE' | 'CASH';
+
     // Booking details
     @Column('timestamp')
     pickup_datetime: Date;

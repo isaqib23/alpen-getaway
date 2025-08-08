@@ -36,8 +36,23 @@ export class Review {
     @Column({ type: 'enum', enum: ReviewStatus, default: ReviewStatus.PENDING })
     status: ReviewStatus;
 
+    @Column({ nullable: true })
+    customerName: string;
+
+    @Column({ default: false })
+    featured: boolean;
+
+    @Column({ nullable: true })
+    rating: number;
+
+    @Column('text', { nullable: true })
+    comment: string;
+
     @CreateDateColumn()
     created_at: Date;
+
+    @CreateDateColumn()
+    createdAt: Date;
 
     // Relations
     @OneToOne(() => Booking, booking => booking.review)
@@ -47,6 +62,10 @@ export class Review {
     @ManyToOne(() => User, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'reviewer_id' })
     reviewer: User;
+
+    @ManyToOne(() => User, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'reviewer_id' })
+    user: User;
 
     @ManyToOne(() => Driver, driver => driver.reviews)
     @JoinColumn({ name: 'driver_id' })

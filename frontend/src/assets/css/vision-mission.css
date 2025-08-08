@@ -1,0 +1,171 @@
+.vision-mission {
+  padding: 100px 0;
+}
+
+.vision-mission .section-title {
+  max-width: 780px;
+}
+
+.our-projects-nav {
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.our-projects-nav .nav-tabs {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: inline-flex;
+  background-color: var(--secondary-color);
+  border-radius: 100px;
+  border: none;
+  padding: 15px;
+}
+
+.our-projects-nav ul li {
+  margin-right: 25px;
+}
+
+.our-projects-nav ul li:last-child {
+  margin-right: 0;
+}
+
+.our-projects-nav ul li .nav-link {
+  background-color: var(--white-color);
+  color: var(--primary-color);
+  border-radius: 100px;
+  font-family: var(--accent-font);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.1em;
+  text-transform: capitalize;
+  border: none;
+  padding: 15px 30px;
+  transition: all 0.4s ease-in-out;
+}
+
+.our-projects-nav ul li .nav-link:hover {
+  border: none;
+}
+
+.our-projects-nav ul li .nav-link.active {
+  background-color: var(--accent-color);
+  color: var(--white-color);
+  border: none;
+}
+
+.vision-mission-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.vision-mission-list ul li {
+  position: relative;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  padding-left: 30px;
+}
+
+.vision-mission-list ul li:last-child {
+  margin-bottom: 0;
+}
+
+.vision-mission-list ul li:before {
+  content: "\f058";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 20px;
+  color: var(--accent-color);
+  display: inline-block;
+  line-height: normal;
+  position: absolute;
+  top: 3px;
+  left: 0;
+}
+
+.vision-image {
+  text-align: right;
+  margin-left: 30px;
+}
+
+.vision-image figure {
+  display: block;
+  border-radius: 46px;
+}
+
+.vision-image img {
+  aspect-ratio: 1 / 0.99;
+  object-fit: cover;
+  border-radius: 46px;
+}
+
+@media only screen and (max-width: 991px) {
+  .vision-mission {
+    padding: 50px 0;
+  }
+
+  .our-projects-nav {
+    margin-bottom: 30px;
+  }
+
+  .our-projects-nav .nav-tabs {
+    padding: 10px;
+  }
+
+  .our-projects-nav ul li {
+    margin-right: 20px;
+  }
+
+  .our-projects-nav ul li .nav-link {
+    padding: 12px 20px;
+  }
+
+  .vision-mission-content {
+    margin-bottom: 30px;
+  }
+
+  .vision-mission-list ul li {
+    font-size: 18px;
+    margin-bottom: 15px;
+    padding-left: 25px;
+  }
+
+  .vision-mission-list ul li:before {
+    font-size: 18px;
+  }
+
+  .vision-image {
+    text-align: center;
+    margin-left: 0px;
+  }
+
+  .vision-image img {
+    aspect-ratio: 1 / 0.8;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .our-projects-nav .nav-tabs {
+    justify-content: center;
+  }
+
+  .our-projects-nav ul li {
+    margin-right: 10px;
+    margin-bottom: 15px;
+  }
+
+  .our-projects-nav ul li:last-child {
+    margin-bottom: 0;
+  }
+
+  .vision-mission-list ul li {
+    font-size: 16px;
+  }
+
+  .vision-mission-list ul li:before {
+    top: 4px;
+  }
+}

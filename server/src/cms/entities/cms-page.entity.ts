@@ -40,6 +40,24 @@ export class CmsPage {
     @Column({ nullable: true })
     menu_title: string;
 
+    @Column({ nullable: true })
+    category: string;
+
+    @Column({ default: true })
+    active: boolean;
+
+    @Column({ default: false })
+    published: boolean;
+
+    @Column({ default: false })
+    showInMenu: boolean;
+
+    @Column({ default: 0 })
+    order: number;
+
+    @Column({ nullable: true })
+    type: string;
+
     @Column()
     created_by: string;
 

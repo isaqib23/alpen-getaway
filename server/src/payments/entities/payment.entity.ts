@@ -38,6 +38,16 @@ export class Payment {
     @Column({ nullable: true })
     stripe_payment_method_id: string;
 
+    // General gateway fields
+    @Column({ nullable: true })
+    gateway: string;
+
+    @Column({ nullable: true })
+    gateway_payment_id: string;
+
+    @Column('json', { nullable: true })
+    metadata: any;
+
     @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PENDING })
     payment_status: PaymentStatus;
 

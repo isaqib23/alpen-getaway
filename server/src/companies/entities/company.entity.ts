@@ -68,6 +68,46 @@ export class Company {
     @Column('decimal', { precision: 5, scale: 2, nullable: true })
     commission_rate: number;
 
+    // Additional fields for public API
+    @Column({ nullable: true })
+    name: string;
+
+    @Column({ nullable: true })
+    type: string;
+
+    @Column({ nullable: true })
+    contactEmail: string;
+
+    @Column({ nullable: true })
+    contactPhone: string;
+
+    @Column({ nullable: true })
+    contactPerson: string;
+
+    @Column({ nullable: true })
+    position: string;
+
+    @Column({ nullable: true })
+    region: string;
+
+    @Column({ nullable: true })
+    publicEmail: string;
+
+    @Column({ nullable: true })
+    publicPhone: string;
+
+    @Column({ nullable: true })
+    logo: string;
+
+    @Column({ nullable: true, type: 'text' })
+    description: string;
+
+    @Column({ default: true })
+    active: boolean;
+
+    @Column({ nullable: true })
+    userId: string;
+
     @CreateDateColumn()
     created_at: Date;
 

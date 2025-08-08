@@ -36,6 +36,24 @@ export class User {
     @Column({ default: false })
     phone_verified: boolean;
 
+    @Column({ nullable: true })
+    country_code: string;
+
+    @Column({ nullable: true, default: 'en' })
+    preferred_language: string;
+
+    @Column({ default: false })
+    blacklisted: boolean;
+
+    @Column({ nullable: true })
+    email_verification_token: string;
+
+    @Column({ nullable: true })
+    password_reset_token: string;
+
+    @Column({ nullable: true, type: 'timestamp' })
+    password_reset_expiry: Date;
+
     @CreateDateColumn()
     created_at: Date;
 
