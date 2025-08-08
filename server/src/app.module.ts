@@ -52,7 +52,7 @@ import {SeederModule} from "@/database/seeds/seeder.module";
             isGlobal: true,
         }),
         ThrottlerModule.forRoot({
-            ttl: 60000,
+            //ttl: 60000,
             limit: 10,
         }),
         TypeOrmModule.forRootAsync({
