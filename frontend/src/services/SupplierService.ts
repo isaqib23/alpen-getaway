@@ -70,16 +70,13 @@ export const getFrontendSuppliers = (data: bookcarsTypes.GetCarsPayload): Promis
       })
       .catch((error) => {
         console.error('Suppliers API error:', error);
-        // Fallback to legacy API
-        return axiosInstance
-          .post('/api/frontend-suppliers', data)
-          .then((res) => res.data);
+        console.log('No suppliers available - returning empty array');
+        // Instead of failing, return empty array to allow cars to still be shown
+        return [];
       });
   } catch (error) {
     console.error('Suppliers service error:', error);
-    // Direct fallback to legacy API
-    return axiosInstance
-      .post('/api/frontend-suppliers', data)
-      .then((res) => res.data);
+    // Return empty array instead of failing to allow cars display
+    return Promise.resolve([]);
   }
 }

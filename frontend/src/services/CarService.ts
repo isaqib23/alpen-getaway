@@ -19,29 +19,79 @@ import * as UserService from './UserService'
  */
 export const getCars = (data: bookcarsTypes.GetCarsPayload, page: number, size: number): Promise<bookcarsTypes.Result<bookcarsTypes.Car>> => {
   try {
-    // Simplified parameters that match the actual API
+    // Use the correct public API endpoint for featured cars
     const params = {
       page: page + 1, // Server uses 1-based indexing
       limit: size,
-      // For now, just get featured cars without complex filtering
+      category: data.carType?.join(','), // Pass car types as comma-separated
     };
 
     return publicApi
       .get('/public/content/cars?' + createQueryParams(params))
-      .then((res) => transformPaginatedResponse(res.data, transformCarResponse))
+      .then((res) => {
+        // Transform the response to match expected format
+        const apiData = res.data;
+        if (apiData.success && apiData.data) {
+          return {
+            resultData: apiData.data.map(transformCarResponse),
+            pageInfo: [
+              {
+                totalRecords: apiData.pagination?.total || apiData.data.length,
+                totalPages: apiData.pagination?.totalPages || 1,
+                pageSize: size,
+                pageIndex: page,
+                resultData: apiData.data.map(transformCarResponse)
+              }
+            ]
+          };
+        }
+        throw new Error('Invalid API response format');
+      })
       .catch((error) => {
         console.error('Cars API error:', error);
-        // Fallback to legacy API
-        return axiosInstance
-          .post(`/api/frontend-cars/${page}/${size}`, data)
-          .then((res) => res.data);
+        console.log('Trying alternative approach - getting all cars');
+        // Alternative: try to get cars without pagination
+        return publicApi
+          .get('/public/content/cars?limit=50')
+          .then((res) => {
+            const apiData = res.data;
+            if (apiData.success && apiData.data) {
+              const cars = apiData.data.map(transformCarResponse);
+              const startIndex = page * size;
+              const endIndex = startIndex + size;
+              const paginatedCars = cars.slice(startIndex, endIndex);
+              
+              return {
+                resultData: paginatedCars,
+                pageInfo: [
+                  {
+                    totalRecords: cars.length,
+                    totalPages: Math.ceil(cars.length / size),
+                    pageSize: size,
+                    pageIndex: page,
+                    resultData: paginatedCars
+                  }
+                ]
+              };
+            }
+            throw new Error('No cars available');
+          });
       });
   } catch (error) {
     console.error('Cars service error:', error);
-    // Direct fallback to legacy API
-    return axiosInstance
-      .post(`/api/frontend-cars/${page}/${size}`, data)
-      .then((res) => res.data);
+    // Return empty result instead of failing
+    return Promise.resolve({
+      resultData: [],
+      pageInfo: [
+        {
+          totalRecords: 0,
+          totalPages: 0,
+          pageSize: size,
+          pageIndex: page,
+          resultData: []
+        }
+      ]
+    });
   }
 }
 
