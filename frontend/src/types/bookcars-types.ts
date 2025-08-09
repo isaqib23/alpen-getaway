@@ -1,5 +1,12 @@
 // Local type definitions for bookcars types
 
+// Generic record type for various entities
+export interface RecordType {
+  _id: string;
+  name: string;
+  [key: string]: any;
+}
+
 export interface User {
   _id?: string; // Legacy ID field for compatibility
   id?: string;

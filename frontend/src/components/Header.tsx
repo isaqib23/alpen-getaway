@@ -138,28 +138,30 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
   }, [hidden, user, setNotificationCount]);
 
   useEffect(() => {
-    const initializeSlickNav = () => {
-      const loadScript = (src: string): Promise<void> => {
-        return new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = src;
-          script.async = true;
-          
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error(`Failed to load: ${src}`));
-          
-          // Check if script with same src already exists
-          const existing = document.querySelector(`script[src="${src}"]`);
-          if (existing) {
-            resolve();
-            return;
-          }
-          
-          document.head.appendChild(script);
-        });
-      };
+    // Load jQuery first
+    const jQueryScript = document.createElement("script");
+    jQueryScript.src = "https://code.jquery.com/jquery-3.6.0.min.js";
+    jQueryScript.async = true;
+    
+    // Check if jQuery is already loaded
+    if (!(window as any).$) {
+      document.body.appendChild(jQueryScript);
+    }
 
-      const initMenu = () => {
+    const initializeScripts = () => {
+      // Load SlickNav script after jQuery - use CDN instead of local file
+      const slickNavScript = document.createElement("script");
+      slickNavScript.src = "https://cdnjs.cloudflare.com/ajax/libs/SlickNav/1.0.10/jquery.slicknav.min.js";
+      slickNavScript.async = true;
+      
+      // Check if SlickNav script already exists
+      const existingSlickNav = document.querySelector(`script[src*="slicknav"]`);
+      if (!existingSlickNav) {
+        document.body.appendChild(slickNavScript);
+      }
+
+      const initializeSlickNav = () => {
+        // Initialize SlickNav and other functionalities
         if ((window as any).$) {
           (window as any).$(() => {
             try {
@@ -177,60 +179,24 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
                 return false;
               });
             } catch (error) {
-              console.warn("SlickNav initialization error:", error);
+              console.warn("SlickNav initialization failed:", error);
             }
           });
         }
       };
 
-      // Load jQuery first
-      if (!(window as any).$) {
-        loadScript("https://code.jquery.com/jquery-3.6.0.min.js")
-          .then(() => {
-            // Add a small delay to ensure jQuery is fully loaded
-            setTimeout(() => {
-              // Now load SlickNav plugin
-              loadScript("https://cdn.jsdelivr.net/gh/ComputerWolf/SlickNav@master/dist/jquery.slicknav.min.js")
-                .then(() => {
-                  initMenu();
-                })
-                .catch((error) => {
-                  console.warn("Failed to load SlickNav from CDN:", error);
-                  // Try loading from local file as fallback
-                  loadScript("/js/jquery.slicknav.js")
-                    .then(() => {
-                      initMenu();
-                    })
-                    .catch(() => {
-                      console.warn("Failed to load SlickNav from local file. Mobile menu may not work properly.");
-                    });
-                });
-            }, 100);
-          })
-          .catch((error) => {
-            console.error("Failed to load jQuery:", error);
-          });
+      if (existingSlickNav) {
+        initializeSlickNav();
       } else {
-        // jQuery already loaded
-        loadScript("https://cdn.jsdelivr.net/gh/ComputerWolf/SlickNav@master/dist/jquery.slicknav.min.js")
-          .then(() => {
-            initMenu();
-          })
-          .catch((error) => {
-            console.warn("Failed to load SlickNav from CDN:", error);
-            // Try loading from local file as fallback
-            loadScript("/js/jquery.slicknav.js")
-              .then(() => {
-                initMenu();
-              })
-              .catch(() => {
-                console.warn("Failed to load SlickNav. Mobile menu may not work properly.");
-              });
-          });
+        slickNavScript.onload = initializeSlickNav;
       }
     };
 
-    initializeSlickNav();
+    if ((window as any).$) {
+      initializeScripts();
+    } else {
+      jQueryScript.onload = initializeScripts;
+    }
   }, []);
 
   return (
