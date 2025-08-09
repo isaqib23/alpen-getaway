@@ -16,6 +16,12 @@ import env from "../config/env.config";
 
 import { strings } from "../lang/fleets-single-content";
 import { strings as carStrings } from "../lang/cars";
+import eClassImg from "../assets/images/our_fleet/transparent_car_images/e_class.png";
+import sClassImg from "../assets/images/our_fleet/transparent_car_images/s_class.png";
+import vClassImg from "../assets/images/our_fleet/transparent_car_images/v_class.png";
+import vitoImg from "../assets/images/our_fleet/transparent_car_images/vito.png";
+import iconFleetsBenefits1 from "../assets/images/icons/icon-fleets-benefits-1.svg";
+import iconFleetsBenefits2 from "../assets/images/icons/icon-fleets-benefits-2.svg";
 
 interface FleetsSingleContentProps {
   car: bookcarsTypes.Car;
@@ -34,10 +40,10 @@ interface FleetsSingleContentProps {
 
 // Dummy data for sliders, benefits, amenities, and rental conditions
 const sliderImages = [
-  "/assets/images/our_fleet/transparent_car_images/e_class.png",
-  "/assets/images/our_fleet/transparent_car_images/s_class.png",
-  "/assets/images/our_fleet/transparent_car_images/v_class.png",
-  "/assets/images/our_fleet/transparent_car_images/vito.png",
+  eClassImg,
+  sClassImg,
+  vClassImg,
+  vitoImg,
 ];
 
 const rentalConditions = [
@@ -173,12 +179,12 @@ const FleetSingleContent: React.FC<FleetsSingleContentProps> = ({
 
   const benefits = [
     {
-      icon: "/assets/images/icons/icon-fleets-benefits-1.svg",
+      icon: iconFleetsBenefits1,
       title: strings.MILEAGE,
       description: strings.MILEAGE_DESCRIPTION,
     },
     {
-      icon: "/assets/images/icons/icon-fleets-benefits-2.svg",
+      icon: iconFleetsBenefits2,
       title: strings.FUEL_POLICY,
       description:
         car?.fuelPolicy === "likeForlike"

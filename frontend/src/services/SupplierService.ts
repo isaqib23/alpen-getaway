@@ -2,6 +2,7 @@ import * as bookcarsTypes from "../types/bookcars-types"
 import axiosInstance from './axiosInstance'
 import { publicApi, authUtils } from '../api/client'
 import { transformUserResponse, transformPaginatedResponse, createQueryParams } from '../utils/apiTransformers'
+import defaultSupplierImg from '../assets/images/default-supplier.jpg'
 
 /**
  * Get all suppliers.
@@ -61,7 +62,7 @@ export const getFrontendSuppliers = (data: bookcarsTypes.GetCarsPayload): Promis
           fullName: supplier.name || supplier.companyName || `${supplier.firstName || 'Supplier'} ${supplier.lastName || ''}`.trim(),
           type: 'supplier',
           verified: supplier.verified !== false && supplier.status === 'active',
-          avatar: supplier.logo || supplier.avatar || '/assets/images/default-supplier.jpg',
+          avatar: supplier.logo || supplier.avatar || defaultSupplierImg,
           companyName: supplier.companyName || supplier.name,
           phone: supplier.phone || supplier.contactPhone || '',
           address: supplier.address || '',

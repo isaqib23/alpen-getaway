@@ -19,6 +19,10 @@ import { strings } from "../lang/fleets-single-sidebar";
 import { strings as commonStrings } from "../lang/cars";
 import { strings as chkStrings } from "../lang/checkout";
 import { strings as comStrings } from "../lang/common";
+import iconFleetList1 from "../assets/images/icons/icon-fleet-list-1.svg";
+import iconFleetList2 from "../assets/images/icons/icon-fleet-list-2.svg";
+import iconFleetList3 from "../assets/images/icons/icon-fleet-list-3.svg";
+import iconFleetList4 from "../assets/images/icons/icon-fleet-list-4.svg";
 
 const stripePromise = loadStripe(env.STRIPE_PUBLISHABLE_KEY);
 // Modal styles
@@ -181,22 +185,22 @@ const FleetsSingleSidebar: React.FC<FleetsSingleSidebarProps> = ({
 
   const sidebarList = [
     {
-      src: "/assets/images/icons/icon-fleet-list-1.svg",
+      src: iconFleetList1,
       text: strings.PASSENGERS,
       value: car?.seats,
     },
     {
-      src: "/assets/images/icons/icon-fleet-list-2.svg",
+      src: iconFleetList2,
       text: strings.AIRCON,
       value: car?.aircon ? strings.YES : strings.NO,
     },
     {
-      src: "/assets/images/icons/icon-fleet-list-3.svg",
+      src: iconFleetList3,
       text: strings.DOORS,
       value: car?.doors,
     },
     {
-      src: "/assets/images/icons/icon-fleet-list-4.svg",
+      src: iconFleetList4,
       text: strings.TRANSMISSION,
       value: capitalizeFirstWord(
         car.gearbox === bookcarsTypes.GearboxType.Manual
@@ -205,7 +209,7 @@ const FleetsSingleSidebar: React.FC<FleetsSingleSidebarProps> = ({
       ),
     },
     {
-      src: "/assets/images/icons/icon-fleet-list-1.svg",
+      src: iconFleetList1,
       text: strings.AGE,
       value: car?.minimumAge,
     },
