@@ -1,0 +1,114 @@
+/* ===================================================== */
+/* ALPEN GETAWAY - MASTER STYLESHEET                    */
+/* Standardized CSS Architecture                        */
+/* ===================================================== */
+
+/* ===== FOUNDATION ===== */
+@import './_variables.css';
+@import './_utilities.css';
+
+/* ===== CORE STYLES ===== */
+@import './index.css';
+
+/* ===== LAYOUT COMPONENTS ===== */
+@import './header.css';
+@import './footer.css';
+
+/* ===== UI COMPONENTS ===== */
+@import './accordion.css';
+@import './booking-status.css';
+@import './booking-filter.css';
+
+/* ===== PAGE STYLES ===== */
+@import './home.css';
+@import './home-hero.css';
+@import './home-fleets.css';
+@import './home-services.css';
+@import './home-testimonials.css';
+@import './home-why-choose-us.css';
+@import './home-faqs.css';
+@import './home-cta.css';
+@import './airport-transfer.css';
+@import './trusted-partner.css';
+
+@import './cars.css';
+@import './car-list.css';
+@import './car-details.css';
+@import './cars-sidebar.css';
+
+@import './booking.css';
+@import './booking-form.css';
+@import './booking-list.css';
+@import './booking-management.css';
+@import './bookings.css';
+
+@import './legal-pages.css';
+@import './contact.css';
+@import './contact-info.css';
+@import './contact-map.css';
+
+/* ===== FORM STYLES ===== */
+@import './sign-in.css';
+@import './sign-up.css';
+@import './forgot-password.css';
+@import './change-password.css';
+
+/* ===== MISC COMPONENTS ===== */
+@import './destinations.css';
+@import './experienced-drivers.css';
+
+/* ===== ANIMATION LIBRARIES ===== */
+@import './animate.css';
+
+/* ===== ICON FONTS ===== */
+@import './all.css';
+
+/* ===== HOMEPAGE SECTION STANDARDIZATION ===== */
+/* Universal homepage section styling for consistency */
+.homepage-section {
+  padding: 80px 0;
+  width: 100%;
+}
+
+.homepage-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* First section (hero) - no background */
+.homepage-section:first-of-type {
+  background: transparent;
+}
+
+/* All sections after first - subtle orange background */
+.homepage-section:not(:first-of-type) {
+  background: linear-gradient(135deg, rgba(255, 54, 0, 0.02) 0%, rgba(255, 54, 0, 0.01) 100%);
+  position: relative;
+}
+
+.homepage-section:not(:first-of-type)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(255, 54, 0, 0.015) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 54, 0, 0.01) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+  .homepage-section {
+    padding: 60px 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .homepage-section {
+    padding: 50px 0;
+  }
+}

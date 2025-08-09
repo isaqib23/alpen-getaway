@@ -1,0 +1,143 @@
+div.notifications {
+  position: relative; /* Changed from absolute to relative */
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+div.notifications .empty-list {
+  width: 100%;
+  max-width: 380px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+div.notifications div.header-container {
+  position: relative; /* Changed from absolute to relative */
+  height: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--white-color);
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0;
+  width: 100%; /* Make it fit the parent */
+}
+
+div.notifications div.header-container div.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 680px;
+}
+
+div.notifications div.notifications-footer {
+  position: relative; /* Changed from absolute to relative */
+  height: 54px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  border-top: 1px solid #ddd;
+  padding: 5px 10px 5px 0;
+  width: 100%; /* Make it fit the parent */
+}
+
+div.notifications div.notifications-footer div.row-count {
+  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 7px;
+}
+
+div.notifications div.notifications-footer div.actions {
+  display: flex;
+  flex-direction: row;
+}
+
+div.notifications div.notifications-footer div.actions .icon {
+  font-size: 16px;
+  width: 24px;
+}
+
+div.notifications div.notifications-list {
+  flex-grow: 1; /* This makes the list take up the remaining space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 15px;
+  padding-right: 10px;
+  overflow-y: overlay;
+  padding-bottom: 54px; /* Account for footer height */
+}
+
+div.notifications div.notifications-list div.notification-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 680px;
+}
+
+div.notifications
+  div.notifications-list
+  div.notification-container
+  div.notification-checkbox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+div.notifications
+  div.notifications-list
+  div.notification-container
+  div.notification {
+  background: var(--white-color);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: var(--text-color);
+  margin-bottom: 10px;
+  min-height: 75px;
+  word-break: break-word;
+  padding: 10px;
+  font-size: 15px;
+  width: 100%;
+}
+
+div.notifications div.notifications-list div.notification-container .unread {
+  font-weight: bold;
+}
+
+div.notifications
+  div.notifications-list
+  div.notification-container
+  div.notification
+  div.date {
+  color: #878787;
+  margin-bottom: 5px;
+}
+
+div.notifications
+  div.notifications-list
+  div.notification-container
+  div.notification
+  div.message-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+div.notifications
+  div.notifications-list
+  div.notification-container
+  div.notification
+  div.message-container
+  div.actions {
+  display: flex;
+  flex-direction: row;
+  margin-left: 5px;
+}

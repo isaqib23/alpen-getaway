@@ -1,0 +1,42 @@
+.exclusive-partners {
+  background: var(--secondary-color);
+  /* background: url("/assets/images/icons/asterisk-icon-bg.svg") no-repeat; */
+  background-position: bottom left;
+  background-size: auto;
+  padding: 100px 0 70px;
+}
+
+.partners-logo {
+  background-color: var(--white-color);
+  border-radius: 20px;
+  text-align: center;
+  padding: 30px 50px;
+  margin-bottom: 30px;
+}
+
+.partners-logo img {
+  width: 6em;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 991px) {
+  .exclusive-partners {
+    padding: 50px 0 20px;
+  }
+
+  .partners-logo {
+    padding: 20px 30px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .partners-logo {
+    padding: 15px 20px;
+    margin-bottom: 20px;
+  }
+
+  .partners-logo img {
+    width: 100%;
+    margin: 0;
+  }
+}

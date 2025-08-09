@@ -1,0 +1,244 @@
+/************************************/
+/***      20. Page Cars css	      ***/
+/************************************/
+
+.page-fleets {
+  padding: 100px 0;
+}
+
+/* Hide the default radio button */
+input[type="radio"] {
+  display: none;
+}
+
+.custom-radio {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #999;
+  margin-right: 10px;
+  position: relative;
+  vertical-align: middle;
+}
+
+/* When the radio button is checked, apply new styles */
+input[type="radio"]:checked + .custom-radio {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+/* Add an inner dot for the checked state */
+input[type="radio"]:checked + .custom-radio:before {
+  content: "";
+  display: block;
+  width: 9px;
+  height: 9px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.fleets-sidebar {
+  position: sticky;
+  top: 20px;
+  background-color: var(--secondary-color);
+  border-radius: 30px;
+  padding: 25px;
+}
+
+.fleets-search-box {
+  border-bottom: 1px solid var(--divider-color);
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+}
+
+.fleets-search-box .form-group {
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+
+.fleets-search-box .form-group .form-control {
+  width: 100%;
+  padding: 10px 20px;
+  background: var(--white-color);
+  color: var(--text-color);
+  font-weight: 500;
+  border: none;
+  border-radius: 30px;
+  box-shadow: none;
+}
+
+.fleets-search-box .form-group .form-control::placeholder {
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.fleets-search-box .form-group .section-icon-btn {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 40px;
+  width: 42px;
+  height: 42px;
+  transform: translate(40px, -50%);
+  border: none;
+  padding: 0;
+}
+
+.fleets-search-box .section-icon-btn:hover {
+  background-color: var(--primary-color);
+}
+
+.fleets-search-box .form-group .section-icon-btn i {
+  font-size: 18px;
+  color: var(--white-color);
+}
+
+.fleets-sidebar-list {
+  border-bottom: 1px solid var(--divider-color);
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+}
+
+.fleets-sidebar-list:last-child {
+  border: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.fleets-list-title h3 {
+  font-size: 20px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.fleets-sidebar-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fleets-sidebar-list ul li {
+  margin-bottom: 10px;
+  padding-left: 0;
+}
+
+.fleets-sidebar-list ul li:last-child {
+  margin-bottom: 0;
+}
+
+.fleets-sidebar-list ul li .form-check-input {
+  background-color: transparent;
+  border: 1px solid var(--text-color);
+  border-color: var(--text-color);
+  width: 16px;
+  height: 16px;
+  margin-top: 6px;
+  margin-left: 0;
+  margin-right: 15px;
+  box-shadow: none;
+  outline: none;
+}
+
+.fleets-sidebar-list ul li .form-check-input:checked {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.fleets-sidebar-list ul li .form-check-label {
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.perfect-fleet-item.fleets-collection-item {
+  height: calc(100% - 30px);
+  margin-bottom: 30px;
+}
+
+.fleets-pagination {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.fleets-pagination ul {
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.fleets-pagination ul li a,
+.fleets-pagination ul li span {
+  display: flex;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  background: var(--accent-color);
+  color: var(--white-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+  font-weight: 700;
+  line-height: 1em;
+  transition: all 0.3s ease-in-out;
+}
+
+.fleets-pagination ul li.active a,
+.fleets-pagination ul li a:hover {
+  background: var(--primary-color);
+}
+
+@media only screen and (max-width: 991px) {
+  .page-fleets {
+    padding: 50px 0;
+  }
+
+  .fleets-sidebar {
+    margin-bottom: 30px;
+  }
+
+  .fleets-sidebar {
+    padding: 20px;
+  }
+
+  .fleets-search-box {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+
+  .fleets-sidebar-list-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .fleets-sidebar-list {
+    width: calc(33.33% - 20px);
+    border: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  .fleets-pagination {
+    margin-top: 10px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .fleets-sidebar-list-box {
+    display: block;
+    gap: 0px;
+  }
+
+  .fleets-sidebar-list {
+    width: 100%;
+    border-bottom: 1px solid var(--divider-color);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+}

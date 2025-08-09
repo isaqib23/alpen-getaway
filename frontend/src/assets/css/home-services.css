@@ -1,0 +1,200 @@
+/************************************/
+/***     06. Our Services css	  ***/
+/************************************/
+
+.our-services {
+  background: transparent;
+  padding: 80px 0;
+}
+
+.our-services .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.service-item {
+  position: relative;
+  background-color: var(--white-color);
+  border: 1px solid var(--divider-color);
+  border-radius: 30px;
+  padding: 30px 25px;
+  height: calc(100% - 30px);
+  margin-bottom: 30px;
+  overflow: hidden;
+  z-index: 1;
+  transition: all 0.4s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-item:before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  background-color: var(--accent-color);
+  border-radius: 500px 500px 0 0;
+  transition: all 0.4s ease-in-out;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  opacity: 0;
+}
+
+.service-item:hover:before {
+  top: 0;
+  border-radius: 0;
+  opacity: 1;
+}
+
+.service-item .icon-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border: 2px solid var(--accent-color);
+  border-radius: 50%;
+  margin-bottom: 30px;
+  color: var(--accent-color);
+  background: transparent;
+  transition: all 0.4s ease-in-out;
+  z-index: 1;
+}
+
+.service-item:hover .icon-box {
+  background-color: var(--accent-color);
+  color: var(--white-color);
+  transform: scale(1.1);
+}
+
+.service-content {
+  position: relative;
+  margin-bottom: 30px;
+  z-index: 1;
+  flex: 1;
+}
+
+.service-content h3 {
+  font-size: 20px;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+  transition: all 0.4s ease-in-out;
+}
+
+.service-item:hover .service-content h3 {
+  color: var(--white-color);
+}
+
+.service-content p {
+  margin: 0;
+  color: var(--text-color);
+  transition: all 0.4s ease-in-out;
+}
+
+.service-item:hover .service-content p {
+  color: var(--white-color);
+}
+
+.service-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.service-item .section-icon-btn {
+  background-color: var(--accent-color);
+  color: var(--white-color);
+  transition: all 0.4s ease-in-out;
+}
+
+.service-item:hover .section-icon-btn {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  transform: rotate(45deg);
+}
+
+.services-box-footer {
+  width: 100%;
+  max-width: 630px;
+  margin: 0 auto;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.services-box-footer p {
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 991px) {
+  .our-services {
+    padding: 50px 0;
+  }
+
+  .service-item {
+    padding: 20px;
+  }
+
+  .service-item .icon-box {
+    margin-bottom: 20px;
+  }
+
+  .service-content {
+    margin-bottom: 20px;
+  }
+
+  .services-box-footer {
+    margin-top: 10px;
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  .our-services {
+    padding: 60px 0;
+  }
+
+  .service-item {
+    padding: 24px 20px;
+    margin-bottom: 24px;
+  }
+
+  .service-item .icon-box {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 20px;
+  }
+
+  .service-content {
+    margin-bottom: 20px;
+  }
+
+  .service-content h3 {
+    font-size: 20px;
+  }
+
+  .services-box-footer {
+    margin-top: 40px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .our-services {
+    padding: 50px 0;
+  }
+
+  .service-item {
+    text-align: center;
+  }
+
+  .service-footer {
+    justify-content: center;
+  }
+}
