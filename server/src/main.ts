@@ -33,6 +33,7 @@ async function bootstrap() {
                 'http://localhost:3001',
                 'http://localhost:5173',
                 'http://localhost:5174',
+                'https://alpen-getaway-t1of-murex.vercel.app'
             ];
 
             if (!origin || allowedOrigins.includes(origin)) {

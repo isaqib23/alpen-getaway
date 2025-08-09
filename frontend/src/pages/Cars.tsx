@@ -124,7 +124,7 @@ const Cars = () => {
       try {
         setLoading(true);
         
-        // Get all suppliers without requiring location/date filters
+        // First, try to get suppliers
         const payload: bookcarsTypes.GetCarsPayload = {
           carSpecs,
           carType,
@@ -134,11 +134,18 @@ const Cars = () => {
           deposit,
         };
         
-        const _allSuppliers = await SupplierService.getFrontendSuppliers(payload);
-        const _suppliers = bookcarsHelper.flattenSuppliers(_allSuppliers);
+        try {
+          const _allSuppliers = await SupplierService.getFrontendSuppliers(payload);
+          const _suppliers = bookcarsHelper.flattenSuppliers(_allSuppliers);
+          setAllSuppliers(_allSuppliers);
+          setSuppliers(_suppliers);
+        } catch (supplierError) {
+          console.warn('Could not load suppliers:', supplierError);
+          // Continue without suppliers - we can still show cars
+          setAllSuppliers([]);
+          setSuppliers([]);
+        }
 
-        setAllSuppliers(_allSuppliers);
-        setSuppliers(_suppliers);
         setLoading(false);
         
         if (!user || (user && user.verified)) {
@@ -329,10 +336,10 @@ const Cars = () => {
                   </div>
                 </div>
               )}
-              {!loading && visible && suppliers && suppliers.length > 0 && (
+              {!loading && visible && (
                 <FleetsCollection
                   carSpecs={carSpecs}
-                  suppliers={suppliers}
+                  suppliers={suppliers || []}
                   carType={carType}
                   gearbox={gearbox}
                   mileage={mileage}
@@ -345,33 +352,6 @@ const Cars = () => {
                   to={to}
                   hidePrice={!pickupLocation || !dropOffLocation || !from || !to}
                 />
-              )}
-              {!loading && visible && suppliers && suppliers.length === 0 && (
-                <div className="alert alert-info" role="alert">
-                  <div className="d-flex flex-column align-items-center text-center py-4">
-                    <div className="mb-3">
-                      <i className="fa fa-info-circle" style={{ fontSize: '3rem', color: '#17a2b8' }}></i>
-                    </div>
-                    <h4 className="alert-heading mb-3">{carsStrings.EMPTY_LIST}</h4>
-                    <p className="mb-3">No car rental suppliers are currently available. Please check back later.</p>
-                    <div className="d-flex gap-2">
-                      <button 
-                        className="btn btn-outline-primary btn-sm"
-                        onClick={() => window.location.reload()}
-                      >
-                        <i className="fa fa-refresh me-1"></i>
-                        Refresh Page
-                      </button>
-                      <button 
-                        className="btn btn-primary btn-sm"
-                        onClick={() => window.location.href = '/contact'}
-                      >
-                        <i className="fa fa-envelope me-1"></i>
-                        Contact Support
-                      </button>
-                    </div>
-                  </div>
-                </div>
               )}
             </div>
           </div>

@@ -180,27 +180,19 @@ const FleetsCollection = ({
   };
 
   useEffect(() => {
-    if (suppliers) {
-      if (suppliers.length > 0) {
-        fetchData(
-          page,
-          suppliers,
-          pickupLocation,
-          carSpecs,
-          _carType,
-          gearbox,
-          mileage,
-          fuelPolicy,
-          deposit
-        );
-      } else {
-        setRows([]);
-        setFetch(false);
-        if (onLoad) {
-          onLoad({ rows: [], rowCount: 0 });
-        }
-        setInit(false);
-      }
+    if (suppliers !== undefined) {
+      // Always fetch cars - even if there are no suppliers, we can show all available cars
+      fetchData(
+        page,
+        suppliers.length > 0 ? suppliers : [], // Pass empty array if no suppliers
+        pickupLocation,
+        carSpecs,
+        _carType,
+        gearbox,
+        mileage,
+        fuelPolicy,
+        deposit
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

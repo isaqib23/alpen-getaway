@@ -147,13 +147,13 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
     }
 
     const initializeScripts = () => {
-      // Load SlickNav script after jQuery
+      // Load SlickNav script after jQuery - use CDN instead of local file
       const slickNavScript = document.createElement("script");
-      slickNavScript.src = "/js/jquery.slicknav.js";
+      slickNavScript.src = "https://cdnjs.cloudflare.com/ajax/libs/SlickNav/1.0.10/jquery.slicknav.min.js";
       slickNavScript.async = true;
       
       // Check if SlickNav script already exists
-      const existingSlickNav = document.querySelector(`script[src="/js/jquery.slicknav.js"]`);
+      const existingSlickNav = document.querySelector(`script[src*="slicknav"]`);
       if (!existingSlickNav) {
         document.body.appendChild(slickNavScript);
       }
@@ -162,19 +162,23 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
         // Initialize SlickNav and other functionalities
         if ((window as any).$) {
           (window as any).$(() => {
-            // Check if slicknav is available
-            if ((window as any).$.fn.slicknav) {
-              (window as any).$("#menu").slicknav({
-                label: "",
-                prependTo: ".responsive-menu",
-              });
-            }
+            try {
+              // Check if slicknav is available
+              if ((window as any).$.fn.slicknav) {
+                (window as any).$("#menu").slicknav({
+                  label: "",
+                  prependTo: ".responsive-menu",
+                });
+              }
 
-            // Scroll to top functionality
-            (window as any).$("a[href='#top']").click(() => {
-              (window as any).$("html, body").animate({ scrollTop: 0 }, "slow");
-              return false;
-            });
+              // Scroll to top functionality
+              (window as any).$("a[href='#top']").click(() => {
+                (window as any).$("html, body").animate({ scrollTop: 0 }, "slow");
+                return false;
+              });
+            } catch (error) {
+              console.warn("SlickNav initialization failed:", error);
+            }
           });
         }
       };
@@ -191,20 +195,6 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
     } else {
       jQueryScript.onload = initializeScripts;
     }
-
-    // Cleanup function
-    return () => {
-      // Only remove scripts if they were added by this component
-      const addedJQuery = document.querySelector(`script[src="https://code.jquery.com/jquery-3.6.0.min.js"]`);
-      const addedSlickNav = document.querySelector(`script[src="/js/jquery.slicknav.js"]`);
-      
-      if (addedJQuery && addedJQuery.parentNode) {
-        addedJQuery.parentNode.removeChild(addedJQuery);
-      }
-      if (addedSlickNav && addedSlickNav.parentNode) {
-        addedSlickNav.parentNode.removeChild(addedSlickNav);
-      }
-    };
   }, []);
 
   return (
