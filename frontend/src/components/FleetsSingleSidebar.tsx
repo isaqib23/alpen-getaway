@@ -13,8 +13,6 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { GoogleReCaptcha } from "react-google-recaptcha-v3";
-
-import "../assets/css/fleets-single-sidebar.css"; // Assuming you have a CSS file for additional styling
 import { Link } from "react-router-dom";
 import DatePicker from "../components/DatePicker";
 import { strings } from "../lang/fleets-single-sidebar";
@@ -183,22 +181,22 @@ const FleetsSingleSidebar: React.FC<FleetsSingleSidebarProps> = ({
 
   const sidebarList = [
     {
-      src: "src/assets/images/icon-fleets-single-sidebar-list-1.svg",
+      src: "/assets/images/icons/icon-fleet-list-1.svg",
       text: strings.PASSENGERS,
       value: car?.seats,
     },
     {
-      src: "src/assets/images/icon-fleets-single-sidebar-list-2.svg",
+      src: "/assets/images/icons/icon-fleet-list-2.svg",
       text: strings.AIRCON,
       value: car?.aircon ? strings.YES : strings.NO,
     },
     {
-      src: "src/assets/images/icon-fleets-single-sidebar-list-3.svg",
+      src: "/assets/images/icons/icon-fleet-list-3.svg",
       text: strings.DOORS,
       value: car?.doors,
     },
     {
-      src: "src/assets/images/icon-fleets-single-sidebar-list-4.svg",
+      src: "/assets/images/icons/icon-fleet-list-4.svg",
       text: strings.TRANSMISSION,
       value: capitalizeFirstWord(
         car.gearbox === bookcarsTypes.GearboxType.Manual
@@ -207,7 +205,7 @@ const FleetsSingleSidebar: React.FC<FleetsSingleSidebarProps> = ({
       ),
     },
     {
-      src: "src/assets/images/icon-fleets-single-sidebar-list-6.svg",
+      src: "/assets/images/icons/icon-fleet-list-1.svg",
       text: strings.AGE,
       value: car?.minimumAge,
     },

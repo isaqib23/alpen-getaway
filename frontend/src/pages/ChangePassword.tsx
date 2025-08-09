@@ -16,7 +16,6 @@ import * as UserService from "../services/UserService";
 import Backdrop from "../components/SimpleBackdrop";
 import * as helper from "../common/helper";
 
-import "../assets/css/change-password.css";
 
 const ChangePassword = () => {
   const navigate = useNavigate();

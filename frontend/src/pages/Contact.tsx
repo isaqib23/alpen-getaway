@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Layout from "../components/Layout";
 
-import "../assets/css/contact.css";
 import ContactInfo from "../components/ContactInfo";
 import PageHeader from "../components/PageHeader";
 import ContactMap from "../components/ContactMap";

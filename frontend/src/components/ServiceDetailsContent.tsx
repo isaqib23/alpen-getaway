@@ -3,7 +3,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
-import "../assets/css/service-details-content.css";
 import RevealImage from "./animations/RevealImage";
 import TextAnime from "./animations/TextAnime";
 import { Link } from "react-router-dom";

@@ -50,7 +50,7 @@ export const getFrontendSuppliers = (data: bookcarsTypes.GetCarsPayload): Promis
       .then((res) => {
         // Handle the new API response structure
         const suppliers = res.data?.data || res.data?.items || res.data || [];
-        
+
         // Transform company/supplier data to user format for compatibility
         return suppliers.map((supplier: any) => ({
           _id: supplier.id || supplier._id,
@@ -61,7 +61,7 @@ export const getFrontendSuppliers = (data: bookcarsTypes.GetCarsPayload): Promis
           fullName: supplier.name || supplier.companyName || `${supplier.firstName || 'Supplier'} ${supplier.lastName || ''}`.trim(),
           type: 'supplier',
           verified: supplier.verified !== false && supplier.status === 'active',
-          avatar: supplier.logo || supplier.avatar || '/img/default-supplier.jpg',
+          avatar: supplier.logo || supplier.avatar || '/assets/images/default-supplier.jpg',
           companyName: supplier.companyName || supplier.name,
           phone: supplier.phone || supplier.contactPhone || '',
           address: supplier.address || '',

@@ -23,7 +23,6 @@ import CarSelectList from "../components/CarSelectList";
 import StatusList from "../components/StatusList";
 import DateTimePicker from "../components/DateTimePicker";
 
-import "../assets/css/booking.css";
 
 const switchStyle = {
   "& .MuiSwitch-switchBase": {

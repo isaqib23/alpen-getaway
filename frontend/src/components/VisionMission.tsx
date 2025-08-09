@@ -1,5 +1,4 @@
 import React from "react";
-import "../assets/css/vision-mission.css";
 import { strings } from "../lang/vision-mission";
 
 const visionMissionData = [

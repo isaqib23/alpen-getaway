@@ -2,7 +2,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
-import "../assets/css/destinations.css";
 import { Link } from "react-router-dom";
 
 const teamMembers = [

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useMediaQuery } from "react-responsive";
 import { loadStripe } from "@stripe/stripe-js";
-import "../../assets/css/booking-form.css";
 import ProgressStepper from "./ProgressStepper";
 import BookingDetails from "./BookingDetails";
 import PersonalDetails from "./PersonalDetails";

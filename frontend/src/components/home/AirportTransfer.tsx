@@ -1,6 +1,5 @@
 import React from "react";
 import { strings } from "../../lang/airport-transfer";
-import "../../assets/css/airport-transfer.css";
 
 const airports = [
   {
@@ -36,9 +35,9 @@ const AirportTransfer: React.FC = () => {
         <div className="row section-row">
           <div className="col-lg-12">
             <div className="section-title text-center">
-              <span className="section-subtitle">{strings.SECTION_SUBTITLE}</span>
+              <h3>{strings.SECTION_SUBTITLE}</h3>
               <h2>{strings.SECTION_TITLE}</h2>
-              <p className="section-description">{strings.SECTION_DESCRIPTION}</p>
+              <p>{strings.SECTION_DESCRIPTION}</p>
             </div>
           </div>
         </div>

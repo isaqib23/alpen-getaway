@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
 
-import "../assets/css/testimonial-items.css";
 
 interface Testimonial {
   name: string;

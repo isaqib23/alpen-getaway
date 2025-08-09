@@ -1,8 +1,6 @@
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import "../assets/css/contact-info.css"; // Ensure you have a CSS file for styles
-import "../assets/css/unified-forms.css";
 import { Link } from "react-router-dom";
 import TextAnime from "./animations/TextAnime";
 

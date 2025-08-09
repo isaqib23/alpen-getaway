@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import RevealImage from "./animations/RevealImage";
 import TextAnime from "./animations/TextAnime";
 import { useMediaQuery } from "react-responsive";
-import "../assets/css/home-why-choose-us.css";
 
 import { strings } from "../lang/why-choose-us";
 

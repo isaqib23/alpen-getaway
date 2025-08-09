@@ -3,7 +3,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Scrollbar, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import "../assets/css/home-testimonials.css";
 import { strings } from "../lang/testiomonials";
 import { getApprovedReviews } from "../services/PublicContentService";
 

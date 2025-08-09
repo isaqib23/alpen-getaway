@@ -11,8 +11,6 @@ import * as langHelper from "../common/langHelper";
 import * as helper from "../common/helper";
 import { useGlobalContext, GlobalContextType } from "../context/GlobalContext";
 
-import "../assets/css/slicknav.min.css";
-import "../assets/css/header.css";
 
 interface HeaderProps {
   user?: bookcarsTypes.User;

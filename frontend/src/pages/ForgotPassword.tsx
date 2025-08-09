@@ -12,7 +12,6 @@ import { strings } from "../lang/reset-password";
 import NoMatch from "./NotFound";
 import * as helper from "../common/helper";
 
-import "../assets/css/unified-forms.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");

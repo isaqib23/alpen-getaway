@@ -18,7 +18,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
-import "../assets/css/unified-forms.css";
 import Layout from "../components/Layout";
 import TextAnime from "../components/animations/TextAnime";
 import LoadingSpinner from "../components/LoadingSpinner";

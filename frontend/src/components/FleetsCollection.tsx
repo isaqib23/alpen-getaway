@@ -14,7 +14,6 @@ import * as CarService from "../services/CarService";
 import * as UserService from "../services/UserService";
 import * as SupplierService from "../services/SupplierService";
 
-import "../assets/css/fleets-collection.css";
 import { useMediaQuery } from "react-responsive";
 import TextAnime from "./animations/TextAnime";
 

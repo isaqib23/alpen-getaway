@@ -35,9 +35,14 @@ const SupplierSelectList = ({
   const [selectedOptions, setSelectedOptions] = useState<bookcarsTypes.Option[]>([])
 
   useEffect(() => {
-    const _value = multiple ? value : [value]
-    if (value && !bookcarsHelper.arrayEqual(selectedOptions, _value)) {
-      setSelectedOptions(_value as bookcarsTypes.Option[])
+    if (!value) {
+      setSelectedOptions([])
+      return
+    }
+    
+    const _value: bookcarsTypes.Option[] = Array.isArray(value) ? value : [value]
+    if (!bookcarsHelper.arrayEqual(selectedOptions, _value)) {
+      setSelectedOptions(_value)
     }
   }, [value, multiple, selectedOptions])
 
@@ -88,7 +93,7 @@ const SupplierSelectList = ({
       required={required || false}
       readOnly={readOnly}
       multiple={multiple}
-      type={bookcarsTypes.RecordType.Supplier}
+      type={bookcarsTypes.RECORD_TYPE.SUPPLIER}
       variant={variant || 'standard'}
       ListboxProps={{
         onScroll: (event) => {

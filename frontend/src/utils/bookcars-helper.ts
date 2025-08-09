@@ -2,11 +2,11 @@
 
 export const joinURL = (baseUrl: string, url: string): string => {
   if (!baseUrl || !url) return url || '';
-  
+
   // Remove trailing slash from base and leading slash from url
   const cleanBase = baseUrl.replace(/\/$/, '');
   const cleanUrl = url.replace(/^\//, '');
-  
+
   return `${cleanBase}/${cleanUrl}`;
 };
 
@@ -14,7 +14,7 @@ export const clone = <T>(obj: T): T => {
   if (obj === null || obj === undefined || typeof obj !== 'object') {
     return obj;
   }
-  
+
   return JSON.parse(JSON.stringify(obj));
 };
 
@@ -24,7 +24,7 @@ export const formatPrice = (price: number, currency: string = '€'): string => 
 
 export const formatDatePart = (date: Date, part: 'day' | 'month' | 'year'): string => {
   if (!date) return '';
-  
+
   switch (part) {
     case 'day':
       return date.getDate().toString().padStart(2, '0');
@@ -43,7 +43,7 @@ export const capitalize = (str: string): string => {
 };
 
 export const uuid = (): string => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = Math.random() * 16 | 0;
     const v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
@@ -52,7 +52,7 @@ export const uuid = (): string => {
 
 export const shuffleArray = <T>(array: T[]): T[] => {
   if (!Array.isArray(array)) return [];
-  
+
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -85,20 +85,31 @@ export const days = (from: Date, to: Date): number => {
   return diffDays;
 };
 
+// Check if current language is French  
+export const isFrench = (language?: string): boolean => {
+  if (language) {
+    return language === 'fr' || language === 'fr-FR';
+  }
+  return document.documentElement.lang === 'fr' ||
+    window.navigator.language.startsWith('fr') ||
+    localStorage.getItem('bc-language') === 'fr';
+};
+
+// Check if value is a valid date
+export const isDate = (value: any): boolean => {
+  return value instanceof Date && !isNaN(value.getTime());
+};
+
 // Format number with locale-specific formatting
 export const formatNumber = (value: number, locale: string = 'en-US'): string => {
   if (typeof value !== 'number' || isNaN(value)) return '0';
   return new Intl.NumberFormat(locale).format(value);
 };
 
-// Check if locale is French
-export const isFrench = (language?: string): boolean => {
-  return language === 'fr' || language === 'fr-FR';
-};
-
-// Check if value is a valid date
-export const isDate = (value: any): boolean => {
-  return value instanceof Date && !isNaN(value.getTime());
+// Format date with locale-specific formatting
+export const formatDate = (timestamp: number, language: string = 'en-US', options?: Intl.DateTimeFormatOptions): string => {
+  if (!timestamp || isNaN(timestamp)) return '';
+  return new Date(timestamp).toLocaleDateString(language, options);
 };
 
 // Export as default object for compatibility
@@ -107,6 +118,7 @@ const helper = {
   clone,
   formatPrice,
   formatDatePart,
+  formatDate,
   capitalize,
   uuid,
   shuffle: shuffleArray,

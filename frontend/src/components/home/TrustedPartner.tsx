@@ -1,87 +1,83 @@
 import React from "react";
 import { CheckCircle, Smartphone, Clock, Gift, Car } from "lucide-react";
-
-import "../../assets/css/trusted-partner.css";
+import { strings } from "../../lang/trusted-partner";
 
 const TrustedPartner: React.FC = () => {
   return (
     <section className="trusted-partner-section">
       <div className="container">
-        <div className="row align-items-center">
-          {/* Left Side - Images */}
-          <div className="col-lg-6">
-            <div className="trusted-partner-images">
-              <div className="main-image-circle">
-                <img 
-                  src="/assets/images/about_us/driver_1.jpg" 
-                  alt="Professional Driver" 
-                  className="img-fluid" 
-                />
-              </div>
-              <div className="secondary-image-circle">
-                <img 
-                  src="/assets/images/about_us/driver_2.jpg" 
-                  alt="Happy Customer" 
-                  className="img-fluid" 
-                />
-              </div>
-              <div className="star-decoration">
-                ✦
-              </div>
-              <div className="red-asterisk">*</div>
-            </div>
+        <div className="trusted-partner-layout">
+          {/* Title Section */}
+          <div className="section-title">
+            <h3>{strings.SUBTITLE}</h3>
+            <h2>
+              {strings.TITLE}
+              <span className="highlight-box">{strings.TITLE_HIGHLIGHT}</span>
+            </h2>
           </div>
 
-          {/* Right Side - Content */}
-          <div className="col-lg-6">
-            <div className="trusted-partner-content">
-              <div className="section-header">
-                <span className="subtitle">Easy & Reliable Services in the Booking Industry</span>
-                <h2 className="section-title">
-                  Your trusted partner in 
-                  <span className="highlight-box">reliable car rental</span>
-                </h2>
+          {/* Images Section */}
+          <div className="trusted-partner-images">
+            <div className="main-image-circle">
+              <img 
+                src="/assets/images/about_us/driver_1.jpg" 
+                alt="Professional Driver" 
+                className="img-fluid" 
+              />
+            </div>
+            <div className="secondary-image-circle">
+              <img 
+                src="/assets/images/about_us/driver_2.jpg" 
+                alt="Happy Customer" 
+                className="img-fluid" 
+              />
+            </div>
+            <div className="star-decoration">
+              ✦
+            </div>
+            <div className="red-asterisk">*</div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="trusted-partner-content">
+            <div className="features-list">
+              {/* Simple Booking System */}
+              <div className="feature-item">
+                <div className="feature-icon">
+                  <Smartphone size={18} />
+                </div>
+                <div className="feature-content">
+                  <p className="feature-description">{strings.EASY_BOOKING_STATUS}</p>
+                </div>
               </div>
 
-              <div className="features-list">
-                {/* Simple Booking System */}
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <Smartphone size={20} />
-                  </div>
-                  <div className="feature-content">
-                    <p className="feature-description">We have a very simple, comfortable & accessible Transfer Booking system in the Market</p>
-                  </div>
+              {/* Optimized System */}
+              <div className="feature-item">
+                <div className="feature-icon">
+                  <Clock size={18} />
                 </div>
-
-                {/* Optimized System */}
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <Clock size={20} />
-                  </div>
-                  <div className="feature-content">
-                    <p className="feature-description">We have Optimized the booking system to mobile, tablet & Pcs so that our clients can experience the easiest and the safest way</p>
-                  </div>
+                <div className="feature-content">
+                  <p className="feature-description">{strings.EASY_BOOKING_DESC}</p>
                 </div>
+              </div>
 
-                {/* Simplified Process */}
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <Car size={20} />
-                  </div>
-                  <div className="feature-content">
-                    <p className="feature-description">We have simplified the booking process so that our client can pick their chosen destinations easily</p>
-                  </div>
+              {/* Simplified Process */}
+              <div className="feature-item">
+                <div className="feature-icon">
+                  <Car size={18} />
                 </div>
+                <div className="feature-content">
+                  <p className="feature-description">{strings.CONVENIENT_DESC}</p>
+                </div>
+              </div>
 
-                {/* Additional Services */}
-                <div className="feature-item">
-                  <div className="feature-icon">
-                    <Gift size={20} />
-                  </div>
-                  <div className="feature-content">
-                    <p className="feature-description">We offer free child seats, Special person Equipments, Ski Equipments, free cancelation, free booking management services & much more...</p>
-                  </div>
+              {/* Additional Services */}
+              <div className="feature-item">
+                <div className="feature-icon">
+                  <Gift size={18} />
+                </div>
+                <div className="feature-content">
+                  <p className="feature-description">{strings.ADDITIONAL_SERVICES}</p>
                 </div>
               </div>
             </div>

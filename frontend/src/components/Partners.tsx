@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../assets/css/services-partners.css";
 import * as bookcarsHelper from "../utils/bookcars-helper";
 import env from "../config/env.config";
 import { strings } from "../lang/about-page";

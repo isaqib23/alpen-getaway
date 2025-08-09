@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import "../assets/css/b2b-body.css";
-import "../assets/css/unified-forms.css";
 import RevealImage from "./animations/RevealImage";
 import TextAnime from "./animations/TextAnime";
 
@@ -116,124 +114,132 @@ const AffiliateBody: React.FC = () => {
   };
 
   return (
-    <div className="about-us">
+    <section className="trusted-partner-section">
       <div className="container">
-        <div className="row align-items-center">
-          <div className="col-lg-4">
-            {/* About Us Image Start */}
-            <div className="about-image about-image-compact">
-              <div className="about-img-1">
-                <RevealImage
-                  className="reveal custom-figure h-100"
-                  src="/assets/images/affiliate/1.jpg"
-                  alt="Our Service"
-                />
-              </div>
-              <div className="about-img-2">
-                <RevealImage
-                  className="reveal custom-figure h-100"
-                  src="/assets/images/affiliate/2.jpg"
-                  alt="Why Choose Us"
-                />
-              </div>
-            </div>
-            {/* About Us Image End */}
-          </div>
-
-          <div className="col-lg-4">
-            {/* About Us Content Start */}
-            <div className="about-content">
-              <div className="section-title">
-                <motion.h3
-                  ref={ref1}
-                  className="fadeInUp"
-                  variants={fadeInUpVariants}
-                  initial="initial"
-                  animate={inView1 ? "animate" : "initial"}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                >
-                  {strings.ABOUT}
-                </motion.h3>
-
-                <TextAnime className="text-anime-style-3" tag="h4">
-                  {strings.HEADING_BODY}
-                </TextAnime>
-                <motion.p
-                  ref={ref2}
-                  className="fadeInUp"
-                  variants={fadeInUpVariants}
-                  initial="initial"
-                  animate={inView2 ? "animate" : "initial"}
-                  transition={
-                    isLaptop
-                      ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
-                      : { duration: 0.6, ease: "easeOut" }
-                  }
-                >
-                  {strings.PARA_1}
-                </motion.p>
-                <motion.p
-                  ref={ref3}
-                  className="fadeInUp"
-                  variants={fadeInUpVariants}
-                  initial="initial"
-                  animate={inView3 ? "animate" : "initial"}
-                  transition={
-                    isLaptop
-                      ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
-                      : { duration: 0.6, ease: "easeOut" }
-                  }
-                >
-                  {strings.PARA_2}
-                </motion.p>
+        <div className="trusted-partner-layout" style={{ 
+          display: 'flex', 
+          gap: '2rem', 
+          alignItems: 'flex-start',
+          flexDirection: isLaptop ? 'row' : 'column'
+        }}>
+          {/* Left Side */}
+          <div className="col-lg-8" style={{ flex: '1' }}>
+            <div className="b2b-left-content">
+              {/* Image Section */}
+              <div className="trusted-partner-images">
+                <div className="main-image-circle">
+                  <img 
+                    src="/assets/images/affiliate/1.jpg" 
+                    alt="Our Service" 
+                    className="img-fluid" 
+                  />
+                </div>
+                <div className="secondary-image-circle">
+                  <img 
+                    src="/assets/images/affiliate/2.jpg" 
+                    alt="Why Choose Us" 
+                    className="img-fluid" 
+                  />
+                </div>
+                <div className="star-decoration">
+                  ✦
+                </div>
+                <div className="red-asterisk">*</div>
               </div>
 
-              <motion.div
-                ref={ref6}
-                className="about-content-footer fadeInUp"
-                variants={fadeInUpVariants}
-                initial="initial"
-                animate={inView6 ? "animate" : "initial"}
-                transition={
-                  isLaptop
-                    ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
-                    : { duration: 0.6, ease: "easeOut" }
-                }
-              >
-                <Link to="/contact" className="btn-default">
-                  {strings.CONTACT}
-                </Link>
-              </motion.div>
-            </div>
-            {/* About Us Content End */}
-          </div>
-          <div className="col-lg-4">
-            <div className="unified-form-container" style={{ maxWidth: 'none', width: '100%', padding: '30px' }}>
-              <motion.div
-                className="unified-form-body"
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <div className="unified-form-header" style={{ marginBottom: '25px' }}>
-                  <h3 className="unified-form-title" style={{ fontSize: '24px', marginBottom: '8px' }}>
-                    {strings.JOIN}
-                  </h3>
+              {/* Content Section */}
+              <div className="b2b-content">
+                <div className="b2b-header">
+                  <motion.h3
+                    ref={ref1}
+                    className="fadeInUp b2b-subtitle"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView1 ? "animate" : "initial"}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  >
+                    {strings.ABOUT}
+                  </motion.h3>
+
+                  <TextAnime className="b2b-title" tag="h2">
+                    {strings.HEADING_BODY}
+                  </TextAnime>
                 </div>
                 
-                <form onSubmit={handleSubmit}>
+                <div className="b2b-description">
+                  <motion.p
+                    ref={ref2}
+                    className="fadeInUp b2b-paragraph"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView2 ? "animate" : "initial"}
+                    transition={
+                      isLaptop
+                        ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
+                        : { duration: 0.6, ease: "easeOut" }
+                    }
+                  >
+                    {strings.PARA_1}
+                  </motion.p>
+                  <motion.p
+                    ref={ref3}
+                    className="fadeInUp b2b-paragraph"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView3 ? "animate" : "initial"}
+                    transition={
+                      isLaptop
+                        ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
+                        : { duration: 0.6, ease: "easeOut" }
+                    }
+                  >
+                    {strings.PARA_2}
+                  </motion.p>
+                </div>
+
+                <motion.div
+                  ref={ref6}
+                  className="b2b-cta fadeInUp"
+                  variants={fadeInUpVariants}
+                  initial="initial"
+                  animate={inView6 ? "animate" : "initial"}
+                  transition={
+                    isLaptop
+                      ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
+                      : { duration: 0.6, ease: "easeOut" }
+                  }
+                >
+                  <Link to="/contact" className="btn-default">
+                    {strings.CONTACT}
+                  </Link>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Form */}
+          <div className="col-lg-4" style={{ 
+            flex: isLaptop ? '0 0 400px' : '1', 
+            minWidth: isLaptop ? '350px' : 'auto' 
+          }}>
+            <div className="b2b-form-header">
+              <h3 className="b2b-form-title">
+                {strings.JOIN}
+              </h3>
+            </div>
+              
+              <form onSubmit={handleSubmit} className="b2b-form"
+                style={{
+                  opacity: inView1 ? 1 : 0,
+                  transform: inView1 ? 'translateY(0)' : 'translateY(20px)',
+                  transition: 'opacity 0.6s ease-out 0.3s, transform 0.6s ease-out 0.3s'
+                }}
+              >
                   {/* Error Messages */}
                   {errors.length > 0 && (
-                    <div style={{ 
-                      background: '#ffebee', 
-                      border: '1px solid #f44336', 
-                      borderRadius: '4px', 
-                      padding: '12px', 
-                      marginBottom: '20px',
-                      color: '#c62828'
-                    }}>
+                    <div className="b2b-error-messages">
                       {errors.map((error, index) => (
-                        <div key={index} style={{ marginBottom: index < errors.length - 1 ? '4px' : '0' }}>
+                        <div key={index} className="b2b-error-item">
                           • {error}
                         </div>
                       ))}
@@ -242,27 +248,19 @@ const AffiliateBody: React.FC = () => {
 
                   {/* Success/Error Message */}
                   {submitMessage && (
-                    <div style={{ 
-                      background: submitMessage.type === 'success' ? '#e8f5e8' : '#ffebee', 
-                      border: `1px solid ${submitMessage.type === 'success' ? '#4caf50' : '#f44336'}`, 
-                      borderRadius: '4px', 
-                      padding: '12px', 
-                      marginBottom: '20px',
-                      color: submitMessage.type === 'success' ? '#2e7d32' : '#c62828'
-                    }}>
+                    <div className={`b2b-message b2b-message-${submitMessage.type}`}>
                       {submitMessage.text}
                     </div>
                   )}
 
                   {/* Company Information */}
-                  <div>
-                    
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.COMPANY}</label>
+                  <div className="b2b-form-fields">
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.COMPANY}</label>
                       <input
                         type="text"
                         name="companyName"
-                        className="unified-form-input"
+                        className="b2b-form-input"
                         value={formData.companyName || ''}
                         onChange={handleInputChange}
                         placeholder="Enter company name"
@@ -270,12 +268,12 @@ const AffiliateBody: React.FC = () => {
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.EMAIL}</label>
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.EMAIL}</label>
                       <input
                         type="email"
                         name="companyEmail"
-                        className="unified-form-input"
+                        className="b2b-form-input"
                         value={formData.companyEmail || ''}
                         onChange={handleInputChange}
                         placeholder="company@example.com"
@@ -283,12 +281,12 @@ const AffiliateBody: React.FC = () => {
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.CONTACT_NO}</label>
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.CONTACT_NO}</label>
                       <input
                         type="tel"
                         name="contactNumber"
-                        className="unified-form-input"
+                        className="b2b-form-input"
                         value={formData.contactNumber || ''}
                         onChange={handleInputChange}
                         placeholder="Company phone number"
@@ -296,11 +294,11 @@ const AffiliateBody: React.FC = () => {
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.COUNTRY}</label>
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.COUNTRY}</label>
                       <select
                         name="registrationCountry"
-                        className="unified-form-select"
+                        className="b2b-form-select"
                         value={formData.registrationCountry || ''}
                         onChange={handleInputChange}
                         required
@@ -316,12 +314,12 @@ const AffiliateBody: React.FC = () => {
                       </select>
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.REP}</label>
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.REP}</label>
                       <input
                         type="text"
                         name="companyRepresentative"
-                        className="unified-form-input"
+                        className="b2b-form-input"
                         value={formData.companyRepresentative || ''}
                         onChange={handleInputChange}
                         placeholder="Representative name"
@@ -329,24 +327,24 @@ const AffiliateBody: React.FC = () => {
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">Service Area (Optional)</label>
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">Service Area (Optional)</label>
                       <input
                         type="text"
                         name="serviceArea"
-                        className="unified-form-input"
+                        className="b2b-form-input"
                         value={formData.serviceArea || ''}
                         onChange={handleInputChange}
                         placeholder="e.g., Ontario, Toronto Metro"
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">Registration Number (Optional)</label>
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">Registration Number (Optional)</label>
                       <input
                         type="text"
                         name="registrationNumber"
-                        className="unified-form-input"
+                        className="b2b-form-input"
                         value={formData.registrationNumber || ''}
                         onChange={handleInputChange}
                         placeholder="Business registration number"
@@ -356,23 +354,16 @@ const AffiliateBody: React.FC = () => {
 
                   <button 
                     type="submit" 
-                    className="unified-form-button primary"
+                    className="b2b-form-submit"
                     disabled={isSubmitting}
-                    style={{ 
-                      opacity: isSubmitting ? 0.7 : 1, 
-                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                      position: 'relative'
-                    }}
                   >
                     {isSubmitting ? 'Submitting...' : strings.SUBMIT}
                   </button>
                 </form>
-              </motion.div>
-            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

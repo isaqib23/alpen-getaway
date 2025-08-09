@@ -2,7 +2,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import "../assets/css/service-details-sidebar.css";
 import { Link } from "react-router-dom";
 
 import { strings } from "../lang/service-details";

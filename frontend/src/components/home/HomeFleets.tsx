@@ -14,7 +14,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import "../../assets/css/home-fleets.css";
 import TextAnime from "../animations/TextAnime";
 import { Link } from "react-router-dom";
 import * as bookcarsTypes from "../../types/bookcars-types";

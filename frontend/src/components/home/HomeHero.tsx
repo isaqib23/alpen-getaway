@@ -6,7 +6,6 @@ import { useInView } from "react-intersection-observer";
 
 import TextAnime from "../animations/TextAnime";
 
-import "../../assets/css/home-hero.css"; // Import your CSS file
 import HomeRentDetailsForm from "./HomeRentDetailsForm";
 import { strings } from "../../lang/home-hero";
 

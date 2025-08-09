@@ -10,7 +10,6 @@ import PageHeader from "../components/PageHeader";
 import CarsSidebar from "../components/CarsSidebar";
 import { usePageLoading } from "../common/usePageLoading";
 
-import "../assets/css/cars.css";
 import FleetsCollection from "../components/FleetsCollection";
 
 import { strings } from "../lang/common";
