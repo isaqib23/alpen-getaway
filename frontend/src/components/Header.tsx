@@ -138,99 +138,32 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
   }, [hidden, user, setNotificationCount]);
 
   useEffect(() => {
-    const initializeSlickNav = () => {
-      const loadScript = (src: string): Promise<void> => {
-        return new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = src;
-          script.async = true;
-          
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error(`Failed to load: ${src}`));
-          
-          // Check if script with same src already exists
-          const existing = document.querySelector(`script[src="${src}"]`);
-          if (existing) {
-            resolve();
-            return;
-          }
-          
-          document.head.appendChild(script);
+    // Initialize SlickNav mobile menu
+    const initSlickNav = () => {
+      // Check if jQuery and SlickNav are available
+      if ((window as any).$ && (window as any).$.fn.slicknav) {
+        (window as any).$("#menu").slicknav({
+          label: "",
+          prependTo: ".responsive-menu",
         });
-      };
 
-      const initMenu = () => {
-        if ((window as any).$) {
-          (window as any).$(() => {
-            try {
-              // Check if slicknav is available
-              if ((window as any).$.fn.slicknav) {
-                (window as any).$("#menu").slicknav({
-                  label: "",
-                  prependTo: ".responsive-menu",
-                });
-              }
-
-              // Scroll to top functionality
-              (window as any).$("a[href='#top']").click(() => {
-                (window as any).$("html, body").animate({ scrollTop: 0 }, "slow");
-                return false;
-              });
-            } catch (error) {
-              console.warn("SlickNav initialization error:", error);
-            }
-          });
-        }
-      };
-
-      // Load jQuery first
-      if (!(window as any).$) {
-        loadScript("https://code.jquery.com/jquery-3.6.0.min.js")
-          .then(() => {
-            // Add a small delay to ensure jQuery is fully loaded
-            setTimeout(() => {
-              // Now load SlickNav plugin
-              loadScript("https://cdn.jsdelivr.net/gh/ComputerWolf/SlickNav@master/dist/jquery.slicknav.min.js")
-                .then(() => {
-                  initMenu();
-                })
-                .catch((error) => {
-                  console.warn("Failed to load SlickNav from CDN:", error);
-                  // Try loading from local file as fallback
-                  loadScript("/js/jquery.slicknav.js")
-                    .then(() => {
-                      initMenu();
-                    })
-                    .catch(() => {
-                      console.warn("Failed to load SlickNav from local file. Mobile menu may not work properly.");
-                    });
-                });
-            }, 100);
-          })
-          .catch((error) => {
-            console.error("Failed to load jQuery:", error);
-          });
-      } else {
-        // jQuery already loaded
-        loadScript("https://cdn.jsdelivr.net/gh/ComputerWolf/SlickNav@master/dist/jquery.slicknav.min.js")
-          .then(() => {
-            initMenu();
-          })
-          .catch((error) => {
-            console.warn("Failed to load SlickNav from CDN:", error);
-            // Try loading from local file as fallback
-            loadScript("/js/jquery.slicknav.js")
-              .then(() => {
-                initMenu();
-              })
-              .catch(() => {
-                console.warn("Failed to load SlickNav. Mobile menu may not work properly.");
-              });
-          });
+        // Scroll to top functionality
+        (window as any).$("a[href='#top']").click(() => {
+          (window as any).$("html, body").animate({ scrollTop: 0 }, "slow");
+          return false;
+        });
       }
     };
 
-    initializeSlickNav();
+    // Try to initialize immediately
+    initSlickNav();
+
+    // If not available, try again after a short delay
+    const timer = setTimeout(() => {
+      initSlickNav();
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (

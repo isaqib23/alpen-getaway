@@ -17,33 +17,10 @@ import * as UserService from './UserService'
  * @param {number} size
  * @returns {Promise<bookcarsTypes.Result<bookcarsTypes.Car>>}
  */
-export const getCars = (data: bookcarsTypes.GetCarsPayload, page: number, size: number): Promise<bookcarsTypes.Result<bookcarsTypes.Car>> => {
-  try {
-    // Simplified parameters that match the actual API
-    const params = {
-      page: page + 1, // Server uses 1-based indexing
-      limit: size,
-      // For now, just get featured cars without complex filtering
-    };
-
-    return publicApi
-      .get('/public/content/cars?' + createQueryParams(params))
-      .then((res) => transformPaginatedResponse(res.data, transformCarResponse))
-      .catch((error) => {
-        console.error('Cars API error:', error);
-        // Fallback to legacy API
-        return axiosInstance
-          .post(`/api/frontend-cars/${page}/${size}`, data)
-          .then((res) => res.data);
-      });
-  } catch (error) {
-    console.error('Cars service error:', error);
-    // Direct fallback to legacy API
-    return axiosInstance
-      .post(`/api/frontend-cars/${page}/${size}`, data)
-      .then((res) => res.data);
-  }
-}
+export const getCars = (data: bookcarsTypes.GetCarsPayload, page: number, size: number): Promise<bookcarsTypes.Result<bookcarsTypes.Car>> =>
+  axiosInstance
+    .post(`/api/frontend-cars/${page}/${size}`, data)
+    .then((res) => res.data)
 
 /**
  * Get a Car by ID.
