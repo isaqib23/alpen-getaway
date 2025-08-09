@@ -13,10 +13,6 @@ import cursor from "./components/Cursor";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import "./assets/css/all.css";
-import "./assets/css/animate.css";
-import "./assets/css/mousecursor.css";
-import "./assets/css/index.css";
 
 const About = lazy(() => import("./pages/About"));
 const B2B = lazy(() => import("./pages/B2B"));

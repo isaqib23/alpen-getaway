@@ -1,6 +1,5 @@
 import React from "react";
 import { strings } from "../../lang/airport-transfer";
-import "../../assets/css/airport-transfer.css";
 
 const airports = [
   {

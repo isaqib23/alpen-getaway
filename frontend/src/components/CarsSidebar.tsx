@@ -5,7 +5,6 @@ import { strings } from "../lang/cars";
 import { strings as commonStrings } from "../lang/common";
 import env from "../config/env.config";
 
-import "../assets/css/cars-sidebar.css";
 
 import * as bookcarsTypes from "../types/bookcars-types";
 import * as bookcarsHelper from "../utils/bookcars-helper";

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import "../assets/css/b2b-body.css";
-import "../assets/css/unified-forms.css";
 import RevealImage from "./animations/RevealImage";
 import TextAnime from "./animations/TextAnime";
 
@@ -116,28 +114,37 @@ const B2BBody: React.FC = () => {
   };
 
   return (
-    <div className="b2b-section">
+    <section className="trusted-partner-section">
       <div className="container">
-        <div className="row">
+        <div className="trusted-partner-layout" style={{ 
+          display: 'flex', 
+          gap: '2rem', 
+          alignItems: 'flex-start',
+          flexDirection: isLaptop ? 'row' : 'column'
+        }}>
           {/* Left Column - Image and Content */}
-          <div className="col-lg-8">
+          <div className="col-lg-8" style={{ flex: '1' }}>
             <div className="b2b-left-content">
               {/* Image Section */}
-              <div className="b2b-images-container">
-                <div className="b2b-main-image">
-                  <RevealImage
-                    className="reveal custom-figure h-100"
-                    src="/assets/images/b2b_partner/1.jpg"
-                    alt="B2B Partner Service"
+              <div className="trusted-partner-images">
+                <div className="main-image-circle">
+                  <img 
+                    src="/assets/images/b2b_partner/1.jpg" 
+                    alt="B2B Partner Service" 
+                    className="img-fluid" 
                   />
                 </div>
-                <div className="b2b-secondary-image">
-                  <RevealImage
-                    className="reveal custom-figure h-100"
-                    src="/assets/images/b2b_partner/2.jpg"
-                    alt="B2B Partnership"
+                <div className="secondary-image-circle">
+                  <img 
+                    src="/assets/images/b2b_partner/2.jpg" 
+                    alt="B2B Partnership" 
+                    className="img-fluid" 
                   />
                 </div>
+                <div className="star-decoration">
+                  ✦
+                </div>
+                <div className="red-asterisk">*</div>
               </div>
 
               {/* Content Section */}
@@ -211,25 +218,27 @@ const B2BBody: React.FC = () => {
           </div>
 
           {/* Right Column - Form */}
-          <div className="col-lg-4">
-            <div className="b2b-form-container">
-              <motion.div
-                className="b2b-form-body"
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <div className="b2b-form-header">
-                  <h3 className="b2b-form-title">
-                    {strings.JOIN}
-                  </h3>
-                  <p className="b2b-form-subtitle">
-                    Join our network and start earning with your transportation services
-                  </p>
-                </div>
+          <div className="col-lg-4" style={{ 
+            flex: isLaptop ? '0 0 400px' : '1', 
+            minWidth: isLaptop ? '350px' : 'auto' 
+          }}>
+            <div className="b2b-form-header">
+              <h3 className="b2b-form-title">
+                {strings.JOIN}
+              </h3>
+              <p className="b2b-form-subtitle">
+                Join our network and start earning with your transportation services
+              </p>
+            </div>
 
-                
-                <form onSubmit={handleSubmit} className="b2b-form">
+              
+              <form onSubmit={handleSubmit} className="b2b-form"
+                style={{
+                  opacity: inView1 ? 1 : 0,
+                  transform: inView1 ? 'translateY(0)' : 'translateY(20px)',
+                  transition: 'opacity 0.6s ease-out 0.3s, transform 0.6s ease-out 0.3s'
+                }}
+              >
                   {/* Error Messages */}
                   {errors.length > 0 && (
                     <div className="b2b-error-messages">
@@ -357,12 +366,10 @@ const B2BBody: React.FC = () => {
                     {isSubmitting ? 'Submitting...' : strings.SUBMIT}
                   </button>
                 </form>
-              </motion.div>
-            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

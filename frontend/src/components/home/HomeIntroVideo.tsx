@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
-import "../../assets/css/home-intro-video.css";
 import TextAnime from "../animations/TextAnime";
 
 import { strings } from "../../lang/video";

@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 
 import { useMediaQuery } from "react-responsive";
 
-import "../assets/css/home-services.css"; // Ensure you have a CSS file for styles
 import { Link } from "react-router-dom";
 
 const services = [

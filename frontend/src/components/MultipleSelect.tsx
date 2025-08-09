@@ -15,7 +15,6 @@ import * as bookcarsTypes from "../types/bookcars-types"
 import * as bookcarsHelper from "../utils/bookcars-helper"
 import env from '../config/env.config'
 
-import '../assets/css/multiple-select.css'
 
 interface MultipleSelectProps {
   label?: string

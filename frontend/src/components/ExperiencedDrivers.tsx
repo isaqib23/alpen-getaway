@@ -1,5 +1,4 @@
 import React from "react";
-import "../assets/css/experienced-drivers.css";
 import { Link } from "react-router-dom";
 import { strings } from "../lang/about-page";
 

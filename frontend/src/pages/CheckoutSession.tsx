@@ -7,7 +7,6 @@ import NotFound from "./NotFound";
 import { motion } from "framer-motion";
 import TextAnime from "../components/animations/TextAnime";
 
-import "../assets/css/checkout-session-page.css";
 
 const CheckoutSession = () => {
   const navigate = useNavigate();

@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Phone } from "lucide-react";
 import { strings } from "../../lang/cta";
-import "../../assets/css/home-cta.css";
 
 const HomeCTA: React.FC = () => {
   return (

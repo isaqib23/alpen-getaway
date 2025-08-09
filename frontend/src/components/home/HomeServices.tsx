@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Plane, UserCheck, Car, Crown, ArrowRight } from "lucide-react";
 
-import "../../assets/css/home-services.css";
 
 import { strings } from "../../lang/services";
 

@@ -150,6 +150,7 @@ export interface Company {
   avatar?: string;
   type: CompanyType;
   approved: boolean;
+  payLater?: boolean;
 }
 
 export enum CompanyType {

@@ -6,7 +6,6 @@ import {
 } from '@mui/icons-material'
 import { strings as commonStrings } from '../lang/common'
 
-import '../assets/css/pager.css'
 
 interface PagerProps {
   page: number

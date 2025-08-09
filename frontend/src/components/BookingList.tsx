@@ -37,7 +37,6 @@ import { strings as commonStrings } from "../lang/common";
 import env from "../config/env.config";
 import BookingStatus from "./BookingStatus";
 
-import "../assets/css/booking-list.css";
 
 interface BookingListProps {
   suppliers?: string[];

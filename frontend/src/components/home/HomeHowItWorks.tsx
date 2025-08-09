@@ -1,5 +1,4 @@
 import React from "react";
-import "../../assets/css/home-how-it-works.css"; // Include custom styles if necessary
 import RevealImage from "../animations/RevealImage";
 import TextAnime from "../animations/TextAnime";
 import { useInView } from "react-intersection-observer";

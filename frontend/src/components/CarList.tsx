@@ -24,7 +24,6 @@ import * as UserService from "../services/UserService";
 import Pager from "./Pager";
 
 
-import "../assets/css/car-list.css";
 
 interface CarListProps {
   from?: Date;

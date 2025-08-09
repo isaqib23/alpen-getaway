@@ -7,7 +7,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "../assets/css/fleet-single-content.css"; // Update the path to your CSS file
 import TextAnime from "./animations/TextAnime";
 
 import * as bookcarsTypes from "../types/bookcars-types";
