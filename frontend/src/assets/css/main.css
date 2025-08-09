@@ -9,15 +9,25 @@
 
 /* ===== CORE STYLES ===== */
 @import './index.css';
+@import './all.css';
+@import './animate.css';
+@import './mousecursor.css';
+@import './slicknav.min.css';
 
 /* ===== LAYOUT COMPONENTS ===== */
 @import './header.css';
 @import './footer.css';
+@import './page-header.css';
+@import './not-found.css';
+@import './loading-spinner.css';
 
 /* ===== UI COMPONENTS ===== */
 @import './accordion.css';
 @import './booking-status.css';
 @import './booking-filter.css';
+@import './notification-list.css';
+@import './pager.css';
+@import './multiple-select.css';
 
 /* ===== PAGE STYLES ===== */
 @import './home.css';
@@ -28,40 +38,65 @@
 @import './home-why-choose-us.css';
 @import './home-faqs.css';
 @import './home-cta.css';
+@import './home-call-to-action.css';
+@import './home-latest.css';
+@import './home-intro-video.css';
+@import './home-four-seasons.css';
+@import './home-reliable-services.css';
+@import './home-how-it-works.css';
 @import './airport-transfer.css';
 @import './trusted-partner.css';
+@import './testimonial-items.css';
 
+/* ===== BUSINESS AND FORMS ===== */
+@import './b2b-body.css';
+@import './unified-forms.css';
+@import './sign-in.css';
+@import './sign-up.css';
+@import './forgot-password.css';
+@import './change-password.css';
+@import './settings.css';
+
+/* ===== CARS AND FLEET ===== */
 @import './cars.css';
 @import './car-list.css';
 @import './car-details.css';
 @import './cars-sidebar.css';
+@import './fleets-collection.css';
+@import './fleets-single-sidebar.css';
+@import './fleet-single-content.css';
+@import './pricing-details.css';
 
+/* ===== BOOKINGS ===== */
 @import './booking.css';
 @import './booking-form.css';
 @import './booking-list.css';
 @import './booking-management.css';
 @import './bookings.css';
+@import './checkout-session-page.css';
 
+/* ===== SERVICES ===== */
+@import './services.css';
+@import './services-partners.css';
+@import './service-details.css';
+@import './service-details-content.css';
+@import './service-details-sidebar.css';
+
+/* ===== CONTENT PAGES ===== */
 @import './legal-pages.css';
 @import './contact.css';
 @import './contact-info.css';
 @import './contact-map.css';
+@import './vision-mission.css';
+@import './destinations.css';
 
-/* ===== FORM STYLES ===== */
-@import './sign-in.css';
-@import './sign-up.css';
-@import './forgot-password.css';
-@import './change-password.css';
+/* ===== FILTERS AND STATUS ===== */
+@import './status-filter.css';
+@import './status-list.css';
+@import './supplier-filter.css';
 
 /* ===== MISC COMPONENTS ===== */
-@import './destinations.css';
 @import './experienced-drivers.css';
-
-/* ===== ANIMATION LIBRARIES ===== */
-@import './animate.css';
-
-/* ===== ICON FONTS ===== */
-@import './all.css';
 
 /* ===== HOMEPAGE SECTION STANDARDIZATION ===== */
 /* Universal homepage section styling for consistency */

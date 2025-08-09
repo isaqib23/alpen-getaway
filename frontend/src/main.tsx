@@ -47,6 +47,7 @@ import { strings as tosStrings } from "./lang/tos";
 import { strings as carSpecsStrings } from "./lang/car-specs";
 
 import "react-toastify/dist/ReactToastify.min.css";
+import "./assets/css/main.css";
 
 if (env.isProduction) {
   disableReactDevTools();
