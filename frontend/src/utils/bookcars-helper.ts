@@ -50,7 +50,7 @@ export const uuid = (): string => {
   });
 };
 
-export const shuffle = <T>(array: T[]): T[] => {
+export const shuffleArray = <T>(array: T[]): T[] => {
   if (!Array.isArray(array)) return [];
   
   const shuffled = [...array];
@@ -85,6 +85,22 @@ export const days = (from: Date, to: Date): number => {
   return diffDays;
 };
 
+// Format number with locale-specific formatting
+export const formatNumber = (value: number, locale: string = 'en-US'): string => {
+  if (typeof value !== 'number' || isNaN(value)) return '0';
+  return new Intl.NumberFormat(locale).format(value);
+};
+
+// Check if locale is French
+export const isFrench = (language?: string): boolean => {
+  return language === 'fr' || language === 'fr-FR';
+};
+
+// Check if value is a valid date
+export const isDate = (value: any): boolean => {
+  return value instanceof Date && !isNaN(value.getTime());
+};
+
 // Export as default object for compatibility
 const helper = {
   joinURL,
@@ -93,11 +109,14 @@ const helper = {
   formatDatePart,
   capitalize,
   uuid,
-  shuffle,
+  shuffle: shuffleArray,
   flattenSuppliers,
   getAllCarTypes,
   arrayEqual,
-  days
+  days,
+  formatNumber,
+  isFrench,
+  isDate
 };
 
 export default helper;
