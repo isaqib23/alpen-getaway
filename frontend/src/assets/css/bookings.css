@@ -27,7 +27,7 @@ div.bookings div.col-2 {
   flex-direction: column;
   overflow-x: auto; /* Enable horizontal scrolling */
   padding: 20px;
-  background-color: #ffffff;
+  background-color: var(--white-color);
 }
 
 /* Adjusting BookingList inside col-2 */

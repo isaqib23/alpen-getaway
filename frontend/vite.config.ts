@@ -31,6 +31,21 @@ export default ({ mode }: { mode: string }) => {
     build: {
       outDir: "build",
       target: "esnext",
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor': ['react', 'react-dom'],
+            'ui': ['@mui/material', '@mui/icons-material'],
+          }
+        }
+      }
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@import "src/assets/css/_variables.css";`
+        }
+      }
     },
   });
 };

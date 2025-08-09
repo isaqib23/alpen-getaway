@@ -1,58 +1,59 @@
-div.accordion-container {
-  background: #fff;
-  margin: 10px 0;
-  border: 1px solid #dadada;
-  border-radius: 5px;
-  font-size: 13px;
+/* Accordion Component */
+.accordion-container {
+  background: var(--white-color);
+  margin: var(--spacing-md) 0;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  font-size: var(--font-size-sm);
   user-select: none;
 }
 
-div.accordion-container span.accordion {
+.accordion-container .accordion {
   cursor: pointer;
-  padding: 2px;
-  transition: 0.4s;
+  padding: var(--spacing-xs);
+  transition: var(--transition);
   display: inline-block;
   width: 100%;
   text-align: center;
-  color: rgb(0 0 0 / 60%);
+  color: var(--text-muted);
   font-weight: 400;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   line-height: 2em;
-  background: #fff;
-  border-radius: 5px;
+  background: var(--white-color);
+  border-radius: var(--radius);
 }
 
-div.accordion-container span.accordion-active {
-  border-bottom: 1px solid #dadada;
-  border-radius: 5px 5px 0 0;
+.accordion-container .accordion-active {
+  border-bottom: 1px solid var(--border-dark);
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
-div.accordion-container span.accordion-active,
-div.accordion-container span.accordion:hover {
-  background: #fafafa;
+.accordion-container .accordion-active,
+.accordion-container .accordion:hover {
+  background: var(--bg-section);
 }
 
-div.accordion-container span.accordion::after {
+.accordion-container .accordion::after {
   content: '';
   border-top: 5px solid transparent;
-  border-left: 5px solid #000;
+  border-left: 5px solid var(--primary-color);
   border-bottom: 5px solid transparent;
-  transition: transform 0.1s ease;
+  transition: transform var(--transition-fast);
   float: right;
   margin: 7px 7px 0;
 }
 
-div.accordion-container span.accordion-active::after {
+.accordion-container .accordion-active::after {
   transform: rotate(90deg);
 }
 
-div.accordion-container div.panel {
+.accordion-container .panel {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.23s ease-out;
 }
 
-div.accordion-container div.panel-collapse {
+.accordion-container .panel-collapse {
   overflow: hidden;
   transition: max-height 0.23s ease-out;
 }

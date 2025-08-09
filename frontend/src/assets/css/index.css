@@ -2,26 +2,16 @@
 /*** 	 01. Global Variables	  ***/
 /************************************/
 
-:root {
-  --primary-color: #131010;
-  --secondary-color: #fff8f6;
-  --text-color: #616161;
-  --accent-color: #ff3600;
-  --white-color: #ffffff;
-  --divider-color: #ececec;
-  --dark-divider-color: #ffffff33;
-  --error-color: rgb(230, 87, 87);
-  --default-font: "DM Sans", sans-serif;
-  --accent-font: "Epilogue", sans-serif;
-}
+/* Import standardized variables */
+@import './_variables.css';
 
 /************************************/
 /*** 	   02. General css		  ***/
 /************************************/
 
 body {
-  font-family: var(--default-font);
-  font-size: 16px;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
   font-weight: 400;
   line-height: 1.7em;
   background-color: var(--white-color);
@@ -40,7 +30,7 @@ h4,
 h5,
 h6 {
   margin: 0;
-  font-family: var(--accent-font);
+  font-family: var(--font-heading);
   font-weight: 700;
   line-height: 1.2em;
   color: var(--primary-color);
@@ -332,6 +322,14 @@ body {
 
 .section-title {
   margin-bottom: 40px;
+  display: block;
+}
+
+.section-title h1,
+.section-title h2, 
+.section-title h4,
+.section-title p {
+  display: block;
 }
 
 .section-title h3 {

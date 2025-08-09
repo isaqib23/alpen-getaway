@@ -4,7 +4,7 @@
   padding: 60px 0;
   align-items: center;
   min-height: 80vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--accent-color);
   position: relative;
   overflow: hidden;
 }
@@ -16,7 +16,7 @@
   right: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  background: var(--accent-color);
   animation: float 20s ease-in-out infinite;
 }
 
@@ -49,14 +49,14 @@
 }
 
 .sign-in-form .section-title h2 {
-  color: #333;
+  color: var(--text-color);
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 10px;
 }
 
 .sign-in-form .section-title p {
-  color: #666;
+  color: var(--text-light);
   font-size: 16px;
   font-weight: 400;
 }
@@ -68,7 +68,7 @@
 
 .sign-in-form .form-group label {
   font-family: var(--accent-font);
-  color: #555;
+  color: var(--text-color);
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
@@ -84,14 +84,14 @@
   background-color: #f8f9fa;
   border: 2px solid transparent;
   border-radius: 12px;
-  color: #333;
+  color: var(--text-color);
   transition: all 0.3s ease;
   outline: none;
 }
 
 .sign-in-form .form-control:focus {
-  background-color: #fff;
-  border-color: #667eea;
+  background-color: var(--white-color);
+  border-color: var(--accent-color);
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
@@ -114,12 +114,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  background-color: #fff;
+  background-color: var(--white-color);
 }
 
 .form-check-input:checked {
-  background-color: #667eea;
-  border-color: #667eea;
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 .form-check-input:checked::after {
@@ -136,7 +136,7 @@
 .form-check-label {
   margin-left: 10px;
   cursor: pointer;
-  color: #555;
+  color: var(--text-color);
   font-size: 15px;
   user-select: none;
 }
@@ -147,19 +147,19 @@
 }
 
 .sign-up-text p {
-  color: #666;
+  color: var(--text-light);
   font-size: 15px;
 }
 
 .sign-up-link {
-  color: #667eea;
+  color: var(--accent-color);
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s ease;
 }
 
 .sign-up-link:hover {
-  color: #764ba2;
+  color: var(--primary-color);
   text-decoration: underline;
 }
 
@@ -170,7 +170,7 @@
 .sign-in-form-btn .btn-default {
   width: 100%;
   padding: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--accent-color);
   border: none;
   border-radius: 12px;
   color: white;

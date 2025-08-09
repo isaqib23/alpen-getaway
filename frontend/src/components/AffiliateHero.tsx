@@ -29,6 +29,7 @@ const AffiliateHero: React.FC<HeroHomeProps> = ({ type, language }) => {
     triggerOnce: true,
     threshold: 0.1,
   });
+  
 
   const heroContent = (
     <>

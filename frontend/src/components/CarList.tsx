@@ -10,6 +10,7 @@ import {
   Check as CheckIcon,
   Clear as UncheckIcon,
   Info as InfoIcon,
+  MeetingRoom as DoorsIcon,
 } from "@mui/icons-material";
 import * as bookcarsTypes from "../types/bookcars-types";
 import * as bookcarsHelper from "../utils/bookcars-helper";
@@ -22,7 +23,6 @@ import * as CarService from "../services/CarService";
 import * as UserService from "../services/UserService";
 import Pager from "./Pager";
 
-import DoorsIcon from "../assets/images/icons/car-door.png";
 
 import "../assets/css/car-list.css";
 
@@ -46,7 +46,7 @@ interface CarListProps {
   hideSupplier?: boolean;
   loading?: boolean;
   sizeAuto?: boolean;
-  onLoad?: bookcarsTypes.DataEvent<bookcarsTypes.Car>;
+  onLoad?: (event: { rows: bookcarsTypes.Car[]; rowCount: number }) => void;
 }
 
 const CarList = ({
@@ -432,7 +432,7 @@ const CarList = ({
                           placement="top"
                         >
                           <div className="car-info-list-item">
-                            <img src={DoorsIcon} alt="" className="car-doors" />
+                            <DoorsIcon className="car-doors" />
                             <span className="car-info-list-text">
                               {car.doors}
                             </span>
@@ -660,16 +660,14 @@ const CarList = ({
                     <span className="price-main">
                       {bookcarsHelper.formatPrice(
                         helper.price(car, from as Date, to as Date),
-                        commonStrings.CURRENCY,
-                        language
+                        commonStrings.CURRENCY
                       )}
                     </span>
                     <span className="price-day">{`${
                       strings.PRICE_PER_DAY
                     } ${bookcarsHelper.formatPrice(
                       car.price,
-                      commonStrings.CURRENCY,
-                      language
+                      commonStrings.CURRENCY
                     )}`}</span>
                   </div>
                 )}

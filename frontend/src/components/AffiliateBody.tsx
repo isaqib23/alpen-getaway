@@ -116,124 +116,121 @@ const AffiliateBody: React.FC = () => {
   };
 
   return (
-    <div className="about-us">
+    <div className="affiliate-section">
       <div className="container">
-        <div className="row align-items-center">
-          <div className="col-lg-4">
-            {/* About Us Image Start */}
-            <div className="about-image about-image-compact">
-              <div className="about-img-1">
-                <RevealImage
-                  className="reveal custom-figure h-100"
-                  src="/assets/images/affiliate/1.jpg"
-                  alt="Our Service"
-                />
+        <div className="row">
+          {/* Left Column - Image and Content */}
+          <div className="col-lg-8">
+            <div className="affiliate-left-content">
+              {/* Image Section */}
+              <div className="affiliate-images-container">
+                <div className="affiliate-main-image">
+                  <RevealImage
+                    className="reveal custom-figure h-100"
+                    src="/assets/images/affiliate/1.jpg"
+                    alt="Our Service"
+                  />
+                </div>
+                <div className="affiliate-secondary-image">
+                  <RevealImage
+                    className="reveal custom-figure h-100"
+                    src="/assets/images/affiliate/2.jpg"
+                    alt="Why Choose Us"
+                  />
+                </div>
               </div>
-              <div className="about-img-2">
-                <RevealImage
-                  className="reveal custom-figure h-100"
-                  src="/assets/images/affiliate/2.jpg"
-                  alt="Why Choose Us"
-                />
-              </div>
-            </div>
-            {/* About Us Image End */}
-          </div>
 
-          <div className="col-lg-4">
-            {/* About Us Content Start */}
-            <div className="about-content">
-              <div className="section-title">
-                <motion.h3
-                  ref={ref1}
-                  className="fadeInUp"
+              {/* Content Section */}
+              <div className="affiliate-content">
+                <div className="affiliate-header">
+                  <motion.h3
+                    ref={ref1}
+                    className="fadeInUp affiliate-subtitle"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView1 ? "animate" : "initial"}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  >
+                    {strings.ABOUT}
+                  </motion.h3>
+
+                  <TextAnime className="affiliate-title" tag="h2">
+                    {strings.HEADING_BODY}
+                  </TextAnime>
+                </div>
+                
+                <div className="affiliate-description">
+                  <motion.p
+                    ref={ref2}
+                    className="fadeInUp affiliate-paragraph"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView2 ? "animate" : "initial"}
+                    transition={
+                      isLaptop
+                        ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
+                        : { duration: 0.6, ease: "easeOut" }
+                    }
+                  >
+                    {strings.PARA_1}
+                  </motion.p>
+                  <motion.p
+                    ref={ref3}
+                    className="fadeInUp affiliate-paragraph"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView3 ? "animate" : "initial"}
+                    transition={
+                      isLaptop
+                        ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
+                        : { duration: 0.6, ease: "easeOut" }
+                    }
+                  >
+                    {strings.PARA_2}
+                  </motion.p>
+                </div>
+
+                <motion.div
+                  ref={ref6}
+                  className="affiliate-cta fadeInUp"
                   variants={fadeInUpVariants}
                   initial="initial"
-                  animate={inView1 ? "animate" : "initial"}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                >
-                  {strings.ABOUT}
-                </motion.h3>
-
-                <TextAnime className="text-anime-style-3" tag="h4">
-                  {strings.HEADING_BODY}
-                </TextAnime>
-                <motion.p
-                  ref={ref2}
-                  className="fadeInUp"
-                  variants={fadeInUpVariants}
-                  initial="initial"
-                  animate={inView2 ? "animate" : "initial"}
+                  animate={inView6 ? "animate" : "initial"}
                   transition={
                     isLaptop
                       ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
                       : { duration: 0.6, ease: "easeOut" }
                   }
                 >
-                  {strings.PARA_1}
-                </motion.p>
-                <motion.p
-                  ref={ref3}
-                  className="fadeInUp"
-                  variants={fadeInUpVariants}
-                  initial="initial"
-                  animate={inView3 ? "animate" : "initial"}
-                  transition={
-                    isLaptop
-                      ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
-                      : { duration: 0.6, ease: "easeOut" }
-                  }
-                >
-                  {strings.PARA_2}
-                </motion.p>
+                  <Link to="/contact" className="btn-default">
+                    {strings.CONTACT}
+                  </Link>
+                </motion.div>
               </div>
-
-              <motion.div
-                ref={ref6}
-                className="about-content-footer fadeInUp"
-                variants={fadeInUpVariants}
-                initial="initial"
-                animate={inView6 ? "animate" : "initial"}
-                transition={
-                  isLaptop
-                    ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
-                    : { duration: 0.6, ease: "easeOut" }
-                }
-              >
-                <Link to="/contact" className="btn-default">
-                  {strings.CONTACT}
-                </Link>
-              </motion.div>
             </div>
-            {/* About Us Content End */}
           </div>
+
+          {/* Right Column - Form */}
           <div className="col-lg-4">
-            <div className="unified-form-container" style={{ maxWidth: 'none', width: '100%', padding: '30px' }}>
+            <div className="affiliate-form-container">
               <motion.div
-                className="unified-form-body"
+                className="affiliate-form-body"
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <div className="unified-form-header" style={{ marginBottom: '25px' }}>
-                  <h3 className="unified-form-title" style={{ fontSize: '24px', marginBottom: '8px' }}>
+                <div className="affiliate-form-header">
+                  <h3 className="affiliate-form-title">
                     {strings.JOIN}
                   </h3>
                 </div>
                 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="affiliate-form">
                   {/* Error Messages */}
                   {errors.length > 0 && (
-                    <div style={{ 
-                      background: '#ffebee', 
-                      border: '1px solid #f44336', 
-                      borderRadius: '4px', 
-                      padding: '12px', 
-                      marginBottom: '20px',
-                      color: '#c62828'
-                    }}>
+                    <div className="affiliate-error-messages">
                       {errors.map((error, index) => (
-                        <div key={index} style={{ marginBottom: index < errors.length - 1 ? '4px' : '0' }}>
+                        <div key={index} className="affiliate-error-item">
                           • {error}
                         </div>
                       ))}
@@ -242,27 +239,19 @@ const AffiliateBody: React.FC = () => {
 
                   {/* Success/Error Message */}
                   {submitMessage && (
-                    <div style={{ 
-                      background: submitMessage.type === 'success' ? '#e8f5e8' : '#ffebee', 
-                      border: `1px solid ${submitMessage.type === 'success' ? '#4caf50' : '#f44336'}`, 
-                      borderRadius: '4px', 
-                      padding: '12px', 
-                      marginBottom: '20px',
-                      color: submitMessage.type === 'success' ? '#2e7d32' : '#c62828'
-                    }}>
+                    <div className={`affiliate-message affiliate-message-${submitMessage.type}`}>
                       {submitMessage.text}
                     </div>
                   )}
 
                   {/* Company Information */}
-                  <div>
-                    
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.COMPANY}</label>
+                  <div className="affiliate-form-fields">
+                    <div className="affiliate-form-group">
+                      <label className="affiliate-form-label">{strings.COMPANY}</label>
                       <input
                         type="text"
                         name="companyName"
-                        className="unified-form-input"
+                        className="affiliate-form-input"
                         value={formData.companyName || ''}
                         onChange={handleInputChange}
                         placeholder="Enter company name"
@@ -270,12 +259,12 @@ const AffiliateBody: React.FC = () => {
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.EMAIL}</label>
+                    <div className="affiliate-form-group">
+                      <label className="affiliate-form-label">{strings.EMAIL}</label>
                       <input
                         type="email"
                         name="companyEmail"
-                        className="unified-form-input"
+                        className="affiliate-form-input"
                         value={formData.companyEmail || ''}
                         onChange={handleInputChange}
                         placeholder="company@example.com"
@@ -283,12 +272,12 @@ const AffiliateBody: React.FC = () => {
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.CONTACT_NO}</label>
+                    <div className="affiliate-form-group">
+                      <label className="affiliate-form-label">{strings.CONTACT_NO}</label>
                       <input
                         type="tel"
                         name="contactNumber"
-                        className="unified-form-input"
+                        className="affiliate-form-input"
                         value={formData.contactNumber || ''}
                         onChange={handleInputChange}
                         placeholder="Company phone number"
@@ -296,11 +285,11 @@ const AffiliateBody: React.FC = () => {
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.COUNTRY}</label>
+                    <div className="affiliate-form-group">
+                      <label className="affiliate-form-label">{strings.COUNTRY}</label>
                       <select
                         name="registrationCountry"
-                        className="unified-form-select"
+                        className="affiliate-form-select"
                         value={formData.registrationCountry || ''}
                         onChange={handleInputChange}
                         required
@@ -316,12 +305,12 @@ const AffiliateBody: React.FC = () => {
                       </select>
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">{strings.REP}</label>
+                    <div className="affiliate-form-group">
+                      <label className="affiliate-form-label">{strings.REP}</label>
                       <input
                         type="text"
                         name="companyRepresentative"
-                        className="unified-form-input"
+                        className="affiliate-form-input"
                         value={formData.companyRepresentative || ''}
                         onChange={handleInputChange}
                         placeholder="Representative name"
@@ -329,24 +318,24 @@ const AffiliateBody: React.FC = () => {
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">Service Area (Optional)</label>
+                    <div className="affiliate-form-group">
+                      <label className="affiliate-form-label">Service Area (Optional)</label>
                       <input
                         type="text"
                         name="serviceArea"
-                        className="unified-form-input"
+                        className="affiliate-form-input"
                         value={formData.serviceArea || ''}
                         onChange={handleInputChange}
                         placeholder="e.g., Ontario, Toronto Metro"
                       />
                     </div>
 
-                    <div className="unified-form-group">
-                      <label className="unified-form-label">Registration Number (Optional)</label>
+                    <div className="affiliate-form-group">
+                      <label className="affiliate-form-label">Registration Number (Optional)</label>
                       <input
                         type="text"
                         name="registrationNumber"
-                        className="unified-form-input"
+                        className="affiliate-form-input"
                         value={formData.registrationNumber || ''}
                         onChange={handleInputChange}
                         placeholder="Business registration number"
@@ -356,13 +345,8 @@ const AffiliateBody: React.FC = () => {
 
                   <button 
                     type="submit" 
-                    className="unified-form-button primary"
+                    className="affiliate-form-submit"
                     disabled={isSubmitting}
-                    style={{ 
-                      opacity: isSubmitting ? 0.7 : 1, 
-                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                      position: 'relative'
-                    }}
                   >
                     {isSubmitting ? 'Submitting...' : strings.SUBMIT}
                   </button>

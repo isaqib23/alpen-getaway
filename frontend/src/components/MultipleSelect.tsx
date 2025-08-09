@@ -185,7 +185,7 @@ const MultipleSelect = ({
           const { inputProps } = params
           inputProps.autoComplete = 'off'
 
-          if (type === bookcarsTypes.RecordType.User && !multiple && values.length === 1 && values[0]) {
+          if (type === bookcarsTypes.RECORD_TYPE.USER && !multiple && values.length === 1 && values[0]) {
             const option = values[0]
 
             return (
@@ -213,7 +213,7 @@ const MultipleSelect = ({
             )
           }
 
-          if (type === bookcarsTypes.RecordType.Supplier && !multiple && values.length === 1 && values[0]) {
+          if (type === bookcarsTypes.RECORD_TYPE.SUPPLIER && !multiple && values.length === 1 && values[0]) {
             const option = values[0]
 
             return (
@@ -243,7 +243,7 @@ const MultipleSelect = ({
             )
           }
 
-          if (type === bookcarsTypes.RecordType.Location && !multiple && values.length === 1 && values[0]) {
+          if (type === bookcarsTypes.RECORD_TYPE.LOCATION && !multiple && values.length === 1 && values[0]) {
             return (
               <TextField
                 {...params}
@@ -265,7 +265,7 @@ const MultipleSelect = ({
             )
           }
 
-          if (type === bookcarsTypes.RecordType.Car && !multiple && values.length === 1 && values[0]) {
+          if (type === bookcarsTypes.RECORD_TYPE.CAR && !multiple && values.length === 1 && values[0]) {
             const option = values[0]
 
             return (
@@ -311,7 +311,7 @@ const MultipleSelect = ({
           <Chip {...getTagProps({ index })} key={option._id} label={option.name} />
         ))}
         renderOption={(props, option) => {
-          if (type === bookcarsTypes.RecordType.User) {
+          if (type === bookcarsTypes.RECORD_TYPE.USER) {
             return (
               <li {...props} key={option._id} className={`${props.className} ms-option`}>
                 <span className="option-image">
@@ -320,7 +320,7 @@ const MultipleSelect = ({
                 <span className="option-name">{option.name}</span>
               </li>
             )
-          } if (type === bookcarsTypes.RecordType.Supplier) {
+          } if (type === bookcarsTypes.RECORD_TYPE.SUPPLIER) {
             return (
               <li {...props} key={option._id} className={`${props.className} ms-option`}>
                 <span className="option-image supplier-ia">
@@ -333,7 +333,7 @@ const MultipleSelect = ({
                 <span className="option-name">{option.name}</span>
               </li>
             )
-          } if (type === bookcarsTypes.RecordType.Location) {
+          } if (type === bookcarsTypes.RECORD_TYPE.LOCATION) {
             return (
               <li {...props} key={option._id} className={`${props.className} ms-option`}>
                 <span className="option-image">
@@ -342,7 +342,7 @@ const MultipleSelect = ({
                 <span className="option-name">{option.name}</span>
               </li>
             )
-          } if (type === bookcarsTypes.RecordType.Car) {
+          } if (type === bookcarsTypes.RECORD_TYPE.CAR) {
             return (
               <li {...props} key={option._id} className={`${props.className} ms-option`}>
                 <span className="option-image car-ia">

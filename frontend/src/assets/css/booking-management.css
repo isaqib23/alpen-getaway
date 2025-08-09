@@ -65,7 +65,7 @@
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--text-color);
 }
 
 /* Booking Bar Section Styles */
@@ -86,7 +86,7 @@
 
 .location-label {
   font-weight: 600;
-  color: #555;
+  color: var(--text-color);
 }
 
 .change-request {
@@ -101,7 +101,7 @@
   background-color: #f0f0f0;
   border-radius: 5px;
   border: 1px solid #ddd;
-  color: #333;
+  color: var(--text-color);
 }
 
 .location-input {
@@ -126,7 +126,7 @@
 .date-label {
   display: block;
   font-weight: 600;
-  color: #555;
+  color: var(--text-color);
   margin-bottom: 5px;
 }
 
@@ -301,7 +301,7 @@
   font-size: 16px;
   font-weight: 500;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--text-color);
   border-bottom: 1px solid #eee;
   padding-bottom: 8px;
 }
@@ -345,13 +345,13 @@
 .price-heading {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
   margin: 0;
 }
 
 .payment-methods-title {
   font-size: 16px;
-  color: #555;
+  color: var(--text-color);
   margin-bottom: 15px;
 }
 
@@ -433,7 +433,7 @@
 }
 
 .status-message {
-  color: #555;
+  color: var(--text-color);
 }
 
 .error-message {
@@ -441,7 +441,7 @@
 }
 
 .form-placeholder-text {
-  color: #555;
+  color: var(--text-color);
   line-height: 1.5;
 }
 
@@ -595,13 +595,13 @@
 .empty-state-title {
   font-size: 24px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
   margin-bottom: 10px;
 }
 
 .empty-state-description {
   font-size: 16px;
-  color: #666;
+  color: var(--text-light);
   line-height: 1.5;
   margin-bottom: 30px;
 }
@@ -618,7 +618,7 @@
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: #555;
+  color: var(--text-color);
 }
 
 .feature-icon {

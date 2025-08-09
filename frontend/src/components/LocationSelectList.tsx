@@ -18,6 +18,7 @@ interface LocationSelectListProps {
   readOnly?: boolean;
   init?: boolean;
   onChange?: (values: bookcarsTypes.Option[]) => void;
+  onFetch?: (event: { rows: bookcarsTypes.Location[]; rowCount: number }) => void;
 }
 
 const LocationSelectList = ({
@@ -31,6 +32,7 @@ const LocationSelectList = ({
   readOnly,
   init: listInit,
   onChange,
+  onFetch,
 }: LocationSelectListProps) => {
   const [init, setInit] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -54,7 +56,7 @@ const LocationSelectList = ({
   const fetchData = async (
     _page: number,
     _keyword: string,
-    onFetch?: bookcarsTypes.DataEvent<bookcarsTypes.Location>
+    onFetchCallback?: () => void
   ) => {
     try {
       if (fetch || _page === 1) {
@@ -64,25 +66,27 @@ const LocationSelectList = ({
           _page,
           env.PAGE_SIZE
         );
-        const _data =
+        const _data: { pageInfo: { totalRecord: number }; resultData: bookcarsTypes.Location[] } =
           data && data.length > 0
             ? data[0]
             : { pageInfo: { totalRecord: 0 }, resultData: [] };
+        
         if (!_data) {
           return;
         }
-        const totalRecords =
-          Array.isArray(_data.pageInfo) && _data.pageInfo.length > 0
-            ? _data.pageInfo[0].totalRecords
-            : 0;
-        const _rows =
-          _page === 1 ? _data.resultData : [...rows, ..._data.resultData];
+        
+        const totalRecords = _data.pageInfo.totalRecord || 0;
+        const _rows = _page === 1 ? _data.resultData : [...rows, ..._data.resultData];
 
         setRows(_rows);
         setFetch(_data.resultData.length > 0);
 
         if (onFetch) {
           onFetch({ rows: _data.resultData, rowCount: totalRecords });
+        }
+        
+        if (onFetchCallback) {
+          onFetchCallback();
         }
       }
     } catch (err) {
@@ -107,7 +111,7 @@ const LocationSelectList = ({
       selectedOptions={selectedOptions}
       required={required || false}
       multiple={multiple}
-      type={bookcarsTypes.RecordType.Location}
+      type={bookcarsTypes.RECORD_TYPE.LOCATION}
       variant={variant || "standard"}
       hidePopupIcon={hidePopupIcon}
       customOpen={customOpen}

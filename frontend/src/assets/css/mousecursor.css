@@ -212,7 +212,7 @@
 }
 
 .cb-demo {
-  background: #fff;
+  background: var(--white-color);
 }
 
 .cb-demo-content {

@@ -116,262 +116,249 @@ const B2BBody: React.FC = () => {
   };
 
   return (
-    <div className="about-us">
+    <div className="b2b-section">
       <div className="container">
-        <div className="row align-items-center">
-          <div className="col-lg-4">
-            {/* About Us Image Start */}
-            <div className="about-image">
-              <div className="about-img-1">
-                <RevealImage
-                  className="reveal custom-figure h-100"
-                  src="/assets/images/b2b_partner/1.jpg"
-                  alt="About Us 1"
-                />
-              </div>
-              <div className="about-img-2">
-                <RevealImage
-                  className="reveal custom-figure h-100"
-                  src="/assets/images/b2b_partner/2.jpg"
-                  alt="About Us 2"
-                />
-              </div>
-            </div>
-            {/* About Us Image End */}
-          </div>
-
-          <div className="col-lg-4">
-            {/* About Us Content Start */}
-            <div className="about-content">
-              <div className="section-title">
-                <motion.h3
-                  ref={ref1}
-                  className="fadeInUp"
-                  variants={fadeInUpVariants}
-                  initial="initial"
-                  animate={inView1 ? "animate" : "initial"}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                >
-                  {strings.ABOUT}
-                </motion.h3>
-
-                <TextAnime className="text-anime-style-3" tag="h4">
-                  {strings.HEADING}
-                </TextAnime>
-                <motion.p
-                  ref={ref2}
-                  className="fadeInUp"
-                  variants={fadeInUpVariants}
-                  initial="initial"
-                  animate={inView2 ? "animate" : "initial"}
-                  transition={
-                    isLaptop
-                      ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
-                      : { duration: 0.6, ease: "easeOut" }
-                  }
-                >
-                  {strings.PARA_1}
-                </motion.p>
-                <motion.p
-                  ref={ref3}
-                  className="fadeInUp"
-                  variants={fadeInUpVariants}
-                  initial="initial"
-                  animate={inView3 ? "animate" : "initial"}
-                  transition={
-                    isLaptop
-                      ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
-                      : { duration: 0.6, ease: "easeOut" }
-                  }
-                >
-                  {strings.PARA_2}
-                </motion.p>
+        <div className="row">
+          {/* Left Column - Image and Content */}
+          <div className="col-lg-8">
+            <div className="b2b-left-content">
+              {/* Image Section */}
+              <div className="b2b-images-container">
+                <div className="b2b-main-image">
+                  <RevealImage
+                    className="reveal custom-figure h-100"
+                    src="/assets/images/b2b_partner/1.jpg"
+                    alt="B2B Partner Service"
+                  />
+                </div>
+                <div className="b2b-secondary-image">
+                  <RevealImage
+                    className="reveal custom-figure h-100"
+                    src="/assets/images/b2b_partner/2.jpg"
+                    alt="B2B Partnership"
+                  />
+                </div>
               </div>
 
-              <motion.div
-                ref={ref6}
-                className="about-content-footer fadeInUp"
-                variants={fadeInUpVariants}
-                initial="initial"
-                animate={inView6 ? "animate" : "initial"}
-                transition={
-                  isLaptop
-                    ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
-                    : { duration: 0.6, ease: "easeOut" }
-                }
-              >
-                <Link to="/contact" className="btn-default">
-                  {strings.CONTACT}
-                </Link>
-              </motion.div>
-            </div>
-            {/* About Us Content End */}
-          </div>
-          <div className="col-lg-4">
-            <motion.div
-              className="unified-form-container"
-              style={{ maxWidth: 'none', width: '100%' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <div className="unified-form-header" style={{ textAlign: 'center' }}>
-                <h3 className="unified-form-title" style={{ fontSize: '28px' }}>
-                  {strings.JOIN}
-                </h3>
-                <p className="unified-form-subtitle">
-                  Join our network and start earning with your transportation services
-                </p>
-              </div>
+              {/* Content Section */}
+              <div className="b2b-content">
+                <div className="b2b-header">
+                  <motion.h3
+                    ref={ref1}
+                    className="fadeInUp b2b-subtitle"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView1 ? "animate" : "initial"}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  >
+                    {strings.ABOUT}
+                  </motion.h3>
 
-              <form onSubmit={handleSubmit} className="unified-form-body">
-                {/* Error Messages */}
-                {errors.length > 0 && (
-                  <div style={{ 
-                    background: '#ffebee', 
-                    border: '1px solid #f44336', 
-                    borderRadius: '4px', 
-                    padding: '12px', 
-                    marginBottom: '20px',
-                    color: '#c62828'
-                  }}>
-                    {errors.map((error, index) => (
-                      <div key={index} style={{ marginBottom: index < errors.length - 1 ? '4px' : '0' }}>
-                        • {error}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Success/Error Message */}
-                {submitMessage && (
-                  <div style={{ 
-                    background: submitMessage.type === 'success' ? '#e8f5e8' : '#ffebee', 
-                    border: `1px solid ${submitMessage.type === 'success' ? '#4caf50' : '#f44336'}`, 
-                    borderRadius: '4px', 
-                    padding: '12px', 
-                    marginBottom: '20px',
-                    color: submitMessage.type === 'success' ? '#2e7d32' : '#c62828'
-                  }}>
-                    {submitMessage.text}
-                  </div>
-                )}
-
-                {/* Company Information */}
-                <div>
-                  
-                  <div className="unified-form-group">
-                    <label className="unified-form-label">{strings.COMPANY}</label>
-                    <input
-                      type="text"
-                      name="companyName"
-                      value={formData.companyName || ''}
-                      onChange={handleInputChange}
-                      className="unified-form-input"
-                      placeholder="Enter company name"
-                      required
-                    />
-                  </div>
-
-                  <div className="unified-form-group">
-                    <label className="unified-form-label">{strings.EMAIL}</label>
-                    <input
-                      type="email"
-                      name="companyEmail"
-                      value={formData.companyEmail || ''}
-                      onChange={handleInputChange}
-                      className="unified-form-input"
-                      placeholder="company@example.com"
-                      required
-                    />
-                  </div>
-
-                  <div className="unified-form-group">
-                    <label className="unified-form-label">{strings.CONTACT_NO}</label>
-                    <input
-                      type="tel"
-                      name="contactNumber"
-                      value={formData.contactNumber || ''}
-                      onChange={handleInputChange}
-                      className="unified-form-input"
-                      placeholder="Company phone number"
-                      required
-                    />
-                  </div>
-
-                  <div className="unified-form-group">
-                    <label className="unified-form-label">{strings.COUNTRY}</label>
-                    <select
-                      name="registrationCountry"
-                      value={formData.registrationCountry || ''}
-                      onChange={handleInputChange}
-                      className="unified-form-select"
-                      required
-                    >
-                      <option value="">Select Country</option>
-                      <option value="Canada">Canada</option>
-                      <option value="USA">USA</option>
-                      <option value="UK">UK</option>
-                      <option value="Australia">Australia</option>
-                      <option value="Germany">Germany</option>
-                      <option value="France">France</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-
-                  <div className="unified-form-group">
-                    <label className="unified-form-label">{strings.SERVICE}</label>
-                    <input
-                      type="text"
-                      name="serviceArea"
-                      value={formData.serviceArea || ''}
-                      onChange={handleInputChange}
-                      className="unified-form-input"
-                      placeholder="e.g., Toronto Metro Area, Ontario"
-                      required
-                    />
-                  </div>
-
-                  <div className="unified-form-group">
-                    <label className="unified-form-label">{strings.REGISTERATION}</label>
-                    <input
-                      type="text"
-                      name="registrationNumber"
-                      value={formData.registrationNumber || ''}
-                      onChange={handleInputChange}
-                      className="unified-form-input"
-                      placeholder="Business registration number"
-                      required
-                    />
-                  </div>
-
-                  <div className="unified-form-group">
-                    <label className="unified-form-label">{strings.REP}</label>
-                    <input
-                      type="text"
-                      name="companyRepresentative"
-                      value={formData.companyRepresentative || ''}
-                      onChange={handleInputChange}
-                      className="unified-form-input"
-                      placeholder="Representative full name"
-                      required
-                    />
-                  </div>
+                  <TextAnime className="b2b-title" tag="h2">
+                    {strings.HEADING}
+                  </TextAnime>
+                </div>
+                
+                <div className="b2b-description">
+                  <motion.p
+                    ref={ref2}
+                    className="fadeInUp b2b-paragraph"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView2 ? "animate" : "initial"}
+                    transition={
+                      isLaptop
+                        ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
+                        : { duration: 0.6, ease: "easeOut" }
+                    }
+                  >
+                    {strings.PARA_1}
+                  </motion.p>
+                  <motion.p
+                    ref={ref3}
+                    className="fadeInUp b2b-paragraph"
+                    variants={fadeInUpVariants}
+                    initial="initial"
+                    animate={inView3 ? "animate" : "initial"}
+                    transition={
+                      isLaptop
+                        ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
+                        : { duration: 0.6, ease: "easeOut" }
+                    }
+                  >
+                    {strings.PARA_2}
+                  </motion.p>
                 </div>
 
-                <button 
-                  type="submit" 
-                  className="unified-form-button primary"
-                  disabled={isSubmitting}
-                  style={{ 
-                    opacity: isSubmitting ? 0.7 : 1, 
-                    cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                  }}
+                <motion.div
+                  ref={ref6}
+                  className="b2b-cta fadeInUp"
+                  variants={fadeInUpVariants}
+                  initial="initial"
+                  animate={inView6 ? "animate" : "initial"}
+                  transition={
+                    isLaptop
+                      ? { duration: 0.6, ease: "easeOut", delay: 0.25 }
+                      : { duration: 0.6, ease: "easeOut" }
+                  }
                 >
-                  {isSubmitting ? 'Submitting...' : strings.SUBMIT}
-                </button>
-              </form>
-            </motion.div>
+                  <Link to="/contact" className="btn-default">
+                    {strings.CONTACT}
+                  </Link>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Form */}
+          <div className="col-lg-4">
+            <div className="b2b-form-container">
+              <motion.div
+                className="b2b-form-body"
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <div className="b2b-form-header">
+                  <h3 className="b2b-form-title">
+                    {strings.JOIN}
+                  </h3>
+                  <p className="b2b-form-subtitle">
+                    Join our network and start earning with your transportation services
+                  </p>
+                </div>
+
+                
+                <form onSubmit={handleSubmit} className="b2b-form">
+                  {/* Error Messages */}
+                  {errors.length > 0 && (
+                    <div className="b2b-error-messages">
+                      {errors.map((error, index) => (
+                        <div key={index} className="b2b-error-item">
+                          • {error}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Success/Error Message */}
+                  {submitMessage && (
+                    <div className={`b2b-message b2b-message-${submitMessage.type}`}>
+                      {submitMessage.text}
+                    </div>
+                  )}
+
+                  {/* Company Information */}
+                  <div className="b2b-form-fields">
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.COMPANY}</label>
+                      <input
+                        type="text"
+                        name="companyName"
+                        className="b2b-form-input"
+                        value={formData.companyName || ''}
+                        onChange={handleInputChange}
+                        placeholder="Enter company name"
+                        required
+                      />
+                    </div>
+
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.EMAIL}</label>
+                      <input
+                        type="email"
+                        name="companyEmail"
+                        className="b2b-form-input"
+                        value={formData.companyEmail || ''}
+                        onChange={handleInputChange}
+                        placeholder="company@example.com"
+                        required
+                      />
+                    </div>
+
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.CONTACT_NO}</label>
+                      <input
+                        type="tel"
+                        name="contactNumber"
+                        className="b2b-form-input"
+                        value={formData.contactNumber || ''}
+                        onChange={handleInputChange}
+                        placeholder="Company phone number"
+                        required
+                      />
+                    </div>
+
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.COUNTRY}</label>
+                      <select
+                        name="registrationCountry"
+                        className="b2b-form-select"
+                        value={formData.registrationCountry || ''}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="">Select Country</option>
+                        <option value="Canada">Canada</option>
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.SERVICE}</label>
+                      <input
+                        type="text"
+                        name="serviceArea"
+                        className="b2b-form-input"
+                        value={formData.serviceArea || ''}
+                        onChange={handleInputChange}
+                        placeholder="e.g., Toronto Metro Area, Ontario"
+                        required
+                      />
+                    </div>
+
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.REGISTERATION}</label>
+                      <input
+                        type="text"
+                        name="registrationNumber"
+                        className="b2b-form-input"
+                        value={formData.registrationNumber || ''}
+                        onChange={handleInputChange}
+                        placeholder="Business registration number"
+                        required
+                      />
+                    </div>
+
+                    <div className="b2b-form-group">
+                      <label className="b2b-form-label">{strings.REP}</label>
+                      <input
+                        type="text"
+                        name="companyRepresentative"
+                        className="b2b-form-input"
+                        value={formData.companyRepresentative || ''}
+                        onChange={handleInputChange}
+                        placeholder="Representative full name"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    className="b2b-form-submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Submitting...' : strings.SUBMIT}
+                  </button>
+                </form>
+              </motion.div>
+            </div>
           </div>
         </div>
       </div>

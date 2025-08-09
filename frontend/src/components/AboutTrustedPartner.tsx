@@ -1,7 +1,6 @@
 import React from "react";
 import { CheckCircle, Smartphone, Clock, Gift, Car } from "lucide-react";
 import { strings } from "../lang/about";
-import "../assets/css/trusted-partner.css";
 
 const AboutTrustedPartner: React.FC = () => {
   return (

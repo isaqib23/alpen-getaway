@@ -1,6 +1,5 @@
 import React from "react";
 import { CheckCircle, Smartphone, Clock, Gift, Car } from "lucide-react";
-
 import "../../assets/css/trusted-partner.css";
 
 const TrustedPartner: React.FC = () => {
@@ -35,9 +34,9 @@ const TrustedPartner: React.FC = () => {
           {/* Right Side - Content */}
           <div className="col-lg-6">
             <div className="trusted-partner-content">
-              <div className="section-header">
-                <span className="subtitle">Easy & Reliable Services in the Booking Industry</span>
-                <h2 className="section-title">
+              <div className="section-title">
+                <h3>Easy & Reliable Services in the Booking Industry</h3>
+                <h2>
                   Your trusted partner in 
                   <span className="highlight-box">reliable car rental</span>
                 </h2>

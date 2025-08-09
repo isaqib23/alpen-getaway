@@ -1,0 +1,64 @@
+/* ===================================================== */
+/* ALPEN GETAWAY - MASTER STYLESHEET                    */
+/* Standardized CSS Architecture                        */
+/* ===================================================== */
+
+/* ===== FOUNDATION ===== */
+@import './_variables.css';
+@import './_utilities.css';
+
+/* ===== CORE STYLES ===== */
+@import './index.css';
+
+/* ===== LAYOUT COMPONENTS ===== */
+@import './header.css';
+@import './footer.css';
+
+/* ===== UI COMPONENTS ===== */
+@import './accordion.css';
+@import './booking-status.css';
+@import './booking-filter.css';
+
+/* ===== PAGE STYLES ===== */
+@import './home.css';
+@import './home-hero.css';
+@import './home-fleets.css';
+@import './home-services.css';
+@import './home-testimonials.css';
+@import './home-why-choose-us.css';
+@import './home-faqs.css';
+@import './home-cta.css';
+@import './airport-transfer.css';
+@import './trusted-partner.css';
+
+@import './cars.css';
+@import './car-list.css';
+@import './car-details.css';
+@import './cars-sidebar.css';
+
+@import './booking.css';
+@import './booking-form.css';
+@import './booking-list.css';
+@import './booking-management.css';
+@import './bookings.css';
+
+@import './legal-pages.css';
+@import './contact.css';
+@import './contact-info.css';
+@import './contact-map.css';
+
+/* ===== FORM STYLES ===== */
+@import './sign-in.css';
+@import './sign-up.css';
+@import './forgot-password.css';
+@import './change-password.css';
+
+/* ===== MISC COMPONENTS ===== */
+@import './destinations.css';
+@import './experienced-drivers.css';
+
+/* ===== ANIMATION LIBRARIES ===== */
+@import './animate.css';
+
+/* ===== ICON FONTS ===== */
+@import './all.css';

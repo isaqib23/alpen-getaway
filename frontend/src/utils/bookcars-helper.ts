@@ -85,6 +85,23 @@ export const days = (from: Date, to: Date): number => {
   return diffDays;
 };
 
+// Format number with locale
+export const formatNumber = (value: number): string => {
+  return value.toLocaleString();
+};
+
+// Check if current language is French
+export const isFrench = (): boolean => {
+  return document.documentElement.lang === 'fr' || 
+         window.navigator.language.startsWith('fr') ||
+         localStorage.getItem('bc-language') === 'fr';
+};
+
+// Check if value is a valid date
+export const isDate = (value: any): boolean => {
+  return value instanceof Date && !isNaN(value.getTime());
+};
+
 // Export as default object for compatibility
 const helper = {
   joinURL,
@@ -97,7 +114,10 @@ const helper = {
   flattenSuppliers,
   getAllCarTypes,
   arrayEqual,
-  days
+  days,
+  formatNumber,
+  isFrench,
+  isDate
 };
 
 export default helper;
