@@ -1,0 +1,35 @@
+.google-map {
+  padding: 50px 0 100px;
+}
+
+.google-map .section-title {
+  text-align: center;
+}
+
+.google-map .section-title h3 {
+  color: var(--accent-color);
+}
+
+.google-map-iframe {
+  width: 100%;
+  height: 550px;
+}
+
+.google-map-iframe iframe {
+  width: 100%;
+  height: 550px;
+  border-radius: 30px;
+}
+@media only screen and (max-width: 991px) {
+  .google-map {
+    padding: 25px 0 50px;
+  }
+
+  .google-map-iframe {
+    height: 400px;
+  }
+
+  .google-map-iframe iframe {
+    height: 400px;
+  }
+}
