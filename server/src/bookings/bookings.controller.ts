@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Pa
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { CreateBookingByEmailDto } from './dto/create-booking-by-email.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { AssignDriverCarDto } from './dto/assign-driver-car.dto';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
@@ -28,6 +29,24 @@ export class BookingsController {
             createBookingDto.company_id = companyId;
         }
         return this.bookingsService.create(createBookingDto);
+    }
+
+    @ApiOperation({ 
+        summary: 'Create a new booking by customer email',
+        description: 'Creates a booking for an existing customer or creates a new customer if the email does not exist'
+    })
+    @ApiResponse({ status: 201, description: 'Booking created successfully' })
+    @ApiResponse({ status: 400, description: 'Invalid booking data' })
+    @Post('by-email')
+    createByEmail(
+        @Body() createBookingDto: CreateBookingByEmailDto,
+        @CompanyContext() companyId?: string
+    ) {
+        // Set company_id for B2B/Affiliate users
+        if (companyId) {
+            createBookingDto.company_id = companyId;
+        }
+        return this.bookingsService.createByEmail(createBookingDto);
     }
 
     @ApiOperation({ summary: 'Get all bookings with pagination and filters' })

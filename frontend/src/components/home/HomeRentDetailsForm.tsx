@@ -26,6 +26,8 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
   // Dynamic locations from API
   const [rows, setRows] = useState<bookcarsTypes.Location[]>([]);
   const [locationsLoading, setLocationsLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [fetch, setFetch] = useState(false);
 
   // Helper function to check if location is already selected in the other field
   const isLocationDisabled = (locationId: string, otherLocationId: string, locationName: string, otherLocationName: string) => {
@@ -340,7 +342,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="/assets/images/icon-rent-details-2.svg"
+                          src="/img/icon-rent-details-2.svg"
                           alt="Pickup Location"
                         />
                       </div> */}
@@ -392,7 +394,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="/assets/images/icon-rent-details-2.svg"
+                          src="/img/icon-rent-details-2.svg"
                           alt="Dropoff Location"
                         />
                       </div> */}
@@ -445,7 +447,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="src/assets/images/icon-rent-details-3.svg"
+                          src="/img/icons/icon-rent-details-3.svg"
                           alt="Pickup Date"
                         />
                       </div> */}

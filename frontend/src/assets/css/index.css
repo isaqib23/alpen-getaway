@@ -2,26 +2,16 @@
 /*** 	 01. Global Variables	  ***/
 /************************************/
 
-:root {
-  --primary-color: #131010;
-  --secondary-color: #fff8f6;
-  --text-color: #616161;
-  --accent-color: #ff3600;
-  --white-color: #ffffff;
-  --divider-color: #ececec;
-  --dark-divider-color: #ffffff33;
-  --error-color: rgb(230, 87, 87);
-  --default-font: "DM Sans", sans-serif;
-  --accent-font: "Epilogue", sans-serif;
-}
+/* Import standardized variables */
+@import './_variables.css';
 
 /************************************/
 /*** 	   02. General css		  ***/
 /************************************/
 
 body {
-  font-family: var(--default-font);
-  font-size: 16px;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-base);
   font-weight: 400;
   line-height: 1.7em;
   background-color: var(--white-color);
@@ -40,7 +30,7 @@ h4,
 h5,
 h6 {
   margin: 0;
-  font-family: var(--accent-font);
+  font-family: var(--font-heading);
   font-weight: 700;
   line-height: 1.2em;
   color: var(--primary-color);
@@ -151,22 +141,27 @@ body {
 }
 
 .btn-default {
-  display: inline-block;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1em;
-  text-transform: capitalize;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-xl);
   background: var(--accent-color);
   color: var(--white-color);
-  border-radius: 100px;
-  padding: 16px 25px;
-  border: none;
-  transition: all 0.5s ease-in-out;
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  transition: var(--transition);
+  border: 2px solid var(--white-color);
+  border-radius: 50px;
+  line-height: 1em;
+  text-transform: capitalize;
   position: relative;
   z-index: 1;
 }
 .btn-default:hover {
-  background: var(--primary-color);
+  background: var(--primary-color) !important;
+  color: var(--white-color) !important;
 }
 
 .btn-default-before::before {
@@ -332,6 +327,14 @@ body {
 
 .section-title {
   margin-bottom: 40px;
+  display: block;
+}
+
+.section-title h1,
+.section-title h2, 
+.section-title h4,
+.section-title p {
+  display: block;
 }
 
 .section-title h3 {

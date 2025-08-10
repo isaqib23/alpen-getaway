@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import "../assets/css/contact-map.css"; // Ensure you have a CSS file for styles
 import TextAnime from "./animations/TextAnime";
 
 import { strings } from "../lang/contact-page";

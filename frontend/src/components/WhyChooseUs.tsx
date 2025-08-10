@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import RevealImage from "./animations/RevealImage";
 import TextAnime from "./animations/TextAnime";
 import { useMediaQuery } from "react-responsive";
-import "../assets/css/home-why-choose-us.css";
 
 import { strings } from "../lang/why-choose-us";
 
@@ -20,22 +19,22 @@ const HomeWhyChooseUs: React.FC = () => {
   // Array of "Why Choose Us" items
   const whyChooseItems = [
     {
-      icon: "/assets/images/icons/icon-why-choose-1.svg",
+      icon: "/img/icons/icon-why-choose-1.svg",
       title: strings.FLEET,
       description: strings.FLEET_DESCRIPTION,
     },
     {
-      icon: "/assets/images/icons/icon-why-choose-2.svg",
+      icon: "/img/icons/icon-why-choose-2.svg",
       title: strings.CUSTOMER_SERVICE,
       description: strings.CUSTOMER_SERVICE_DESCRIPTION,
     },
     {
-      icon: "/assets/images/icons/icon-why-choose-3.svg",
+      icon: "/img/icons/icon-why-choose-3.svg",
       title: strings.LOCATIONS,
       description: strings.LOCATIONS_DESCRIPTION,
     },
     {
-      icon: "/assets/images/icons/icon-why-choose-4.svg",
+      icon: "/img/icons/icon-why-choose-4.svg",
       title: strings.RELIALBILITY,
       description: strings.RELIALBILITY_DESCRIPTION,
     },

@@ -2,7 +2,6 @@ import React, { useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
-import "../assets/css/car-details.css";
 import FleetsSingleSidebar from "../components/FleetsSingleSidebar";
 import FleetSingleContent from "../components/FleetSingleContent";
 

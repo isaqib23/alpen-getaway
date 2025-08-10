@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../assets/css/page-header.css";
+const aboutImg = "/img/about_us/about.jpg";
 
 interface PageHeaderProps {
   title: string;
@@ -19,7 +19,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     <div 
       className="page-header bg-section"
       style={{
-        backgroundImage: `url(${image ? `cdn/cars/${image}` : "/assets/images/about_us/about.jpg"})`,
+        backgroundImage: `url(${image ? `cdn/cars/${image}` : aboutImg})`,
         backgroundPosition: "center center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat"

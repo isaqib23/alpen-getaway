@@ -14,7 +14,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import "../../assets/css/home-fleets.css";
 import TextAnime from "../animations/TextAnime";
 import { Link } from "react-router-dom";
 import * as bookcarsTypes from "../../types/bookcars-types";
@@ -194,7 +193,7 @@ const HomeFleets: React.FC = () => {
                       <div className="perfect-fleet-item">
                         <div className="image-box">
                           <img 
-                            src={car.image || "/assets/images/our_fleet/transparent_car_images/e_class.png"} 
+                            src={car.image || "/img/our_fleet/transparent_car_images/e_class.png"} 
                             alt={car.name} 
                           />
                         </div>

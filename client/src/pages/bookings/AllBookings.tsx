@@ -51,10 +51,11 @@ import {
   AttachMoney as MoneyIcon,
   Add as AddIcon,
 } from '@mui/icons-material'
-import { bookingsAPI, Booking, BookingFilters, BookingStatus, PaymentStatus, BookingStatsResponse } from '../../api/bookings'
+import { bookingsAPI, Booking, BookingFilters, BookingStatus, PaymentStatus, BookingStatsResponse, CreateBookingByEmailRequest } from '../../api/bookings'
 import { useUsers } from '../../hooks/useUsers'
 import { useDrivers } from '../../hooks/useDrivers'
 import { useCars } from '../../hooks/useCars'
+import { routesAPI } from '../../api/routes'
 
 // Interface removed as it's imported from API
 
@@ -67,6 +68,7 @@ const AllBookings = () => {
   const drivers = Array.isArray(driversData?.data?.data) ? driversData.data.data : []
   const carsArray = Array.isArray(cars) ? cars : []
   const [bookings, setBookings] = useState<Booking[]>([])
+  const [routes, setRoutes] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -92,27 +94,57 @@ const AllBookings = () => {
     message: '',
     severity: 'success'
   })
+
+  // Form data for edit booking
+  const [editFormData, setEditFormData] = useState({
+    passenger_name: '',
+    passenger_email: '',
+    passenger_phone: '',
+    booking_status: '',
+    payment_status: '',
+    pickup_address: '',
+    dropoff_address: '',
+    pickup_datetime: '',
+    passenger_count: 1,
+    base_amount: 0,
+    total_amount: 0,
+    special_instructions: ''
+  })
   
   // Form data for new booking
   const [bookingFormData, setBookingFormData] = useState({
-    user_id: '',
+    customer_email: '',
+    customer_name: '',
+    customer_phone: '',
     passenger_name: '',
     passenger_phone: '',
     passenger_count: 1,
     pickup_address: '',
     dropoff_address: '',
     pickup_datetime: '',
+    route_fare_id: '',
     base_amount: 0,
     total_amount: 0,
     special_requirements: '',
     notes: ''
   })
 
+  // Load routes for route fare selection
+  const loadRoutes = async () => {
+    try {
+      const response = await routesAPI.getAll()
+      setRoutes(response.data || [])
+    } catch (error) {
+      console.error('Failed to load routes:', error)
+    }
+  }
+
   // Load data on component mount and when filters change
   useEffect(() => {
     loadBookings()
     loadStats()
     fetchUsers() // Fetch users for the dropdown
+    loadRoutes() // Load routes for booking form
   }, [page, rowsPerPage, searchTerm, statusFilter, typeFilter, paymentStatusFilter, dateFilter])
 
   const showToast = (message: string, severity: 'success' | 'error' = 'success') => {
@@ -183,6 +215,21 @@ const AllBookings = () => {
 
   const handleEditBooking = (booking: Booking) => {
     setSelectedBooking(booking)
+    // Populate edit form data
+    setEditFormData({
+      passenger_name: booking.passenger_name,
+      passenger_email: booking.passenger_email || '',
+      passenger_phone: booking.passenger_phone,
+      booking_status: booking.booking_status,
+      payment_status: booking.payment_status,
+      pickup_address: booking.pickup_address,
+      dropoff_address: booking.dropoff_address,
+      pickup_datetime: new Date(booking.pickup_datetime).toISOString().slice(0, 16),
+      passenger_count: booking.passenger_count,
+      base_amount: parseFloat(booking.base_amount.toString()),
+      total_amount: parseFloat(booking.total_amount.toString()),
+      special_instructions: booking.special_instructions || ''
+    })
     setOpenEditDialog(true)
   }
 
@@ -235,17 +282,31 @@ const AllBookings = () => {
     
     try {
       setActionLoading('update')
-      // TODO: Get actual update data from form
-      await bookingsAPI.updateBooking(selectedBooking.id, {
-        booking_status: selectedBooking.booking_status,
-        payment_status: selectedBooking.payment_status,
-      })
+      
+      // Collect data from edit form
+      const updateData = {
+        passenger_name: editFormData.passenger_name,
+        passenger_email: editFormData.passenger_email || undefined,
+        passenger_phone: editFormData.passenger_phone,
+        booking_status: editFormData.booking_status,
+        payment_status: editFormData.payment_status,
+        pickup_address: editFormData.pickup_address,
+        dropoff_address: editFormData.dropoff_address,
+        pickup_datetime: editFormData.pickup_datetime,
+        passenger_count: editFormData.passenger_count,
+        base_amount: editFormData.base_amount,
+        total_amount: editFormData.total_amount,
+        special_instructions: editFormData.special_instructions || undefined
+      }
+      
+      await bookingsAPI.updateBooking(selectedBooking.id, updateData)
       showToast('Booking updated successfully')
       loadBookings()
       setOpenEditDialog(false)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update booking:', error)
-      showToast('Failed to update booking', 'error')
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to update booking'
+      showToast(errorMessage, 'error')
     } finally {
       setActionLoading(null)
     }
@@ -272,16 +333,29 @@ const AllBookings = () => {
     try {
       setActionLoading('create')
       
-      if (!bookingFormData.user_id) {
-        showToast('Please select a user for this booking', 'error')
+      if (!bookingFormData.customer_email) {
+        showToast('Please enter customer email', 'error')
         return
       }
       
-      const bookingData = {
-        user_id: bookingFormData.user_id,
-        route_fare_id: 'route1', // TODO: Add route selection
-        passenger_name: bookingFormData.passenger_name,
-        passenger_phone: bookingFormData.passenger_phone,
+      if (!bookingFormData.customer_name) {
+        showToast('Please enter customer name', 'error')
+        return
+      }
+
+      if (!bookingFormData.route_fare_id) {
+        showToast('Please select a route', 'error')
+        return
+      }
+      
+      const bookingData: CreateBookingByEmailRequest = {
+        customer_email: bookingFormData.customer_email,
+        customer_name: bookingFormData.customer_name,
+        customer_phone: bookingFormData.customer_phone,
+        route_fare_id: bookingFormData.route_fare_id,
+        passenger_name: bookingFormData.passenger_name || bookingFormData.customer_name,
+        passenger_phone: bookingFormData.passenger_phone || bookingFormData.customer_phone,
+        passenger_email: bookingFormData.customer_email,
         passenger_count: bookingFormData.passenger_count,
         pickup_datetime: bookingFormData.pickup_datetime,
         pickup_address: bookingFormData.pickup_address,
@@ -291,27 +365,31 @@ const AllBookings = () => {
         total_amount: bookingFormData.total_amount,
         special_instructions: bookingFormData.special_requirements,
       }
-      await bookingsAPI.createBooking(bookingData)
+      await bookingsAPI.createBookingByEmail(bookingData)
       showToast('Booking created successfully')
       loadBookings()
       setOpenAddDialog(false)
       // Reset form
       setBookingFormData({
-        user_id: '',
+        customer_email: '',
+        customer_name: '',
+        customer_phone: '',
         passenger_name: '',
         passenger_phone: '',
         passenger_count: 1,
         pickup_address: '',
         dropoff_address: '',
         pickup_datetime: '',
+        route_fare_id: '',
         base_amount: 0,
         total_amount: 0,
         special_requirements: '',
         notes: ''
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create booking:', error)
-      showToast('Failed to create booking', 'error')
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to create booking'
+      showToast(errorMessage, 'error')
     } finally {
       setActionLoading(null)
     }
@@ -327,6 +405,21 @@ const AllBookings = () => {
 
   const handleFormSelectChange = (field: string) => (event: any) => {
     setBookingFormData(prev => ({
+      ...prev,
+      [field]: event.target.value
+    }))
+  }
+
+  const handleEditFormChange = (field: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.type === 'number' ? parseFloat(event.target.value) || 0 : event.target.value
+    setEditFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleEditFormSelectChange = (field: string) => (event: any) => {
+    setEditFormData(prev => ({
       ...prev,
       [field]: event.target.value
     }))
@@ -807,26 +900,39 @@ const AllBookings = () => {
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>Customer Information</Typography>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Select User</InputLabel>
-                <Select
-                  value={bookingFormData.user_id}
-                  onChange={handleFormSelectChange('user_id')}
-                  label="Select User"
-                >
-                  {users.map((user) => (
-                    <MenuItem key={user.id} value={user.id}>
-                      {user.first_name} {user.last_name} - {user.email}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <TextField 
+                fullWidth 
+                label="Customer Email" 
+                type="email"
+                value={bookingFormData.customer_email}
+                onChange={handleFormChange('customer_email')}
+                sx={{ mb: 2 }}
+                required
+                helperText="Enter customer email. If it exists, we'll use the existing customer. If not, we'll create a new customer account."
+              />
+              <TextField 
+                fullWidth 
+                label="Customer Name" 
+                value={bookingFormData.customer_name}
+                onChange={handleFormChange('customer_name')}
+                sx={{ mb: 2 }}
+                required
+              />
+              <TextField 
+                fullWidth 
+                label="Customer Phone" 
+                value={bookingFormData.customer_phone}
+                onChange={handleFormChange('customer_phone')}
+                sx={{ mb: 2 }}
+                required
+              />
               <TextField 
                 fullWidth 
                 label="Passenger Name" 
                 value={bookingFormData.passenger_name}
                 onChange={handleFormChange('passenger_name')}
                 sx={{ mb: 2 }} 
+                helperText="Leave empty to use customer name"
               />
               <TextField 
                 fullWidth 
@@ -834,16 +940,43 @@ const AllBookings = () => {
                 value={bookingFormData.passenger_phone}
                 onChange={handleFormChange('passenger_phone')}
                 sx={{ mb: 2 }} 
+                helperText="Leave empty to use customer phone"
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>Route Information</Typography>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel>Select Route</InputLabel>
+                <Select
+                  value={bookingFormData.route_fare_id}
+                  onChange={(e) => {
+                    const selectedRoute = routes.find(r => r.id === e.target.value);
+                    setBookingFormData(prev => ({
+                      ...prev,
+                      route_fare_id: e.target.value as string,
+                      pickup_address: selectedRoute?.from_location || prev.pickup_address,
+                      dropoff_address: selectedRoute?.to_location || prev.dropoff_address,
+                      base_amount: selectedRoute?.sale_fare || prev.base_amount,
+                      total_amount: selectedRoute?.sale_fare || prev.total_amount,
+                    }));
+                  }}
+                  label="Select Route"
+                  required
+                >
+                  {routes.map((route) => (
+                    <MenuItem key={route.id} value={route.id}>
+                      {route.from_location} → {route.to_location} (€{route.sale_fare})
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <TextField 
                 fullWidth 
                 label="From Location" 
                 value={bookingFormData.pickup_address}
                 onChange={handleFormChange('pickup_address')}
                 sx={{ mb: 2 }} 
+                required
               />
               <TextField 
                 fullWidth 
@@ -851,6 +984,7 @@ const AllBookings = () => {
                 value={bookingFormData.dropoff_address}
                 onChange={handleFormChange('dropoff_address')}
                 sx={{ mb: 2 }} 
+                required
               />
               <TextField
                 fullWidth
@@ -860,6 +994,7 @@ const AllBookings = () => {
                 onChange={handleFormChange('pickup_datetime')}
                 InputLabelProps={{ shrink: true }}
                 sx={{ mb: 2 }}
+                required
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -933,14 +1068,33 @@ const AllBookings = () => {
             <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom>Customer Information</Typography>
-                <TextField fullWidth label="Passenger Name" defaultValue={selectedBooking.passenger_name} sx={{ mb: 2 }} />
-                <TextField fullWidth label="Passenger Email" defaultValue={selectedBooking.passenger_email || ''} sx={{ mb: 2 }} />
-                <TextField fullWidth label="Passenger Phone" defaultValue={selectedBooking.passenger_phone} sx={{ mb: 2 }} />
+                <TextField 
+                  fullWidth 
+                  label="Passenger Name" 
+                  value={editFormData.passenger_name} 
+                  onChange={handleEditFormChange('passenger_name')}
+                  sx={{ mb: 2 }} 
+                />
+                <TextField 
+                  fullWidth 
+                  label="Passenger Email" 
+                  value={editFormData.passenger_email} 
+                  onChange={handleEditFormChange('passenger_email')}
+                  sx={{ mb: 2 }} 
+                />
+                <TextField 
+                  fullWidth 
+                  label="Passenger Phone" 
+                  value={editFormData.passenger_phone} 
+                  onChange={handleEditFormChange('passenger_phone')}
+                  sx={{ mb: 2 }} 
+                />
                 <TextField
                   fullWidth
                   select
                   label="Booking Status"
-                  defaultValue={selectedBooking.booking_status}
+                  value={editFormData.booking_status}
+                  onChange={handleEditFormSelectChange('booking_status')}
                   sx={{ mb: 2 }}
                 >
                   <MenuItem value="pending">Pending</MenuItem>
@@ -953,28 +1107,70 @@ const AllBookings = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom>Route Information</Typography>
-                <TextField fullWidth label="Pickup Address" defaultValue={selectedBooking.pickup_address} sx={{ mb: 2 }} />
-                <TextField fullWidth label="Dropoff Address" defaultValue={selectedBooking.dropoff_address} sx={{ mb: 2 }} />
+                <TextField 
+                  fullWidth 
+                  label="Pickup Address" 
+                  value={editFormData.pickup_address} 
+                  onChange={handleEditFormChange('pickup_address')}
+                  sx={{ mb: 2 }} 
+                />
+                <TextField 
+                  fullWidth 
+                  label="Dropoff Address" 
+                  value={editFormData.dropoff_address} 
+                  onChange={handleEditFormChange('dropoff_address')}
+                  sx={{ mb: 2 }} 
+                />
                 <TextField
                   fullWidth
                   label="Pickup Date & Time"
                   type="datetime-local"
-                  defaultValue={new Date(selectedBooking.pickup_datetime).toISOString().slice(0, 16)}
+                  value={editFormData.pickup_datetime}
+                  onChange={handleEditFormChange('pickup_datetime')}
                   InputLabelProps={{ shrink: true }}
                   sx={{ mb: 2 }}
                 />
-                <TextField fullWidth label="Vehicle Type" defaultValue={selectedBooking.route_fare?.vehicle_type || 'Standard'} sx={{ mb: 2 }} />
+                <TextField 
+                  fullWidth 
+                  label="Vehicle Type" 
+                  value={selectedBooking.route_fare?.vehicle_type || 'Standard'} 
+                  disabled
+                  sx={{ mb: 2 }} 
+                />
               </Grid>
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom>Pricing & Payment</Typography>
-                <TextField fullWidth label="Passenger Count" type="number" defaultValue={selectedBooking.passenger_count} sx={{ mb: 2 }} />
-                <TextField fullWidth label="Base Amount (€)" type="number" defaultValue={selectedBooking.base_amount} sx={{ mb: 2 }} />
-                <TextField fullWidth label="Total Amount (€)" type="number" defaultValue={selectedBooking.total_amount} sx={{ mb: 2 }} />
+                <TextField 
+                  fullWidth 
+                  label="Passenger Count" 
+                  type="number" 
+                  value={editFormData.passenger_count} 
+                  onChange={handleEditFormChange('passenger_count')}
+                  sx={{ mb: 2 }} 
+                />
+                <TextField 
+                  fullWidth 
+                  label="Base Amount (€)" 
+                  type="number" 
+                  value={editFormData.base_amount} 
+                  onChange={handleEditFormChange('base_amount')}
+                  sx={{ mb: 2 }} 
+                />
+                <TextField 
+                  fullWidth 
+                  label="Total Amount (€)" 
+                  type="number" 
+                  value={editFormData.total_amount} 
+                  onChange={handleEditFormChange('total_amount')}
+                  sx={{ mb: 2 }} 
+                />
                 <TextField
                   fullWidth
                   select
                   label="Payment Status"
-                  defaultValue={selectedBooking.payment_status}
+                  value={editFormData.payment_status}
+                  onChange={handleEditFormSelectChange('payment_status')}
+                  sx={{ mb: 2 }}
                 >
                   <MenuItem value="pending">Pending</MenuItem>
                   <MenuItem value="paid">Paid</MenuItem>
@@ -984,10 +1180,29 @@ const AllBookings = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom>Assignment & Notes</Typography>
-                <TextField fullWidth label="Assigned Driver" defaultValue={selectedBooking.assigned_driver ? `${selectedBooking.assigned_driver.first_name} ${selectedBooking.assigned_driver.last_name}` : ''} sx={{ mb: 2 }} />
-                <TextField fullWidth label="Assigned Car" defaultValue={selectedBooking.assigned_car ? `${selectedBooking.assigned_car.make} ${selectedBooking.assigned_car.model} (${selectedBooking.assigned_car.license_plate})` : ''} sx={{ mb: 2 }} />
-                <TextField fullWidth label="Special Instructions" defaultValue={selectedBooking.special_instructions || ''} multiline rows={2} sx={{ mb: 2 }} />
-                <TextField fullWidth label="Notes" defaultValue={''} multiline rows={2} />
+                <TextField 
+                  fullWidth 
+                  label="Assigned Driver" 
+                  value={selectedBooking.assigned_driver ? `${selectedBooking.assigned_driver.first_name} ${selectedBooking.assigned_driver.last_name}` : ''} 
+                  disabled
+                  sx={{ mb: 2 }} 
+                />
+                <TextField 
+                  fullWidth 
+                  label="Assigned Car" 
+                  value={selectedBooking.assigned_car ? `${selectedBooking.assigned_car.make} ${selectedBooking.assigned_car.model} (${selectedBooking.assigned_car.license_plate})` : ''} 
+                  disabled
+                  sx={{ mb: 2 }} 
+                />
+                <TextField 
+                  fullWidth 
+                  label="Special Instructions" 
+                  value={editFormData.special_instructions} 
+                  onChange={handleEditFormChange('special_instructions')}
+                  multiline 
+                  rows={2} 
+                  sx={{ mb: 2 }} 
+                />
               </Grid>
             </Grid>
           )}

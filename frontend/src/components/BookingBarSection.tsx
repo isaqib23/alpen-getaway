@@ -343,14 +343,14 @@ const BookingBarSection: React.FC<BookingBarSectionProps> = ({
                           >
                             <li>
                               <img
-                                src="/assets/images/icons/icon-fleet-list-1.svg"
+                                src="/img/icons/icon-fleet-list-1.svg"
                                 alt=""
                               />
                               {car.seats}
                             </li>
                             <li>
                               <img
-                                src="/assets/images/icons/icon-fleet-list-2.svg"
+                                src="/img/icons/icon-fleet-list-2.svg"
                                 alt=""
                               />
                               {car.doors}
@@ -361,14 +361,14 @@ const BookingBarSection: React.FC<BookingBarSectionProps> = ({
                           >
                             <li>
                               <img
-                                src="/assets/images/icons/icon-fleet-list-3.svg"
+                                src="/img/icons/icon-fleet-list-3.svg"
                                 alt=""
                               />
                               {car.aircon ? strings.YES : strings.NO}
                             </li>
                             <li>
                               <img
-                                src="/assets/images/icons/icon-fleet-list-4.svg"
+                                src="/img/icons/icon-fleet-list-4.svg"
                                 alt=""
                               />
                               {car.gearbox === bookcarsTypes.GearboxType.Manual
@@ -403,14 +403,14 @@ const BookingBarSection: React.FC<BookingBarSectionProps> = ({
                         >
                           <li>
                             <img
-                              src="/assets/images/icons/icon-fleet-list-1.svg"
+                              src="/img/icons/icon-fleet-list-1.svg"
                               alt=""
                             />
                             {car.seats}
                           </li>
                           <li>
                             <img
-                              src="/assets/images/icons/icon-fleet-list-2.svg"
+                              src="/img/icons/icon-fleet-list-2.svg"
                               alt=""
                             />
                             {car.doors}
@@ -421,14 +421,14 @@ const BookingBarSection: React.FC<BookingBarSectionProps> = ({
                         >
                           <li>
                             <img
-                              src="/assets/images/icons/icon-fleet-list-3.svg"
+                              src="/img/icons/icon-fleet-list-3.svg"
                               alt=""
                             />
                             {car.aircon ? strings.YES : strings.NO}
                           </li>
                           <li>
                             <img
-                              src="/assets/images/icons/icon-fleet-list-4.svg"
+                              src="/img/icons/icon-fleet-list-4.svg"
                               alt=""
                             />
                             {car.gearbox === bookcarsTypes.GearboxType.Manual

@@ -14,7 +14,6 @@ import Layout from "../components/Layout";
 
 import * as UserService from "../services/UserService";
 
-import "../assets/css/home.css";
 
 const Home = () => {
   const language = UserService.getLanguage();

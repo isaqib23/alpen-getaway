@@ -49,7 +49,7 @@ div.home footer div.copyright span.part2 {
 
   div.home div.home-content div.home-search {
     width: calc(100% - 40px);
-    background-color: #fff;
+    background-color: var(--white-color);
     padding: 20px;
     margin: 10px 0;
   }
@@ -76,7 +76,7 @@ div.home footer div.copyright span.part2 {
     border-radius: 5px;
     height: 52px;
     white-space: nowrap;
-    color: #fff;
+    color: var(--white-color);
     margin: 10px;
   }
 
@@ -147,7 +147,7 @@ div.home div.home-content::before {
 
 div.home div.home-cover {
   z-index: 2;
-  color: #fff;
+  color: var(--white-color);
   text-align: center;
   letter-spacing: -0.03em;
   -webkit-font-smoothing: antialiased;
@@ -196,7 +196,7 @@ div.home div.home-map {
   }
 
   div.home div.home-content div.home-search {
-    background-color: #fff;
+    background-color: var(--white-color);
     padding: 20px;
     margin: 0 5%;
   }
@@ -233,7 +233,7 @@ div.home div.home-map {
     font-weight: 500;
     border: 0;
     border-radius: 5px;
-    color: #fff;
+    color: var(--white-color);
     height: 52px;
     min-width: 190px;
     margin: 0;

@@ -8,7 +8,6 @@ import {
 import * as ohmjetTypes from "../types/bookcars-types"
 import * as helper from '../common/helper'
 
-import '../assets/css/booking-status.css'
 
 interface BookingStatusProps {
   value: ohmjetTypes.BookingStatus

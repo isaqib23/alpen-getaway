@@ -26,7 +26,7 @@
   display: none;
   line-height: 1.188em;
   float: left;
-  color: #fff;
+  color: var(--white-color);
   font-weight: 700;
   text-shadow: 0 1px 3px #000;
 }
@@ -97,7 +97,7 @@
   padding: 0;
 }
 .slicknav_menu .slicknav_icon-bar {
-  background-color: #fff;
+  background-color: var(--white-color);
 }
 .slicknav_btn {
   margin: 5px 5px 6px;
@@ -110,7 +110,7 @@
 }
 .slicknav_nav {
   clear: both;
-  color: #fff;
+  color: var(--white-color);
   margin: 0;
   font-size: 0.875em;
 }
@@ -127,11 +127,11 @@
   -moz-border-radius: 6px;
   border-radius: 6px;
   background: #ccc;
-  color: #fff;
+  color: var(--white-color);
 }
 .slicknav_nav a {
   text-decoration: none;
-  color: #fff;
+  color: var(--white-color);
 }
 .slicknav_nav a:hover {
   -webkit-border-radius: 6px;
@@ -150,7 +150,7 @@
 }
 .slicknav_brand {
   float: left;
-  color: #fff;
+  color: var(--white-color);
   font-size: 18px;
   line-height: 30px;
   padding: 7px 12px;

@@ -41,9 +41,9 @@ div.bs-list span.bp {
 
 div.bs-list div.booking-details {
   display: table;
-  color: #333;
+  color: var(--text-color);
   font-size: 15px;
-  background-color: #fff;
+  background-color: var(--white-color);
   margin: 10px;
   padding: 10px;
   border: 1px solid #d9d8d9;
@@ -122,7 +122,7 @@ div.bs-list div.booking-details div.bs {
 }
 
 div.bs-list div.booking-details div.bs span {
-  color: #fff;
+  color: var(--white-color);
 }
 
 div.bs-list div.booking-details div.bs-void {

@@ -10,7 +10,6 @@ import * as bookcarsTypes from "../types/bookcars-types"
 import { strings as commonStrings } from '../lang/common'
 import * as helper from '../common/helper'
 
-import '../assets/css/status-list.css'
 
 interface StatusListProps {
   value?: string

@@ -2,7 +2,6 @@ import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageHeader from "../components/PageHeader";
-import "../assets/css/legal-pages.css";
 
 const Terms: React.FC = () => {
   const sections = [

@@ -1,14 +1,15 @@
-div.booking-filter {
-  background: #fafafa;
-  margin: 10px 10px 0 0;
-  border: 1px solid #dadada;
-  font-size: 13px;
+/* Booking Filter Component */
+.booking-filter {
+  background: var(--bg-section);
+  margin: var(--spacing-md) var(--spacing-md) 0 0;
+  border: 1px solid var(--border-dark);
+  font-size: var(--font-size-sm);
 }
 
-div.booking-filter .bf-search {
+.booking-filter .bf-search {
   margin-top: 7px;
 }
 
-div.booking-filter .btn-search {
-  margin: 20px 0;
+.booking-filter .btn-search {
+  margin: var(--spacing-lg) 0;
 }

@@ -4,8 +4,8 @@ import PageHeader from "../components/PageHeader";
 import Layout from "../components/Layout";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+const errorImg = "/img/404-error-img.png";
 
-import "../assets/css/not-found.css";
 
 const NotFound = () => {
   const { ref: imgRef, inView: imgInView } = useInView({
@@ -27,7 +27,7 @@ const NotFound = () => {
               transition={{ duration: 0.5, delay: 0.25 }}
               className="error-page-image"
             >
-              <img src="/assets/images/assets/404-error-img.png" alt="Error" />
+                            <img src={errorImg} alt="Error" />
             </motion.div>
             <div className="error-page-content">
               <div className="error-page-content-heading">

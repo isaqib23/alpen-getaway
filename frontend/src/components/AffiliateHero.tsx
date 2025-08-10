@@ -15,7 +15,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import "../assets/css/home-hero.css"; // Import your CSS file
 import HomeRentDetailsForm from "./home/HomeRentDetailsForm";
 import { strings } from "../lang/affiliate";
 
@@ -29,6 +28,7 @@ const AffiliateHero: React.FC<HeroHomeProps> = ({ type, language }) => {
     triggerOnce: true,
     threshold: 0.1,
   });
+  
 
   const heroContent = (
     <>

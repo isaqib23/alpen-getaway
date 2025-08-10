@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
 
-import "../assets/css/service-details.css";
 import ServiceDetailsSidebar from "../components/ServiceDetailsSidebar";
 import ServiceDetailsContent from "../components/ServiceDetailsContent";
 

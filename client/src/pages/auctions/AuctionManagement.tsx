@@ -55,7 +55,7 @@ import {
   EmojiEvents,
 } from '@mui/icons-material'
 import { useAuctions, useAuctionStats, useAuctionActions } from '../../hooks/useAuctions'
-import { useToast } from '../../hooks/useToast'
+import { useGlobalToast } from '../../contexts/ToastContext'
 import { Auction, AuctionFilters, AuctionBid, auctionsApi } from '../../api/auctions'
 import { bookingsAPI, Booking } from '../../api/bookings'
 
@@ -112,7 +112,7 @@ const AuctionManagement = () => {
     createAuction,
     updateAuction
   } = useAuctionActions()
-  const { success, error: showError } = useToast()
+  const { success, error: showError } = useGlobalToast()
 
   const getStatusColor = (status: string) => {
     switch (status) {

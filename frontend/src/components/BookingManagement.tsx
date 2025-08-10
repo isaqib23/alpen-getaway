@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../assets/css/booking-management.css";
 import BookingBarSection from "./BookingBarSection";
 import PersonalDetailsSection from "./PersonalDetailsSection";
 import TravelDetailsSection from "./TravelDetailsSection";

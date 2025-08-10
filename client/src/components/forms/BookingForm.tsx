@@ -19,7 +19,6 @@ import {
 import { routesAPI } from '../../api/routes';
 import { carsAPI } from '../../api/cars';
 import { driversAPI } from '../../api/drivers';
-import { usersAPI } from '../../api/users';
 
 interface BookingFormData {
   route_id?: string;
@@ -29,6 +28,8 @@ interface BookingFormData {
   customer_name: string;
   customer_phone: string;
   customer_email: string;
+  pickup_address: string;
+  dropoff_address: string;
   car_id?: string;
   driver_id?: string;
   user_id?: string;
@@ -62,6 +63,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     customer_name: '',
     customer_phone: '',
     customer_email: '',
+    pickup_address: '',
+    dropoff_address: '',
     passenger_count: 1,
     notes: '',
     ...initialData
@@ -70,7 +73,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({
   const [routes, setRoutes] = useState<any[]>([]);
   const [cars, setCars] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
-  const [customers, setCustomers] = useState<any[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<any>(null);
   const [loadingData, setLoadingData] = useState(false);
 
@@ -82,16 +84,14 @@ export const BookingForm: React.FC<BookingFormProps> = ({
       setRoutes(routesResponse.data || []);
 
       if (mode === 'admin') {
-        // Admin can see all cars, drivers, and customers
-        const [carsResponse, driversResponse, customersResponse] = await Promise.all([
+        // Admin can see all cars and drivers
+        const [carsResponse, driversResponse] = await Promise.all([
           carsAPI.getAll(),
-          driversAPI.getAll(),
-          usersAPI.getUsers({ userType: 'customer' })
+          driversAPI.getAll()
         ]);
         
         setCars(carsResponse.data || []);
         setDrivers(driversResponse.data || []);
-        setCustomers(customersResponse.data || []);
       }
     } catch (error) {
       console.error('Error loading form data:', error);
@@ -110,6 +110,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         customer_name: '',
         customer_phone: '',
         customer_email: '',
+        pickup_address: '',
+        dropoff_address: '',
         passenger_count: 1,
         notes: '',
         ...initialData
@@ -125,6 +127,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         route_id: route.id,
         from_location: route.from_location,
         to_location: route.to_location,
+        pickup_address: route.from_location,
+        dropoff_address: route.to_location,
         fare_amount: route.base_fare
       }));
     }
@@ -263,32 +267,17 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                   </Typography>
                 </Grid>
 
-                {mode === 'admin' && customers.length > 0 && (
-                  <Grid item xs={12}>
-                    <Autocomplete
-                      options={customers}
-                      getOptionLabel={(option) => `${option.first_name} ${option.last_name} (${option.email})`}
-                      onChange={(_, newValue) => {
-                        if (newValue) {
-                          setFormData(prev => ({
-                            ...prev,
-                            user_id: newValue.id,
-                            customer_name: `${newValue.first_name} ${newValue.last_name}`,
-                            customer_email: newValue.email,
-                            customer_phone: newValue.phone || ''
-                          }));
-                        }
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Select Existing Customer (Optional)"
-                          fullWidth
-                        />
-                      )}
-                    />
-                  </Grid>
-                )}
+                <Grid item xs={12}>
+                  <TextField
+                    label="Customer Email"
+                    type="email"
+                    value={formData.customer_email}
+                    onChange={handleInputChange('customer_email')}
+                    fullWidth
+                    required
+                    helperText="Enter customer email. If the email exists, we'll create a booking for them. If not, we'll create a new customer account."
+                  />
+                </Grid>
 
                 <Grid item xs={12} md={6}>
                   <TextField
@@ -310,14 +299,25 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                   />
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} md={6}>
                   <TextField
-                    label="Customer Email"
-                    type="email"
-                    value={formData.customer_email}
-                    onChange={handleInputChange('customer_email')}
+                    label="Pickup Address"
+                    value={formData.pickup_address}
+                    onChange={handleInputChange('pickup_address')}
                     fullWidth
                     required
+                    helperText="Full pickup address"
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="Dropoff Address"
+                    value={formData.dropoff_address}
+                    onChange={handleInputChange('dropoff_address')}
+                    fullWidth
+                    required
+                    helperText="Full dropoff address"
                   />
                 </Grid>
 

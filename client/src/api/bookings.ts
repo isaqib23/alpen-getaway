@@ -125,6 +125,35 @@ export interface CreateBookingRequest {
   total_amount: number
 }
 
+export interface CreateBookingByEmailRequest {
+  customer_email: string
+  customer_name: string
+  customer_phone: string
+  company_id?: string
+  route_fare_id: string
+  passenger_name: string
+  passenger_phone: string
+  passenger_email?: string
+  passenger_count: number
+  pickup_datetime: string
+  pickup_address: string
+  dropoff_address: string
+  needs_infant_seat?: boolean
+  needs_child_seat?: boolean
+  needs_wheelchair_access?: boolean
+  needs_medical_equipment?: boolean
+  special_instructions?: string
+  fare_used?: FareType
+  base_amount: number
+  discount_amount?: number
+  coupon_id?: string
+  tax_amount?: number
+  total_amount: number
+  car_id?: string
+  driver_id?: string
+  status?: string
+}
+
 export interface UpdateBookingRequest {
   passenger_name?: string
   passenger_phone?: string
@@ -265,6 +294,11 @@ class BookingsAPI {
 
   async createBooking(bookingData: CreateBookingRequest): Promise<Booking> {
     const response = await apiClient.post(this.basePath, bookingData)
+    return response.data
+  }
+
+  async createBookingByEmail(bookingData: CreateBookingByEmailRequest): Promise<Booking> {
+    const response = await apiClient.post(`${this.basePath}/by-email`, bookingData)
     return response.data
   }
 

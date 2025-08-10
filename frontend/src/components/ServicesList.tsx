@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 
 import { useMediaQuery } from "react-responsive";
 
-import "../assets/css/home-services.css"; // Ensure you have a CSS file for styles
 import { Link } from "react-router-dom";
 
 const services = [
@@ -94,7 +93,7 @@ const ServicesList: React.FC = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src={`/assets/images/icons/${service.icon}`}
+                      src={`/img/icons/${service.icon}`}
                       alt={service.title}
                     />
                   </div>
@@ -105,7 +104,7 @@ const ServicesList: React.FC = () => {
                   <div className="service-footer">
                     <Link to="/service-details" className="section-icon-btn">
                       <img
-                        src="/assets/images/icons/arrow-white.svg"
+                        src="/img/icons/arrow-white.svg"
                         alt="Arrow"
                       />
                     </Link>

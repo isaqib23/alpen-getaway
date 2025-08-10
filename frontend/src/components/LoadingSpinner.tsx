@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../assets/css/loading-spinner.css";
 
 interface LoadingSpinnerProps {
   show?: boolean;

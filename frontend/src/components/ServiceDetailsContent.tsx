@@ -3,7 +3,6 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
-import "../assets/css/service-details-content.css";
 import RevealImage from "./animations/RevealImage";
 import TextAnime from "./animations/TextAnime";
 import { Link } from "react-router-dom";
@@ -49,7 +48,7 @@ const ServiceDetailsContent: React.FC<ServiceDetailsContentProps> = ({
         <div className="service-featured-image">
           <RevealImage
             className="image-anime"
-            src={`/assets/images/our_service_details/${serviceData.imageFolder}/1.jpg`}
+            src={`/img/our_service_details/${serviceData.imageFolder}/1.jpg`}
             alt="Service Featured"
           ></RevealImage>
         </div>
@@ -125,10 +124,10 @@ const ServiceDetailsContent: React.FC<ServiceDetailsContentProps> = ({
                         delay: isLaptop ? index * 0.2 : (index % 2) * 0.2,
                       }}
                     >
-                      <a href={`/assets/images/our_service_details/${serviceData.imageFolder}/${num}.jpg`}>
+                      <a href={`/img/our_service_details/${serviceData.imageFolder}/${num}.jpg`}>
                         <figure className="image-anime">
                           <img
-                            src={`/assets/images/our_service_details/${serviceData.imageFolder}/${num}.jpg`}
+                            src={`/img/our_service_details/${serviceData.imageFolder}/${num}.jpg`}
                             alt={`${serviceData.title} Service ${num}`}
                           />
                         </figure>

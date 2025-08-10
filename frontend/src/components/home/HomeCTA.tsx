@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Phone } from "lucide-react";
 import { strings } from "../../lang/cta";
-import "../../assets/css/home-cta.css";
 
 const HomeCTA: React.FC = () => {
   return (
@@ -21,7 +20,7 @@ const HomeCTA: React.FC = () => {
           </div>
           <div className="col-lg-4">
             <div className="cta-image">
-              <img src="/assets/images/our_fleet/transparent_car_images/s_class.png" alt="Luxury Car" />
+              <img src="/img/our_fleet/transparent_car_images/s_class.png" alt="Luxury Car" />
             </div>
           </div>
         </div>

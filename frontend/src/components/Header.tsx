@@ -11,8 +11,6 @@ import * as langHelper from "../common/langHelper";
 import * as helper from "../common/helper";
 import { useGlobalContext, GlobalContextType } from "../context/GlobalContext";
 
-import "../assets/css/slicknav.min.css";
-import "../assets/css/header.css";
 
 interface HeaderProps {
   user?: bookcarsTypes.User;
@@ -138,32 +136,65 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
   }, [hidden, user, setNotificationCount]);
 
   useEffect(() => {
-    // Initialize SlickNav mobile menu
-    const initSlickNav = () => {
-      // Check if jQuery and SlickNav are available
-      if ((window as any).$ && (window as any).$.fn.slicknav) {
-        (window as any).$("#menu").slicknav({
-          label: "",
-          prependTo: ".responsive-menu",
-        });
+    // Load jQuery first
+    const jQueryScript = document.createElement("script");
+    jQueryScript.src = "https://code.jquery.com/jquery-3.6.0.min.js";
+    jQueryScript.async = true;
+    
+    // Check if jQuery is already loaded
+    if (!(window as any).$) {
+      document.body.appendChild(jQueryScript);
+    }
 
-        // Scroll to top functionality
-        (window as any).$("a[href='#top']").click(() => {
-          (window as any).$("html, body").animate({ scrollTop: 0 }, "slow");
-          return false;
-        });
+    const initializeScripts = () => {
+      // Load SlickNav script after jQuery - use CDN instead of local file
+      const slickNavScript = document.createElement("script");
+      slickNavScript.src = "https://cdnjs.cloudflare.com/ajax/libs/SlickNav/1.0.10/jquery.slicknav.min.js";
+      slickNavScript.async = true;
+      
+      // Check if SlickNav script already exists
+      const existingSlickNav = document.querySelector(`script[src*="slicknav"]`);
+      if (!existingSlickNav) {
+        document.body.appendChild(slickNavScript);
+      }
+
+      const initializeSlickNav = () => {
+        // Initialize SlickNav and other functionalities
+        if ((window as any).$) {
+          (window as any).$(() => {
+            try {
+              // Check if slicknav is available
+              if ((window as any).$.fn.slicknav) {
+                (window as any).$("#menu").slicknav({
+                  label: "",
+                  prependTo: ".responsive-menu",
+                });
+              }
+
+              // Scroll to top functionality
+              (window as any).$("a[href='#top']").click(() => {
+                (window as any).$("html, body").animate({ scrollTop: 0 }, "slow");
+                return false;
+              });
+            } catch (error) {
+              console.warn("SlickNav initialization failed:", error);
+            }
+          });
+        }
+      };
+
+      if (existingSlickNav) {
+        initializeSlickNav();
+      } else {
+        slickNavScript.onload = initializeSlickNav;
       }
     };
 
-    // Try to initialize immediately
-    initSlickNav();
-
-    // If not available, try again after a short delay
-    const timer = setTimeout(() => {
-      initSlickNav();
-    }, 1000);
-
-    return () => clearTimeout(timer);
+    if ((window as any).$) {
+      initializeScripts();
+    } else {
+      jQueryScript.onload = initializeScripts;
+    }
   }, []);
 
   return (
@@ -177,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
                 <div className="container">
                   {/* Logo Start */}
                   <Link className="navbar-brand" to="/">
-                    <img src="/assets/images/logo.png" alt="Logo" />
+                    <img src="/img/logo.png" alt="Logo" />
                   </Link>
                   {/* Logo End */}
 

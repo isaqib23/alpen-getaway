@@ -722,7 +722,7 @@
 }
 
 .fa-inverse {
-  color: var(--fa-inverse, #fff);
+  color: var(--fa-inverse, var(--white-color));
 }
 
 /* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen

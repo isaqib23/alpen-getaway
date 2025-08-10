@@ -1,7 +1,6 @@
 import React from "react";
 import { CheckCircle, Smartphone, Clock, Gift, Car } from "lucide-react";
 import { strings } from "../lang/about";
-import "../assets/css/trusted-partner.css";
 
 const AboutTrustedPartner: React.FC = () => {
   return (
@@ -96,14 +95,14 @@ const AboutTrustedPartner: React.FC = () => {
             <div className="trusted-partner-images">
               <div className="main-image-circle">
                 <img 
-                  src="/assets/images/about_us/driver_1.jpg" 
+                  src="/img/about_us/driver_1.jpg" 
                   alt="Professional Driver" 
                   className="img-fluid" 
                 />
               </div>
               <div className="secondary-image-circle">
                 <img 
-                  src="/assets/images/about_us/driver_2.jpg" 
+                  src="/img/about_us/driver_2.jpg" 
                   alt="Happy Customer" 
                   className="img-fluid" 
                 />

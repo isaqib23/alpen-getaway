@@ -1,6 +1,7 @@
 import React, { ReactNode, createContext, useContext, useMemo, useState, useEffect } from 'react'
 import * as bookcarsTypes from "../types/bookcars-types"
 import { authUtils } from '../api/client'
+import * as UserService from '../services/UserService'
 
 // Create context
 export interface GlobalContextType {
@@ -59,7 +60,6 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
-      const UserService = await import('../services/UserService')
       const result = await UserService.signin({ email, password, stayConnected: false })
       
       if (result.status === 200 && result.data) {
@@ -86,7 +86,6 @@ export const GlobalProvider = ({ children }: GlobalProviderProps) => {
 
   const logout = async (): Promise<void> => {
     try {
-      const UserService = await import('../services/UserService')
       await UserService.signout(false, false) // Don't redirect automatically
       
       // Clear state

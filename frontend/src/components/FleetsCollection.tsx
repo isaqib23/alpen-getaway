@@ -14,7 +14,6 @@ import * as CarService from "../services/CarService";
 import * as UserService from "../services/UserService";
 import * as SupplierService from "../services/SupplierService";
 
-import "../assets/css/fleets-collection.css";
 import { useMediaQuery } from "react-responsive";
 import TextAnime from "./animations/TextAnime";
 
@@ -181,27 +180,19 @@ const FleetsCollection = ({
   };
 
   useEffect(() => {
-    if (suppliers) {
-      if (suppliers.length > 0) {
-        fetchData(
-          page,
-          suppliers,
-          pickupLocation,
-          carSpecs,
-          _carType,
-          gearbox,
-          mileage,
-          fuelPolicy,
-          deposit
-        );
-      } else {
-        setRows([]);
-        setFetch(false);
-        if (onLoad) {
-          onLoad({ rows: [], rowCount: 0 });
-        }
-        setInit(false);
-      }
+    if (suppliers !== undefined) {
+      // Always fetch cars - even if there are no suppliers, we can show all available cars
+      fetchData(
+        page,
+        suppliers.length > 0 ? suppliers : [], // Pass empty array if no suppliers
+        pickupLocation,
+        carSpecs,
+        _carType,
+        gearbox,
+        mileage,
+        fuelPolicy,
+        deposit
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -488,28 +479,28 @@ const FleetsCollection = ({
                         <ul>
                           <li>
                             <img
-                              src="/assets/images/icons/icon-fleet-list-1.svg"
+                              src="/img/icons/icon-fleet-list-1.svg"
                               alt=""
                             />
                             {car.seats}
                           </li>
                           <li>
                             <img
-                              src="/assets/images/icons/icon-fleet-list-2.svg"
+                              src="/img/icons/icon-fleet-list-2.svg"
                               alt=""
                             />
                             {car.doors}
                           </li>
                           <li>
                             <img
-                              src="/assets/images/icons/icon-fleet-list-3.svg"
+                              src="/img/icons/icon-fleet-list-3.svg"
                               alt=""
                             />
                             {car.aircon === true ? strings.YES : strings.NO}
                           </li>
                           <li>
                             <img
-                              src="/assets/images/icons/icon-fleet-list-4.svg"
+                              src="/img/icons/icon-fleet-list-4.svg"
                               alt=""
                             />
                             {car.gearbox === bookcarsTypes.GearboxType.Manual
@@ -559,7 +550,7 @@ const FleetsCollection = ({
                             ].map((amenity, index) => (
                               <li key={index}>
                                 <img
-                                  src={`/assets/images/icons/amenity-${
+                                  src={`/img/icons/amenity-${
                                     amenity.included
                                       ? "included"
                                       : "purchasable"
@@ -596,7 +587,7 @@ const FleetsCollection = ({
                         >
                           <Link to="" className="section-icon-btn">
                             <img
-                              src="/assets/images/icons/arrow-white.svg"
+                              src="/img/icons/arrow-white.svg"
                               alt="arrow"
                             />
                           </Link>

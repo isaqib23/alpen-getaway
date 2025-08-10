@@ -3,15 +3,20 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Between, Repository} from 'typeorm';
 import {Booking} from './entities/booking.entity';
 import {CreateBookingDto} from './dto/create-booking.dto';
+import {CreateBookingByEmailDto} from './dto/create-booking-by-email.dto';
 import {UpdateBookingDto} from './dto/update-booking.dto';
 import {AssignDriverCarDto} from './dto/assign-driver-car.dto';
-import {BookingStatus} from "@/common/enums";
+import {BookingStatus, UserType, UserStatus} from "@/common/enums";
+import {User} from '@/users/entities/user.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class BookingsService {
     constructor(
         @InjectRepository(Booking)
         private bookingsRepository: Repository<Booking>,
+        @InjectRepository(User)
+        private usersRepository: Repository<User>,
     ) {}
 
     async create(createBookingDto: CreateBookingDto): Promise<Booking> {
@@ -23,6 +28,74 @@ export class BookingsService {
             booking_reference: bookingReference,
         });
 
+        return this.bookingsRepository.save(booking);
+    }
+
+    async createByEmail(createBookingDto: CreateBookingByEmailDto): Promise<Booking> {
+        // Check if user exists by email
+        let user = await this.usersRepository.findOne({
+            where: { email: createBookingDto.customer_email }
+        });
+
+        // If user doesn't exist, create a new customer
+        if (!user) {
+            // Split customer_name into first_name and last_name
+            const nameParts = createBookingDto.customer_name.trim().split(' ');
+            const firstName = nameParts[0] || 'Customer';
+            const lastName = nameParts.slice(1).join(' ') || '';
+
+            // Generate a temporary password for the new customer
+            const tempPassword = Math.random().toString(36).slice(-8);
+            const hashedPassword = await bcrypt.hash(tempPassword, 10);
+
+            user = this.usersRepository.create({
+                email: createBookingDto.customer_email,
+                password_hash: hashedPassword,
+                phone: createBookingDto.customer_phone,
+                first_name: firstName,
+                last_name: lastName,
+                user_type: UserType.CUSTOMER,
+                status: UserStatus.ACTIVE,
+                email_verified: false,
+                phone_verified: false
+            });
+
+            user = await this.usersRepository.save(user);
+        }
+
+        // Generate booking reference
+        const bookingReference = this.generateBookingReference();
+
+        // Create booking with the found or created user
+        const bookingData: Partial<Booking> = {
+            user_id: user.id,
+            company_id: createBookingDto.company_id,
+            route_fare_id: createBookingDto.route_fare_id,
+            passenger_name: createBookingDto.passenger_name,
+            passenger_phone: createBookingDto.passenger_phone,
+            passenger_email: createBookingDto.passenger_email || createBookingDto.customer_email,
+            passenger_count: createBookingDto.passenger_count || 1,
+            needs_infant_seat: createBookingDto.needs_infant_seat || false,
+            needs_child_seat: createBookingDto.needs_child_seat || false,
+            needs_wheelchair_access: createBookingDto.needs_wheelchair_access || false,
+            needs_medical_equipment: createBookingDto.needs_medical_equipment || false,
+            special_instructions: createBookingDto.special_instructions,
+            pickup_datetime: createBookingDto.pickup_datetime,
+            pickup_address: createBookingDto.pickup_address,
+            dropoff_address: createBookingDto.dropoff_address,
+            fare_used: createBookingDto.fare_used,
+            base_amount: createBookingDto.base_amount,
+            discount_amount: createBookingDto.discount_amount || 0,
+            coupon_id: createBookingDto.coupon_id,
+            tax_amount: createBookingDto.tax_amount || 0,
+            total_amount: createBookingDto.total_amount,
+            booking_reference: bookingReference,
+            booking_status: (createBookingDto.status as BookingStatus) || BookingStatus.PENDING,
+            assigned_car_id: createBookingDto.car_id,
+            assigned_driver_id: createBookingDto.driver_id
+        };
+
+        const booking = this.bookingsRepository.create(bookingData);
         return this.bookingsRepository.save(booking);
     }
 

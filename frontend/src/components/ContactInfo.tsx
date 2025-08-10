@@ -1,8 +1,6 @@
 import React from "react";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import "../assets/css/contact-info.css"; // Ensure you have a CSS file for styles
-import "../assets/css/unified-forms.css";
 import { Link } from "react-router-dom";
 import TextAnime from "./animations/TextAnime";
 
@@ -60,7 +58,7 @@ const ContactInfo: React.FC = () => {
                       animate={iconRefs[index].inView ? "visible" : "hidden"}
                     >
                       <div className="icon-box">
-                        <img src={`/assets/images/icons/${item.icon}`} alt="" />
+                        <img src={`/img/icons/${item.icon}`} alt="" />
                       </div>
                       <div className="contact-info-content">
                         <p>{item.content}</p>

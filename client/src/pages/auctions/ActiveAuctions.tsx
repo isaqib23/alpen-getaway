@@ -31,7 +31,7 @@ import {
   Assignment,
 } from '@mui/icons-material'
 import { useAuctions, useAuctionActions } from '../../hooks/useAuctions'
-import { useToast } from '../../hooks/useToast'
+import { useGlobalToast } from '../../contexts/ToastContext'
 import {AuctionFilters } from '../../api/auctions'
 
 
@@ -50,7 +50,7 @@ const ActiveAuctions = () => {
     loading: actionLoading, 
     closeAuction, 
   } = useAuctionActions()
-  const { success, error: showError } = useToast()
+  const { success, error: showError } = useGlobalToast()
 
   const formatTimeRemaining = (auctionEndTime: string) => {
     const now = new Date()

@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../assets/css/footer.css"; // Assuming you have some styles for the footer
 
 import { strings } from "../lang/footer";
 
@@ -15,7 +14,7 @@ const Footer: React.FC = () => {
               {/* Footer Logo Start */}
               <div className="footer-logo">
                 <img
-                  src="/assets/images/logo_black.png"
+                  src="/img/logo_black.png"
                   alt="Alpen Getaway Logo"
                 />
               </div>
@@ -92,7 +91,7 @@ const Footer: React.FC = () => {
                     />
                     <button type="submit" className="section-icon-btn">
                       <img
-                        src="/assets/images/icons/arrow-white.svg"
+                        src="/img/icons/arrow-white.svg"
                         alt="Submit"
                       />
                     </button>

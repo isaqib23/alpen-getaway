@@ -2,14 +2,17 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
-import "../assets/css/destinations.css";
 import { Link } from "react-router-dom";
+const driver1Img = "/img/about_us/driver_1.jpg";
+const driver2Img = "/img/about_us/driver_2.jpg";
+const driver3Img = "/img/about_us/driver_3.jpg";
+const driver4Img = "/img/about_us/driver_4.jpg";
 
 const teamMembers = [
   {
     name: "john smith",
     role: "senior chauffeur",
-    imageSrc: "/assets/images/about_us/driver_1.jpg",
+    imageSrc: driver1Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -21,7 +24,7 @@ const teamMembers = [
   {
     name: "taylor smith",
     role: "city tour guide",
-    imageSrc: "/assets/images/about_us/driver_2.jpg",
+    imageSrc: driver2Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -33,7 +36,7 @@ const teamMembers = [
   {
     name: "jordan brown",
     role: "distance driver",
-    imageSrc: "/assets/images/about_us/driver_3.jpg",
+    imageSrc: driver3Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -45,7 +48,7 @@ const teamMembers = [
   {
     name: "davis casey",
     role: "travel specialist",
-    imageSrc: "/assets/images/about_us/driver_4.jpg",
+    imageSrc: driver4Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -57,7 +60,7 @@ const teamMembers = [
   {
     name: "morgan lee",
     role: "travel consultant",
-    imageSrc: "/assets/images/about_us/driver_1.jpg",
+    imageSrc: driver1Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -69,7 +72,7 @@ const teamMembers = [
   {
     name: "carlos mendes",
     role: "airport transfer",
-    imageSrc: "/assets/images/about_us/driver_2.jpg",
+    imageSrc: driver2Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -81,7 +84,7 @@ const teamMembers = [
   {
     name: "riley walker",
     role: "executive chauffeur",
-    imageSrc: "/assets/images/about_us/driver_3.jpg",
+    imageSrc: driver3Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -93,7 +96,7 @@ const teamMembers = [
   {
     name: "avery hall",
     role: "shuttle driver",
-    imageSrc: "/assets/images/about_us/driver_4.jpg",
+    imageSrc: driver4Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },

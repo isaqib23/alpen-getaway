@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import "../../assets/css/home-faqs.css";
 import TextAnime from "../animations/TextAnime";
 
 import { strings } from "../../lang/faqs";
@@ -38,7 +37,7 @@ const HomeFAQs: React.FC = () => {
               <div className="faqs-img-1">
                 <figure className="image-anime">
                   <img
-                    src="/assets/images/b2b_partner/1.jpg"
+                    src="/img/b2b_partner/1.jpg"
                     alt="FAQ Image 1"
                   />
                 </figure>
@@ -47,7 +46,7 @@ const HomeFAQs: React.FC = () => {
               <div className="faqs-img-2">
                 <figure className="image-anime">
                   <img
-                    src="/assets/images/b2b_partner/2.jpg"
+                    src="/img/b2b_partner/2.jpg"
                     alt="FAQ Image 2"
                   />
                 </figure>

@@ -10,7 +10,6 @@ import StatusFilter from "../components/StatusFilter";
 import BookingFilter from "../components/BookingFilter";
 import * as SupplierService from "../services/SupplierService";
 
-import "../assets/css/bookings.css";
 
 const Bookings = () => {
   const [user, setUser] = useState<bookcarsTypes.User>();

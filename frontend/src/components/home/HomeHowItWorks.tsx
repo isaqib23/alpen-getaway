@@ -1,5 +1,4 @@
 import React from "react";
-import "../../assets/css/home-how-it-works.css"; // Include custom styles if necessary
 import RevealImage from "../animations/RevealImage";
 import TextAnime from "../animations/TextAnime";
 import { useInView } from "react-intersection-observer";
@@ -56,7 +55,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/assets/images/about_us/1.jpg"
+                      src="/img/about_us/1.jpg"
                       alt="Browse and Select"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -93,7 +92,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/assets/images/about_us/2.png"
+                      src="/img/about_us/2.png"
                       alt="Book and Confirm"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -131,7 +130,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/assets/images/about_us/driver_2.jpg"
+                      src="/img/about_us/driver_2.jpg"
                       alt="Book and Enjoy"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -175,7 +174,7 @@ const HomeHowItWorks = () => {
               <div className="how-work-img">
                 <RevealImage
                   className="reveal custom-figure"
-                  src="/assets/images/about_us/about.jpg"
+                  src="/img/about_us/about.jpg"
                   alt="How It Works"
                 />
               </div>
@@ -191,7 +190,7 @@ const HomeHowItWorks = () => {
                 </div>
                 <div className="trusted-client--image">
                   <img
-                    src="/assets/images/about_us/driver_1.jpg"
+                    src="/img/about_us/driver_1.jpg"
                     alt="Trusted Clients"
                   />
                 </div>

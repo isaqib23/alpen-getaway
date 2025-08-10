@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "../assets/css/vision-mission.css";
 import { strings } from "../lang/brief-about";
 
 const BriefAbout: React.FC = () => {

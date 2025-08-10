@@ -7,7 +7,6 @@ import TextAnime from "../components/animations/TextAnime";
 import * as UserService from "../services/UserService";
 import * as bookcarsTypes from "../types/bookcars-types";
 
-import "../assets/css/unified-forms.css";
 
 import { strings } from "../lang/sign-in";
 

@@ -1,5 +1,12 @@
 // Local type definitions for bookcars types
 
+// Generic record type for various entities
+export interface RecordType {
+  _id: string;
+  name: string;
+  [key: string]: any;
+}
+
 export interface User {
   _id?: string; // Legacy ID field for compatibility
   id?: string;
@@ -147,8 +154,10 @@ export interface Company {
   name: string;
   fullName: string;
   image?: string;
+  avatar?: string;
   type: CompanyType;
   approved: boolean;
+  payLater?: boolean;
 }
 
 export enum CompanyType {
@@ -399,5 +408,10 @@ export const RECORD_TYPE = {
   COMPANY: 'company',
   USER: 'user',
   CAR: 'car',
-  BOOKING: 'booking'
+  BOOKING: 'booking',
+  LOCATION: 'location',
+  SUPPLIER: 'supplier'
 } as const;
+
+// Record type for general record handling
+export type RecordType = User | Car | Company | Booking | Location | any;

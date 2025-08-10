@@ -1,5 +1,4 @@
 import React from "react";
-import "../assets/css/vision-mission.css";
 import { strings } from "../lang/vision-mission";
 
 const visionMissionData = [
@@ -9,7 +8,7 @@ const visionMissionData = [
     subtitle: strings.SUBTITLE,
     content: strings.INNOVATE,
     listItems: [strings.PRIORITY, strings.QUALITY, strings.BEST],
-    imageSrc: "/assets/images/about_us/2.png",
+    imageSrc: "/img/about_us/2.png",
     active: true,
   },
   {
@@ -22,7 +21,7 @@ const visionMissionData = [
       strings.QUALITY_MISSION,
       strings.BEST_MISSION,
     ],
-    imageSrc: "/assets/images/about_us/2.png",
+    imageSrc: "/img/about_us/2.png",
     active: false,
   },
   {
@@ -35,7 +34,7 @@ const visionMissionData = [
       strings.QUALITY_APPROACH,
       strings.BEST_APPROACH,
     ],
-    imageSrc: "/assets/images/about_us/2.png",
+    imageSrc: "/img/about_us/2.png",
     active: false,
   },
 ];
