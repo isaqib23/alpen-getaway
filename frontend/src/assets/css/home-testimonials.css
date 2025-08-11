@@ -3,7 +3,7 @@
 /************************************/
 
 .our-testimonial {
-  background: url("/img/testimonial-bg.png") no-repeat;
+  background: url("../images/testimonial-bg.png") no-repeat;
   background-position: center center;
   background-size: auto;
   padding: 80px 0;
@@ -110,7 +110,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: url("/img/icons/arrow-white.svg") no-repeat center center;
+  background: url("../images/icons/arrow-white.svg") no-repeat center center;
   background-size: 14px auto;
   transform: rotate(45deg);
   display: flex;

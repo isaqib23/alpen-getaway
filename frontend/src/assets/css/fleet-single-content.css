@@ -351,7 +351,7 @@ input:checked + .slider:before {
 }
 
 .booking-form-group -control.datepicker {
-  background: transparent url(/img/icons/icon-calendar.svg) no-repeat right 15px
+  background: transparent url(../images/icons/icon-calendar.svg) no-repeat right 15px
     center;
   background-size: auto 14px;
   margin-left: 0;

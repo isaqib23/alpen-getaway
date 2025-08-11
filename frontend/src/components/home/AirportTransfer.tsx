@@ -1,30 +1,34 @@
 import React from "react";
 import { strings } from "../../lang/airport-transfer";
+import salzburgImg from "@assets/images/airport_images/salzburg/salzburg_main_image.jpg";
+import munichImg from "@assets/images/airport_images/munich/munich_main_image.jpg";
+import innsbruckImg from "@assets/images/airport_images/innsbruck/main_image_innsbruck.jpg";
+import zurichImg from "@assets/images/airport_images/zurich/zurich_main_image.jpg";
 
 const airports = [
   {
     id: "salzburg",
     title: strings.SALZBURG_TITLE,
     location: "Salzburg, Austria",
-    image: "/img/airport_images/salzburg/salzburg_main_image.jpg"
+    image: salzburgImg
   },
   {
     id: "munich",
     title: strings.MUNICH_TITLE,
     location: "Munich, Germany",
-    image: "/img/airport_images/munich/munich_main_image.jpg"
+    image: munichImg
   },
   {
     id: "innsbruck",
     title: strings.INNSBRUCK_TITLE,
     location: "Innsbruck, Austria",
-    image: "/img/airport_images/innsbruck/main_image_innsbruck.jpg"
+    image: innsbruckImg
   },
   {
     id: "zurich",
     title: strings.ZURICH_TITLE,
     location: "Zurich, Switzerland",
-    image: "/img/airport_images/zurich/zurich_main_image.jpg"
+    image: zurichImg
   }
 ];
 

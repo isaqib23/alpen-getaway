@@ -7,7 +7,7 @@
 }
 
 .contact-info-form {
-  background: url("/img/contact-form-plan.svg") no-repeat;
+  background: url("../images/contact-form-plan.svg") no-repeat;
   background-position: bottom -10px right 50px;
   background-size: auto;
   width: 100%;
@@ -19,7 +19,7 @@
 }
 
 .contact-information {
-  background: var(--primary-color) /* url("/img/contact-information-bg.svg") */
+  background: var(--primary-color) /* url("../images/contact-information-bg.svg") */
     no-repeat;
   background-position: bottom right;
   background-size: auto;

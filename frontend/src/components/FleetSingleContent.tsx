@@ -16,12 +16,12 @@ import env from "../config/env.config";
 
 import { strings } from "../lang/fleets-single-content";
 import { strings as carStrings } from "../lang/cars";
-const eClassImg = "/img/our_fleet/transparent_car_images/e_class.png";
-const sClassImg = "/img/our_fleet/transparent_car_images/s_class.png";
-const vClassImg = "/img/our_fleet/transparent_car_images/v_class.png";
-const vitoImg = "/img/our_fleet/transparent_car_images/vito.png";
-const iconFleetsBenefits1 = "/img/icons/icon-fleets-benefits-1.svg";
-const iconFleetsBenefits2 = "/img/icons/icon-fleets-benefits-2.svg";
+import eClassImg from "@assets/images/our_fleet/transparent_car_images/e_class.png";
+import sClassImg from "@assets/images/our_fleet/transparent_car_images/s_class.png";
+import vClassImg from "@assets/images/our_fleet/transparent_car_images/v_class.png";
+import vitoImg from "@assets/images/our_fleet/transparent_car_images/vito.png";
+import iconFleetsBenefits1 from "@assets/images/icons/icon-fleets-benefits-1.svg";
+import iconFleetsBenefits2 from "@assets/images/icons/icon-fleets-benefits-2.svg";
 
 interface FleetsSingleContentProps {
   car: bookcarsTypes.Car;

@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
-const driver1Img = "/img/about_us/driver_1.jpg";
-const driver2Img = "/img/about_us/driver_2.jpg";
-const driver3Img = "/img/about_us/driver_3.jpg";
-const driver4Img = "/img/about_us/driver_4.jpg";
+import driver1Img from "@assets/images/about_us/driver_1.jpg";
+import driver2Img from "@assets/images/about_us/driver_2.jpg";
+import driver3Img from "@assets/images/about_us/driver_3.jpg";
+import driver4Img from "@assets/images/about_us/driver_4.jpg";
 
 const teamMembers = [
   {

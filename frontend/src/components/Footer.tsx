@@ -2,6 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { strings } from "../lang/footer";
+import logoBlackImg from "@assets/images/logo_black.png";
+import arrowWhiteImg from "@assets/images/icons/arrow-white.svg";
 
 const Footer: React.FC = () => {
   return (
@@ -14,7 +16,7 @@ const Footer: React.FC = () => {
               {/* Footer Logo Start */}
               <div className="footer-logo">
                 <img
-                  src="/img/logo_black.png"
+                  src={logoBlackImg}
                   alt="Alpen Getaway Logo"
                 />
               </div>
@@ -91,7 +93,7 @@ const Footer: React.FC = () => {
                     />
                     <button type="submit" className="section-icon-btn">
                       <img
-                        src="/img/icons/arrow-white.svg"
+                        src={arrowWhiteImg}
                         alt="Submit"
                       />
                     </button>

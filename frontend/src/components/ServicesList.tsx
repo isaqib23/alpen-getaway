@@ -5,6 +5,27 @@ import { motion } from "framer-motion";
 import { useMediaQuery } from "react-responsive";
 
 import { Link } from "react-router-dom";
+import arrowWhiteImg from "@assets/images/icons/arrow-white.svg";
+import iconService1 from "@assets/images/icons/icon-service-1.svg";
+import iconService2 from "@assets/images/icons/icon-service-2.svg";
+import iconService3 from "@assets/images/icons/icon-service-3.svg";
+import iconService4 from "@assets/images/icons/icon-service-4.svg";
+import iconService5 from "@assets/images/icons/icon-service-5.svg";
+import iconService6 from "@assets/images/icons/icon-service-6.svg";
+import iconService7 from "@assets/images/icons/icon-service-7.svg";
+import iconService8 from "@assets/images/icons/icon-service-8.svg";
+
+// Create service icon mapping
+const SERVICE_ICONS: Record<string, string> = {
+  'icon-service-1.svg': iconService1,
+  'icon-service-2.svg': iconService2,
+  'icon-service-3.svg': iconService3,
+  'icon-service-4.svg': iconService4,
+  'icon-service-5.svg': iconService5,
+  'icon-service-6.svg': iconService6,
+  'icon-service-7.svg': iconService7,
+  'icon-service-8.svg': iconService8,
+};
 
 const services = [
   {
@@ -93,7 +114,7 @@ const ServicesList: React.FC = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src={`/img/icons/${service.icon}`}
+                      src={SERVICE_ICONS[service.icon] || iconService1}
                       alt={service.title}
                     />
                   </div>
@@ -104,7 +125,7 @@ const ServicesList: React.FC = () => {
                   <div className="service-footer">
                     <Link to="/service-details" className="section-icon-btn">
                       <img
-                        src="/img/icons/arrow-white.svg"
+                        src={arrowWhiteImg}
                         alt="Arrow"
                       />
                     </Link>

@@ -7,6 +7,70 @@ import RevealImage from "./animations/RevealImage";
 import TextAnime from "./animations/TextAnime";
 import { Link } from "react-router-dom";
 
+// Import all service images
+import airportTransfer1 from "@assets/images/our_service_details/airport_transfer/1.jpg";
+import airportTransfer2 from "@assets/images/our_service_details/airport_transfer/2.jpg";
+import airportTransfer3 from "@assets/images/our_service_details/airport_transfer/3.jpg";
+import airportTransfer4 from "@assets/images/our_service_details/airport_transfer/4.jpg";
+
+import businessTransfers1 from "@assets/images/our_service_details/business_transfers/1.jpg";
+import businessTransfers2 from "@assets/images/our_service_details/business_transfers/2.jpg";
+import businessTransfers3 from "@assets/images/our_service_details/business_transfers/3.jpg";
+import businessTransfers4 from "@assets/images/our_service_details/business_transfers/4.jpg";
+
+import chauffeurServices1 from "@assets/images/our_service_details/chauffeur_services/1.jpg";
+import chauffeurServices2 from "@assets/images/our_service_details/chauffeur_services/2.jpg";
+import chauffeurServices3 from "@assets/images/our_service_details/chauffeur_services/3.jpg";
+import chauffeurServices4 from "@assets/images/our_service_details/chauffeur_services/4.jpg";
+
+import economyServices1 from "@assets/images/our_service_details/economy_services/1.jpg";
+import economyServices2 from "@assets/images/our_service_details/economy_services/2.jpg";
+import economyServices3 from "@assets/images/our_service_details/economy_services/3.jpg";
+import economyServices4 from "@assets/images/our_service_details/economy_services/4.jpg";
+
+import flexiblePayment1 from "@assets/images/our_service_details/flexible_payment_options/1.jpg";
+import flexiblePayment2 from "@assets/images/our_service_details/flexible_payment_options/2.jpg";
+import flexiblePayment3 from "@assets/images/our_service_details/flexible_payment_options/3.jpg";
+import flexiblePayment4 from "@assets/images/our_service_details/flexible_payment_options/4.jpg";
+
+import liveRides1 from "@assets/images/our_service_details/live_rides/1.jpg";
+import liveRides2 from "@assets/images/our_service_details/live_rides/2.jpg";
+import liveRides3 from "@assets/images/our_service_details/live_rides/3.jpg";
+import liveRides4 from "@assets/images/our_service_details/live_rides/4.jpg";
+
+import privateTransfer1 from "@assets/images/our_service_details/private_transfer/1.jpg";
+import privateTransfer2 from "@assets/images/our_service_details/private_transfer/2.jpg";
+import privateTransfer3 from "@assets/images/our_service_details/private_transfer/3.jpg";
+import privateTransfer4 from "@assets/images/our_service_details/private_transfer/4.jpg";
+
+import roadsideAssistance1 from "@assets/images/our_service_details/roadside_assistance/1.jpg";
+import roadsideAssistance2 from "@assets/images/our_service_details/roadside_assistance/2.jpg";
+import roadsideAssistance3 from "@assets/images/our_service_details/roadside_assistance/3.jpg";
+import roadsideAssistance4 from "@assets/images/our_service_details/roadside_assistance/4.jpg";
+
+import vipTransfer1 from "@assets/images/our_service_details/vip_transfer/1.jpg";
+import vipTransfer2 from "@assets/images/our_service_details/vip_transfer/2.jpg";
+import vipTransfer3 from "@assets/images/our_service_details/vip_transfer/3.jpg";
+import vipTransfer4 from "@assets/images/our_service_details/vip_transfer/4.jpg";
+
+// Create image mapping
+const SERVICE_IMAGES = {
+  'airport_transfer': [airportTransfer1, airportTransfer2, airportTransfer3, airportTransfer4],
+  'business_transfers': [businessTransfers1, businessTransfers2, businessTransfers3, businessTransfers4],
+  'chauffeur_services': [chauffeurServices1, chauffeurServices2, chauffeurServices3, chauffeurServices4],
+  'economy_services': [economyServices1, economyServices2, economyServices3, economyServices4],
+  'flexible_payment_options': [flexiblePayment1, flexiblePayment2, flexiblePayment3, flexiblePayment4],
+  'live_rides': [liveRides1, liveRides2, liveRides3, liveRides4],
+  'private_transfer': [privateTransfer1, privateTransfer2, privateTransfer3, privateTransfer4],
+  'roadside_assistance': [roadsideAssistance1, roadsideAssistance2, roadsideAssistance3, roadsideAssistance4],
+  'vip_transfer': [vipTransfer1, vipTransfer2, vipTransfer3, vipTransfer4],
+};
+
+// Helper function to get service images
+const getServiceImages = (serviceFolder: string): string[] => {
+  return SERVICE_IMAGES[serviceFolder as keyof typeof SERVICE_IMAGES] || [];
+};
+
 interface ServiceDetailsContentProps {
   serviceData: {
     title: string;
@@ -48,7 +112,7 @@ const ServiceDetailsContent: React.FC<ServiceDetailsContentProps> = ({
         <div className="service-featured-image">
           <RevealImage
             className="image-anime"
-            src={`/img/our_service_details/${serviceData.imageFolder}/1.jpg`}
+            src={getServiceImages(serviceData.imageFolder)[0] || ''}
             alt="Service Featured"
           ></RevealImage>
         </div>
@@ -124,10 +188,10 @@ const ServiceDetailsContent: React.FC<ServiceDetailsContentProps> = ({
                         delay: isLaptop ? index * 0.2 : (index % 2) * 0.2,
                       }}
                     >
-                      <a href={`/img/our_service_details/${serviceData.imageFolder}/${num}.jpg`}>
+                      <a href={getServiceImages(serviceData.imageFolder)[num - 1] || ''}>
                         <figure className="image-anime">
                           <img
-                            src={`/img/our_service_details/${serviceData.imageFolder}/${num}.jpg`}
+                            src={getServiceImages(serviceData.imageFolder)[num - 1] || ''}
                             alt={`${serviceData.title} Service ${num}`}
                           />
                         </figure>

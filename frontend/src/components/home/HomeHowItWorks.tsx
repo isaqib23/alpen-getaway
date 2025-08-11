@@ -6,6 +6,11 @@ import { motion } from "framer-motion";
 
 import { strings } from "../../lang/works";
 import { Link } from "react-router-dom";
+import aboutImg from "@assets/images/about_us/about.jpg";
+import driver1Img from "@assets/images/about_us/driver_1.jpg";
+import about1Img from "@assets/images/about_us/1.jpg";
+import about2Img from "@assets/images/about_us/2.png";
+import driver2Img from "@assets/images/about_us/driver_2.jpg";
 
 const HomeHowItWorks = () => {
   const [ref1, inView1] = useInView({ triggerOnce: true, threshold: 0.1 });
@@ -55,7 +60,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/img/about_us/1.jpg"
+                      src={about1Img}
                       alt="Browse and Select"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -92,7 +97,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/img/about_us/2.png"
+                      src={about2Img}
                       alt="Book and Confirm"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -130,7 +135,7 @@ const HomeHowItWorks = () => {
                 >
                   <div className="icon-box">
                     <img
-                      src="/img/about_us/driver_2.jpg"
+                      src={driver2Img}
                       alt="Book and Enjoy"
                       style={{width: "40px", height: "40px", objectFit: "cover"}}
                     />
@@ -174,7 +179,7 @@ const HomeHowItWorks = () => {
               <div className="how-work-img">
                 <RevealImage
                   className="reveal custom-figure"
-                  src="/img/about_us/about.jpg"
+                  src={aboutImg}
                   alt="How It Works"
                 />
               </div>
@@ -190,7 +195,7 @@ const HomeHowItWorks = () => {
                 </div>
                 <div className="trusted-client--image">
                   <img
-                    src="/img/about_us/driver_1.jpg"
+                    src={driver1Img}
                     alt="Trusted Clients"
                   />
                 </div>

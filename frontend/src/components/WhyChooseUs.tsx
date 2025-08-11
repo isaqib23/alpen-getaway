@@ -6,6 +6,10 @@ import TextAnime from "./animations/TextAnime";
 import { useMediaQuery } from "react-responsive";
 
 import { strings } from "../lang/why-choose-us";
+import iconWhyChoose1 from "@assets/images/icons/icon-why-choose-1.svg";
+import iconWhyChoose2 from "@assets/images/icons/icon-why-choose-2.svg";
+import iconWhyChoose3 from "@assets/images/icons/icon-why-choose-3.svg";
+import iconWhyChoose4 from "@assets/images/icons/icon-why-choose-4.svg";
 
 const HomeWhyChooseUs: React.FC = () => {
   const isLaptop = useMediaQuery({ query: "(min-width: 992px)" });
@@ -19,22 +23,22 @@ const HomeWhyChooseUs: React.FC = () => {
   // Array of "Why Choose Us" items
   const whyChooseItems = [
     {
-      icon: "/img/icons/icon-why-choose-1.svg",
+      icon: iconWhyChoose1,
       title: strings.FLEET,
       description: strings.FLEET_DESCRIPTION,
     },
     {
-      icon: "/img/icons/icon-why-choose-2.svg",
+      icon: iconWhyChoose2,
       title: strings.CUSTOMER_SERVICE,
       description: strings.CUSTOMER_SERVICE_DESCRIPTION,
     },
     {
-      icon: "/img/icons/icon-why-choose-3.svg",
+      icon: iconWhyChoose3,
       title: strings.LOCATIONS,
       description: strings.LOCATIONS_DESCRIPTION,
     },
     {
-      icon: "/img/icons/icon-why-choose-4.svg",
+      icon: iconWhyChoose4,
       title: strings.RELIALBILITY,
       description: strings.RELIALBILITY_DESCRIPTION,
     },

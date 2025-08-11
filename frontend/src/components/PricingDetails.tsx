@@ -1,17 +1,20 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import eClassImg from "@assets/images/our_fleet/transparent_car_images/e_class.png";
+import sClassImg from "@assets/images/our_fleet/transparent_car_images/s_class.png";
+import vClassImg from "@assets/images/our_fleet/transparent_car_images/v_class.png";
 
 
 const pricingItems = [
   {
-    image: "/img/our_fleet/transparent_car_images/e_class.png",
+    image: eClassImg,
     title: "Luxury Car",
     description: "Premium comfort and elegance for your special occasions and business trips.",
     price: 29,
     delay: 0,
   },
   {
-    image: "/img/our_fleet/transparent_car_images/s_class.png",
+    image: sClassImg,
     title: "Convertible Car",
     description: "Experience the thrill of open-air driving with our premium convertible fleet.",
     price: 49,
@@ -19,7 +22,7 @@ const pricingItems = [
     highlighted: true,
   },
   {
-    image: "/img/our_fleet/transparent_car_images/v_class.png",
+    image: vClassImg,
     title: "Sport Car",
     description: "High-performance vehicles designed for adrenaline seekers and speed enthusiasts.",
     price: 79,

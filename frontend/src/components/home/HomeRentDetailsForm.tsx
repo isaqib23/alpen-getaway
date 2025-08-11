@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
+import iconRentDetails2 from "@assets/images/icons/icon-rent-details-2.svg";
+import iconRentDetails3 from "@assets/images/icons/icon-rent-details-3.svg";
 
 import * as bookcarsTypes from "../../types/bookcars-types";
 import * as bookcarsHelper from "../../utils/bookcars-helper";
@@ -342,7 +344,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="/img/icon-rent-details-2.svg"
+                          src={iconRentDetails2}
                           alt="Pickup Location"
                         />
                       </div> */}
@@ -394,7 +396,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="/img/icon-rent-details-2.svg"
+                          src={iconRentDetails2}
                           alt="Dropoff Location"
                         />
                       </div> */}
@@ -447,7 +449,7 @@ const HomeRentDetailsForm: React.FC<{ language: string }> = ({ language }) => {
                     <div className="rent-details-item">
                       {/* <div className="icon-box">
                         <img
-                          src="/img/icons/icon-rent-details-3.svg"
+                          src={iconRentDetails3}
                           alt="Pickup Date"
                         />
                       </div> */}

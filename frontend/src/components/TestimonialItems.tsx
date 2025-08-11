@@ -2,6 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
+import driver1Img from "@assets/images/about_us/driver_1.jpg";
+import driver2Img from "@assets/images/about_us/driver_2.jpg";
+import driver3Img from "@assets/images/about_us/driver_3.jpg";
+import driver4Img from "@assets/images/about_us/driver_4.jpg";
 
 
 interface Testimonial {
@@ -20,7 +24,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_1.jpg",
+    image: driver1Img,
     delay: 0,
   },
   {
@@ -29,7 +33,7 @@ const testimonials: Testimonial[] = [
     rating: 4,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_2.jpg",
+    image: driver2Img,
     delay: 0.2,
   },
   {
@@ -38,7 +42,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_3.jpg",
+    image: driver3Img,
     delay: 0.4,
   },
   {
@@ -47,7 +51,7 @@ const testimonials: Testimonial[] = [
     rating: 3,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_4.jpg",
+    image: driver4Img,
     delay: 0,
   },
   {
@@ -56,7 +60,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_1.jpg",
+    image: driver1Img,
     delay: 0.2,
   },
   {
@@ -65,7 +69,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_2.jpg",
+    image: driver2Img,
     delay: 0.4,
   },
   {
@@ -74,7 +78,7 @@ const testimonials: Testimonial[] = [
     rating: 4,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_3.jpg",
+    image: driver3Img,
     delay: 0,
   },
   {
@@ -83,7 +87,7 @@ const testimonials: Testimonial[] = [
     rating: 5,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_4.jpg",
+    image: driver4Img,
     delay: 0.2,
   },
   {
@@ -92,7 +96,7 @@ const testimonials: Testimonial[] = [
     rating: 3,
     content:
       "The quality and reliability are top-notch, and the team behind it is always ready to assist with any questions or issues. Highly recommended!",
-    image: "/img/about_us/driver_1.jpg",
+    image: driver1Img,
     delay: 0.4,
   },
 ];

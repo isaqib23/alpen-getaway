@@ -16,6 +16,11 @@ import * as SupplierService from "../services/SupplierService";
 
 import { useMediaQuery } from "react-responsive";
 import TextAnime from "./animations/TextAnime";
+import iconFleetList1 from "@assets/images/icons/icon-fleet-list-1.svg";
+import iconFleetList2 from "@assets/images/icons/icon-fleet-list-2.svg";
+import iconFleetList3 from "@assets/images/icons/icon-fleet-list-3.svg";
+import iconFleetList4 from "@assets/images/icons/icon-fleet-list-4.svg";
+import arrowWhiteIcon from "@assets/images/icons/arrow-white.svg";
 
 interface FleetsProps {
   from?: Date;
@@ -479,28 +484,28 @@ const FleetsCollection = ({
                         <ul>
                           <li>
                             <img
-                              src="/img/icons/icon-fleet-list-1.svg"
+                              src={iconFleetList1}
                               alt=""
                             />
                             {car.seats}
                           </li>
                           <li>
                             <img
-                              src="/img/icons/icon-fleet-list-2.svg"
+                              src={iconFleetList2}
                               alt=""
                             />
                             {car.doors}
                           </li>
                           <li>
                             <img
-                              src="/img/icons/icon-fleet-list-3.svg"
+                              src={iconFleetList3}
                               alt=""
                             />
                             {car.aircon === true ? strings.YES : strings.NO}
                           </li>
                           <li>
                             <img
-                              src="/img/icons/icon-fleet-list-4.svg"
+                              src={iconFleetList4}
                               alt=""
                             />
                             {car.gearbox === bookcarsTypes.GearboxType.Manual
@@ -550,12 +555,9 @@ const FleetsCollection = ({
                             ].map((amenity, index) => (
                               <li key={index}>
                                 <img
-                                  src={`/img/icons/amenity-${
-                                    amenity.included
-                                      ? "included"
-                                      : "purchasable"
-                                  }.svg`}
+                                  src={arrowWhiteIcon}
                                   alt=""
+                                  style={{ width: '16px', height: '16px' }}
                                 />
                                 {amenity.label}
                               </li>
@@ -587,7 +589,7 @@ const FleetsCollection = ({
                         >
                           <Link to="" className="section-icon-btn">
                             <img
-                              src="/img/icons/arrow-white.svg"
+                              src={arrowWhiteIcon}
                               alt="arrow"
                             />
                           </Link>

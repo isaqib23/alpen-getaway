@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 
 import { strings } from "../lang/b2b";
 import RegistrationService, { B2BRegistrationData } from "../services/RegistrationService";
+import b2bPartner1Img from "@assets/images/b2b_partner/1.jpg";
+import b2bPartner2Img from "@assets/images/b2b_partner/2.jpg";
 
 const fadeInUpVariants = {
   initial: { opacity: 0, y: 20 },
@@ -129,14 +131,14 @@ const B2BBody: React.FC = () => {
               <div className="trusted-partner-images">
                 <div className="main-image-circle">
                   <img 
-                    src="/img/b2b_partner/1.jpg" 
+                    src={b2bPartner1Img} 
                     alt="B2B Partner Service" 
                     className="img-fluid" 
                   />
                 </div>
                 <div className="secondary-image-circle">
                   <img 
-                    src="/img/b2b_partner/2.jpg" 
+                    src={b2bPartner2Img} 
                     alt="B2B Partnership" 
                     className="img-fluid" 
                   />

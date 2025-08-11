@@ -1,6 +1,6 @@
 .exclusive-partners {
   background: var(--secondary-color);
-  /* background: url("/img/icons/asterisk-icon-bg.svg") no-repeat; */
+  /* background: url("../images/icons/asterisk-icon-bg.svg") no-repeat; */
   background-position: bottom left;
   background-size: auto;
   padding: 100px 0 70px;

@@ -3,7 +3,7 @@
 /************************************/
 
 .main-footer {
-  background: var(--primary-color) url("/img/footer-bg.svg") no-repeat;
+  background: var(--primary-color) url("../images/footer-bg.svg") no-repeat;
   background-position: top center;
   background-size: 100% auto;
   padding: 70px 0 25px;
