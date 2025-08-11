@@ -30,6 +30,8 @@ export interface Auction {
     passenger_count: number
     customer_name?: string
     vehicle_category?: string
+    base_amount: string | number
+    total_amount: string | number
   }
 }
 
@@ -94,8 +96,6 @@ export interface CreateAuctionData {
   description?: string
   auction_start_time: string
   auction_end_time: string
-  minimum_bid_amount: number
-  reserve_price?: number
 }
 
 export interface UpdateAuctionData {
@@ -103,8 +103,6 @@ export interface UpdateAuctionData {
   description?: string
   auction_start_time?: string
   auction_end_time?: string
-  minimum_bid_amount?: number
-  reserve_price?: string
   status?: string
 }
 

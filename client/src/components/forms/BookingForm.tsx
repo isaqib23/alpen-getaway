@@ -13,10 +13,9 @@ import {
   MenuItem,
   Typography,
   Box,
-  Autocomplete,
   CircularProgress
 } from '@mui/material';
-import { routesAPI } from '../../api/routes';
+import { RouteSelector } from './RouteSelector';
 import { carsAPI } from '../../api/cars';
 import { driversAPI } from '../../api/drivers';
 
@@ -63,6 +62,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     customer_name: '',
     customer_phone: '',
     customer_email: '',
+    from_location: '',
+    to_location: '',
     pickup_address: '',
     dropoff_address: '',
     passenger_count: 1,
@@ -70,7 +71,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     ...initialData
   });
 
-  const [routes, setRoutes] = useState<any[]>([]);
   const [cars, setCars] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<any>(null);
@@ -79,10 +79,6 @@ export const BookingForm: React.FC<BookingFormProps> = ({
   const loadInitialData = React.useCallback(async () => {
     setLoadingData(true);
     try {
-      // Load routes for dropdown
-      const routesResponse = await routesAPI.getAll();
-      setRoutes(routesResponse.data || []);
-
       if (mode === 'admin') {
         // Admin can see all cars and drivers
         const [carsResponse, driversResponse] = await Promise.all([
@@ -110,6 +106,8 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         customer_name: '',
         customer_phone: '',
         customer_email: '',
+        from_location: '',
+        to_location: '',
         pickup_address: '',
         dropoff_address: '',
         passenger_count: 1,
@@ -127,9 +125,20 @@ export const BookingForm: React.FC<BookingFormProps> = ({
         route_id: route.id,
         from_location: route.from_location,
         to_location: route.to_location,
-        pickup_address: route.from_location,
-        dropoff_address: route.to_location,
-        fare_amount: route.base_fare
+        pickup_address: prev.pickup_address || route.from_location, // Keep existing if set, otherwise use route location
+        dropoff_address: prev.dropoff_address || route.to_location, // Keep existing if set, otherwise use route location
+        fare_amount: route.sale_fare || route.base_fare || route.original_fare
+      }));
+    } else {
+      // Clear location fields when no route is selected
+      setFormData(prev => ({
+        ...prev,
+        route_id: undefined,
+        from_location: undefined,
+        to_location: undefined,
+        pickup_address: '',
+        dropoff_address: '',
+        fare_amount: undefined
       }));
     }
   };
@@ -172,31 +181,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                 </Grid>
                 
                 <Grid item xs={12}>
-                  <Autocomplete
-                    options={routes}
-                    getOptionLabel={(option) => `${option.from_location} → ${option.to_location}`}
+                  <RouteSelector
                     value={selectedRoute}
-                    onChange={(_, newValue) => handleRouteChange(newValue)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Select Route"
-                        required
-                        fullWidth
-                      />
-                    )}
-                    renderOption={(props, option) => (
-                      <li {...props}>
-                        <Box>
-                          <Typography variant="body1">
-                            {option.from_location} → {option.to_location}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Base Fare: ${option.base_fare} • Distance: {option.distance_km}km
-                          </Typography>
-                        </Box>
-                      </li>
-                    )}
+                    onChange={handleRouteChange}
+                    label="Select Route"
+                    placeholder="Search routes by location..."
+                    required
+                    helperText="Search by typing location names (e.g., 'Vienna', 'Salzburg')"
                   />
                 </Grid>
 
@@ -301,12 +292,50 @@ export const BookingForm: React.FC<BookingFormProps> = ({
 
                 <Grid item xs={12} md={6}>
                   <TextField
+                    label="From Location"
+                    value={formData.from_location || ''}
+                    fullWidth
+                    required
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    helperText="Auto-populated from selected route"
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        backgroundColor: '#f5f5f5',
+                        cursor: 'not-allowed'
+                      }
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    label="To Location"
+                    value={formData.to_location || ''}
+                    fullWidth
+                    required
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    helperText="Auto-populated from selected route"
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        backgroundColor: '#f5f5f5',
+                        cursor: 'not-allowed'
+                      }
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
                     label="Pickup Address"
                     value={formData.pickup_address}
                     onChange={handleInputChange('pickup_address')}
                     fullWidth
                     required
-                    helperText="Full pickup address"
+                    helperText="Specific pickup address within the from location"
                   />
                 </Grid>
 
@@ -317,7 +346,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                     onChange={handleInputChange('dropoff_address')}
                     fullWidth
                     required
-                    helperText="Full dropoff address"
+                    helperText="Specific dropoff address within the to location"
                   />
                 </Grid>
 

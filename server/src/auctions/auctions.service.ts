@@ -73,12 +73,15 @@ export class AuctionsService {
         // Generate auction reference
         const auctionReference = await this.generateAuctionReference();
 
+        // Use booking's base_amount as minimum bid and total_amount as reserve price
         const auction = this.auctionRepository.create({
             ...createAuctionDto,
             auction_reference: auctionReference,
             created_by: userId,
             auction_start_time: startTime,
             auction_end_time: endTime,
+            minimum_bid_amount: booking.base_amount,
+            reserve_price: booking.total_amount,
         });
 
         const savedAuction = await this.auctionRepository.save(auction);
@@ -335,9 +338,9 @@ export class AuctionsService {
             throw new BadRequestException('Cannot award to inactive bid');
         }
 
-        // Check reserve price
+        // Check reserve price (booking total amount)
         if (auction.reserve_price && winningBid.bid_amount < auction.reserve_price) {
-            throw new BadRequestException('Winning bid is below reserve price');
+            throw new BadRequestException(`Winning bid is below reserve price of €${auction.reserve_price} (booking total amount)`);
         }
 
         const now = new Date();
@@ -419,9 +422,9 @@ export class AuctionsService {
             throw new BadRequestException('Company already has a bid for this auction. Use update instead.');
         }
 
-        // Validate bid amount
+        // Validate bid amount against booking's base amount
         if (createBidDto.bid_amount < auction.minimum_bid_amount) {
-            throw new BadRequestException(`Bid amount must be at least ${auction.minimum_bid_amount}`);
+            throw new BadRequestException(`Bid amount must be at least €${auction.minimum_bid_amount} (booking base amount)`);
         }
 
         // Generate bid reference
@@ -515,7 +518,7 @@ export class AuctionsService {
 
         // Validate new bid amount if changed
         if (updateBidDto.bid_amount && updateBidDto.bid_amount < bid.auction.minimum_bid_amount) {
-            throw new BadRequestException(`Bid amount must be at least ${bid.auction.minimum_bid_amount}`);
+            throw new BadRequestException(`Bid amount must be at least €${bid.auction.minimum_bid_amount} (booking base amount)`);
         }
 
         await this.bidRepository.update(id, {

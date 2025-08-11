@@ -107,4 +107,10 @@ export class CouponsController {
     remove(@Param('id') id: string) {
         return this.couponsService.remove(id);
     }
+
+    @ApiOperation({ summary: 'Deactivate coupon by ID' })
+    @Patch(':id/deactivate')
+    deactivate(@Param('id') id: string) {
+        return this.couponsService.deactivate(id);
+    }
 }

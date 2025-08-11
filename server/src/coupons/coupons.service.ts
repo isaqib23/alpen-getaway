@@ -71,7 +71,24 @@ export class CouponsService {
 
     async remove(id: string): Promise<void> {
         const coupon = await this.findOne(id);
-        await this.couponsRepository.remove(coupon);
+        
+        // Check if coupon has any usage records
+        const usageCount = await this.couponUsageRepository.count({
+            where: { coupon_id: id }
+        });
+        
+        if (usageCount > 0) {
+            throw new BadRequestException('Cannot delete coupon that has been used. Consider deactivating it instead.');
+        }
+        
+        // Use delete instead of remove for better performance and to avoid loading relations
+        await this.couponsRepository.delete(id);
+    }
+
+    async deactivate(id: string): Promise<Coupon> {
+        const coupon = await this.findOne(id);
+        coupon.status = 'inactive' as any;
+        return this.couponsRepository.save(coupon);
     }
 
     async validateCoupon(code: string, userId: string, orderAmount: number, userType: string): Promise<{

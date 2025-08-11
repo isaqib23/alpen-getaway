@@ -82,12 +82,13 @@ const AuctionManagement = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    minimum_bid_amount: '',
-    reserve_price: '',
     auction_start_time: '',
     auction_end_time: '',
     booking_id: ''
   })
+  
+  // Selected booking state to show pricing info
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
   const [formLoading, setFormLoading] = useState(false)
   
@@ -285,12 +286,15 @@ const AuctionManagement = () => {
     setFormData({
       title: auction.title,
       description: auction.description || '',
-      minimum_bid_amount: auction.minimum_bid_amount.toString(),
-      reserve_price: auction.reserve_price?.toString() || '',
       auction_start_time: auction.auction_start_time.slice(0, 16), // Format for datetime-local input
       auction_end_time: auction.auction_end_time.slice(0, 16),
       booking_id: auction.booking_id || ''
     })
+    
+    // Set the selected booking to show pricing info
+    if (auction.booking) {
+      setSelectedBooking(auction.booking)
+    }
     setFormErrors({})
     setOpenEditDialog(true)
   }
@@ -308,13 +312,25 @@ const AuctionManagement = () => {
     setFormData({
       title: '',
       description: '',
-      minimum_bid_amount: '',
-      reserve_price: '',
       auction_start_time: '',
       auction_end_time: '',
       booking_id: ''
     })
+    setSelectedBooking(null)
     setFormErrors({})
+  }
+
+  const handleBookingSelection = async (bookingId: string) => {
+    if (bookingId) {
+      const booking = bookings.find(b => b.id === bookingId)
+      if (booking) {
+        setSelectedBooking(booking)
+        setFormData({ ...formData, booking_id: bookingId })
+      }
+    } else {
+      setSelectedBooking(null)
+      setFormData({ ...formData, booking_id: '' })
+    }
   }
 
   const validateForm = () => {
@@ -324,12 +340,8 @@ const AuctionManagement = () => {
       errors.title = 'Title is required'
     }
 
-    if (!formData.minimum_bid_amount || parseFloat(formData.minimum_bid_amount) <= 0) {
-      errors.minimum_bid_amount = 'Minimum bid amount must be greater than 0'
-    }
-
-    if (formData.reserve_price && parseFloat(formData.reserve_price) <= parseFloat(formData.minimum_bid_amount)) {
-      errors.reserve_price = 'Reserve price must be greater than minimum bid amount'
+    if (!selectedBooking) {
+      errors.booking_id = 'Please select a booking first to determine pricing'
     }
 
     if (!formData.auction_start_time) {
@@ -369,8 +381,6 @@ const AuctionManagement = () => {
       await createAuction({
         title: formData.title,
         description: formData.description || undefined,
-        minimum_bid_amount: parseFloat(formData.minimum_bid_amount),
-        reserve_price: formData.reserve_price ? parseFloat(formData.reserve_price) : undefined,
         auction_start_time: new Date(formData.auction_start_time).toISOString(),
         auction_end_time: new Date(formData.auction_end_time).toISOString(),
         booking_id: formData.booking_id
@@ -393,8 +403,6 @@ const AuctionManagement = () => {
       await updateAuction(selectedAuction.id, {
         title: formData.title,
         description: formData.description || undefined,
-        minimum_bid_amount: parseFloat(formData.minimum_bid_amount),
-        reserve_price: formData.reserve_price ? parseFloat(formData.reserve_price) : undefined,
         auction_start_time: new Date(formData.auction_start_time).toISOString(),
         auction_end_time: new Date(formData.auction_end_time).toISOString()
       })
@@ -593,8 +601,8 @@ const AuctionManagement = () => {
                         {auction.title}
                       </Typography>
                       <Typography variant="caption" color="textSecondary">
-                        Min: €{auction.minimum_bid_amount}
-                        {auction.reserve_price && ` | Reserve: €${auction.reserve_price}`}
+                        Min: €{auction.minimum_bid_amount} (Base)
+                        {auction.reserve_price && ` | Reserve: €${auction.reserve_price} (Total)`}
                       </Typography>
                     </Box>
                   </TableCell>
@@ -791,31 +799,22 @@ const AuctionManagement = () => {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Minimum Bid Amount (€)"
-                type="number"
-                value={formData.minimum_bid_amount}
-                onChange={(e) => setFormData({ ...formData, minimum_bid_amount: e.target.value })}
-                error={!!formErrors.minimum_bid_amount}
-                helperText={formErrors.minimum_bid_amount}
-                required
-                inputProps={{ min: 0, step: 0.01 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Reserve Price (€)"
-                type="number"
-                value={formData.reserve_price}
-                onChange={(e) => setFormData({ ...formData, reserve_price: e.target.value })}
-                error={!!formErrors.reserve_price}
-                helperText={formErrors.reserve_price}
-                inputProps={{ min: 0, step: 0.01 }}
-              />
-            </Grid>
+            {/* Show selected booking pricing information */}
+            {selectedBooking && (
+              <Grid item xs={12}>
+                <Alert severity="info">
+                  <Typography variant="subtitle2" gutterBottom>
+                    Auction Pricing (from selected booking)
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Minimum Bid Amount:</strong> €{selectedBooking.base_amount} (Booking base amount)
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Reserve Price:</strong> €{selectedBooking.total_amount} (Booking total amount)
+                  </Typography>
+                </Alert>
+              </Grid>
+            )}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -847,7 +846,7 @@ const AuctionManagement = () => {
                 <InputLabel>Select Booking</InputLabel>
                 <Select
                   value={formData.booking_id}
-                  onChange={(e) => setFormData({ ...formData, booking_id: e.target.value })}
+                  onChange={(e) => handleBookingSelection(e.target.value)}
                   label="Select Booking"
                   disabled={bookingsLoading}
                 >
@@ -911,31 +910,22 @@ const AuctionManagement = () => {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Minimum Bid Amount (€)"
-                type="number"
-                value={formData.minimum_bid_amount}
-                onChange={(e) => setFormData({ ...formData, minimum_bid_amount: e.target.value })}
-                error={!!formErrors.minimum_bid_amount}
-                helperText={formErrors.minimum_bid_amount}
-                required
-                inputProps={{ min: 0, step: 0.01 }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Reserve Price (€)"
-                type="number"
-                value={formData.reserve_price}
-                onChange={(e) => setFormData({ ...formData, reserve_price: e.target.value })}
-                error={!!formErrors.reserve_price}
-                helperText={formErrors.reserve_price}
-                inputProps={{ min: 0, step: 0.01 }}
-              />
-            </Grid>
+            {/* Show selected booking pricing information */}
+            {selectedBooking && (
+              <Grid item xs={12}>
+                <Alert severity="info">
+                  <Typography variant="subtitle2" gutterBottom>
+                    Auction Pricing (from selected booking)
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Minimum Bid Amount:</strong> €{selectedBooking.base_amount} (Booking base amount)
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Reserve Price:</strong> €{selectedBooking.total_amount} (Booking total amount)
+                  </Typography>
+                </Alert>
+              </Grid>
+            )}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -1017,10 +1007,10 @@ const AuctionManagement = () => {
                   <Typography variant="body2"><strong>Status:</strong> {selectedAuction.status}</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant="body2"><strong>Minimum Bid:</strong> €{selectedAuction.minimum_bid_amount}</Typography>
+                  <Typography variant="body2"><strong>Minimum Bid:</strong> €{selectedAuction.minimum_bid_amount} (Booking Base)</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography variant="body2"><strong>Reserve Price:</strong> €{selectedAuction.reserve_price || 'None'}</Typography>
+                  <Typography variant="body2"><strong>Reserve Price:</strong> €{selectedAuction.reserve_price || 'None'} (Booking Total)</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography variant="body2"><strong>Start Time:</strong> {new Date(selectedAuction.auction_start_time).toLocaleString()}</Typography>
@@ -1074,7 +1064,7 @@ const AuctionManagement = () => {
                       </Typography>
                     </Grid>
                     <Grid item xs={12} md={3}>
-                      <Typography variant="body2" color="textSecondary">Minimum Bid</Typography>
+                      <Typography variant="body2" color="textSecondary">Minimum Bid (Base Amount)</Typography>
                       <Typography variant="body1" fontWeight="medium" color="primary">
                         €{selectedAuction.minimum_bid_amount}
                       </Typography>

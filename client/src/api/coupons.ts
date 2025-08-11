@@ -210,6 +210,11 @@ class CouponsAPI {
     await apiClient.delete(`${this.basePath}/${id}`)
   }
 
+  async deactivateCoupon(id: string): Promise<Coupon> {
+    const response = await apiClient.patch(`${this.basePath}/${id}/deactivate`)
+    return response.data
+  }
+
   async getCouponStats(): Promise<CouponStatsResponse> {
     const response = await apiClient.get(`${this.basePath}/stats`)
     return response.data

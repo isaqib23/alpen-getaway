@@ -1,12 +1,12 @@
-import UserListByType from '../../components/users/UserListByType'
+import CompanyUserManagement from '../../components/users/CompanyUserManagement'
 import { UserType } from '../../api/users'
 
 const Affiliates = () => {
   return (
-    <UserListByType 
+    <CompanyUserManagement 
       userType={UserType.AFFILIATE} 
       title="Affiliates"
-      description="Manage affiliate partner accounts and their referral activities"
+      description="Manage affiliate partner accounts and their company information with commission tracking"
     />
   )
 }

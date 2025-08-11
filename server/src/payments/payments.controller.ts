@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, Headers, RawBodyRequest, Req } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { Request } from 'express';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -112,6 +113,43 @@ export class PaymentsController {
         return this.paymentsService.refund(id);
     }
 
+    // Stripe Bank Transfer Endpoints
+    @ApiOperation({ summary: 'Get bank transfer details for payment' })
+    @ApiParam({ name: 'id', description: 'Payment ID' })
+    @ApiResponse({ status: 200, description: 'Bank transfer details retrieved successfully' })
+    @Get(':id/bank-transfer-details')
+    getBankTransferDetails(@Param('id') id: string) {
+        return this.paymentsService.getBankTransferDetails(id);
+    }
+
+    @ApiOperation({ summary: 'Get supported bank transfer types' })
+    @ApiQuery({ name: 'country', required: false, description: 'Country code (e.g., DE, US)' })
+    @ApiQuery({ name: 'currency', required: false, description: 'Currency code (e.g., EUR, USD)' })
+    @Get('bank-transfer/supported-types')
+    getSupportedBankTransferTypes(
+        @Query('country') country?: string,
+        @Query('currency') currency?: string
+    ) {
+        return this.paymentsService.getSupportedBankTransferTypes(country, currency);
+    }
+
+    @ApiOperation({ summary: 'Initialize default payment method configurations' })
+    @Post('payment-methods/initialize-defaults')
+    initializeDefaultPaymentMethods() {
+        return this.paymentsService.initializeDefaultPaymentMethods();
+    }
+
+    @ApiOperation({ summary: 'Stripe webhook endpoint for bank transfer events' })
+    @ApiResponse({ status: 200, description: 'Webhook processed successfully' })
+    @Post('stripe/webhook')
+    async handleStripeWebhook(
+        @Headers('stripe-signature') signature: string,
+        @Req() req: RawBodyRequest<Request>
+    ) {
+        const payload = req.rawBody?.toString() || '';
+        return this.paymentsService.handleStripeWebhook(signature, payload);
+    }
+
     // Stripe Integration Endpoints
     @ApiOperation({ summary: 'Create Stripe checkout session' })
     @Post('stripe/checkout-session')
@@ -141,9 +179,4 @@ export class PaymentsController {
         return this.paymentsService.createStripePaymentIntent(body);
     }
 
-    @ApiOperation({ summary: 'Handle Stripe webhook' })
-    @Post('stripe/webhook')
-    handleStripeWebhook(@Body() body: any) {
-        return this.paymentsService.handleStripeWebhook(body);
-    }
 }

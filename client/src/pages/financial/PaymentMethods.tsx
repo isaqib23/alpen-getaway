@@ -4,58 +4,78 @@ import {
   Typography,
   Button,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  IconButton,
-  Chip,
   TextField,
-  InputAdornment,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Tooltip,
   CircularProgress,
   Card,
   CardContent,
   Alert,
   Switch,
   FormControlLabel,
-  Divider
+  Chip,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Tabs,
+  Tab,
+  FormHelperText,
+  InputAdornment,
+  IconButton
 } from '@mui/material'
 import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Search as SearchIcon,
+  Save as SaveIcon,
   Refresh as RefreshIcon,
-  Settings as SettingsIcon,
-  CreditCard as CreditCardIcon,
   AccountBalance as BankIcon,
-  AccountBalanceWallet as WalletIcon,
-  Money as CashIcon,
-  Payment as PaymentIcon,
+  Settings as SettingsIcon,
   CheckCircle as CheckIcon,
-  Cancel as CancelIcon,
-  Save as SaveIcon
+  Visibility as VisibilityIcon,
+  VisibilityOff as VisibilityOffIcon,
+  Info as InfoIcon,
+  Warning as WarningIcon,
+  Security as SecurityIcon,
+  Public as PublicIcon,
+  Language as LanguageIcon
 } from '@mui/icons-material'
 
 import { usePaymentMethods } from '../../hooks/useFinancial'
 import { 
   PaymentMethodConfig, 
   PaymentMethod,
+  BankTransferType,
   CreatePaymentMethodDto,
   UpdatePaymentMethodDto
 } from '../../api/financial'
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`stripe-tabpanel-${index}`}
+      aria-labelledby={`stripe-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
 
 const PaymentMethods = () => {
   const {
@@ -63,179 +83,190 @@ const PaymentMethods = () => {
     loading,
     fetchPaymentMethods,
     createPaymentMethod,
-    updatePaymentMethod,
-    deletePaymentMethod
+    updatePaymentMethod
   } = usePaymentMethods()
 
   // Local state for UI
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethodConfig | null>(null)
-  const [openCreateDialog, setOpenCreateDialog] = useState(false)
-  const [openEditDialog, setOpenEditDialog] = useState(false)
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
-  const [openConfigDialog, setOpenConfigDialog] = useState(false)
+  const [tabValue, setTabValue] = useState(0)
+  const [showSecrets, setShowSecrets] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [stripeConfig, setStripeConfig] = useState<PaymentMethodConfig | null>(null)
+  const [isDirty, setIsDirty] = useState(false)
 
-  // Form state
+  // Form state for Stripe configuration
   const [formData, setFormData] = useState<CreatePaymentMethodDto>({
-    name: '',
-    type: PaymentMethod.CREDIT_CARD,
+    name: 'Stripe Bank Transfer',
+    type: PaymentMethod.STRIPE_BANK_TRANSFER,
     is_active: true,
-    config: {}
+    config: {
+      stripe_public_key: '',
+      stripe_secret_key: '',
+      stripe_webhook_endpoint_secret: '',
+      supported_countries: ['DE', 'AT', 'CH', 'FR', 'NL', 'BE'],
+      supported_currencies: ['EUR'],
+      customer_balance_funding_enabled: true,
+      display_name: 'Bank Transfer',
+      description: 'Secure bank transfer via Stripe',
+      auto_confirmation_enabled: false
+    }
   })
 
-  // Load data on mount
+  // Available bank transfer types with descriptions
+  const bankTransferTypes = [
+    { value: BankTransferType.SEPA_DEBIT, label: 'SEPA Debit', description: 'Direct debit payments in SEPA countries' },
+    { value: BankTransferType.SOFORT, label: 'Sofort', description: 'Real-time bank transfers in Germany/Austria' },
+    { value: BankTransferType.IDEAL, label: 'iDEAL', description: 'Netherlands bank transfer method' },
+    { value: BankTransferType.GIROPAY, label: 'Giropay', description: 'German online banking method' },
+    { value: BankTransferType.BANCONTACT, label: 'Bancontact', description: 'Belgium payment method' },
+    { value: BankTransferType.EPS, label: 'EPS', description: 'Austria online bank transfer' },
+    { value: BankTransferType.PRZELEWY24, label: 'Przelewy24', description: 'Poland online banking' },
+    { value: BankTransferType.FPX, label: 'FPX', description: 'Malaysia online banking' },
+    { value: BankTransferType.ACH_DEBIT, label: 'ACH Debit', description: 'US bank account debits' },
+    { value: BankTransferType.ACH_CREDIT, label: 'ACH Credit', description: 'US bank account credits' },
+    { value: BankTransferType.US_BANK_ACCOUNT, label: 'US Bank Account', description: 'Direct US bank transfers' },
+    { value: BankTransferType.CUSTOMER_BALANCE, label: 'Customer Balance', description: 'Stripe customer balance funding' }
+  ]
+
+  const supportedCountries = [
+    { code: 'DE', name: 'Germany' },
+    { code: 'AT', name: 'Austria' },
+    { code: 'CH', name: 'Switzerland' },
+    { code: 'FR', name: 'France' },
+    { code: 'NL', name: 'Netherlands' },
+    { code: 'BE', name: 'Belgium' },
+    { code: 'US', name: 'United States' },
+    { code: 'GB', name: 'United Kingdom' },
+    { code: 'PL', name: 'Poland' },
+    { code: 'MY', name: 'Malaysia' }
+  ]
+
+  const supportedCurrencies = [
+    { code: 'EUR', name: 'Euro' },
+    { code: 'USD', name: 'US Dollar' },
+    { code: 'GBP', name: 'British Pound' },
+    { code: 'CHF', name: 'Swiss Franc' },
+    { code: 'PLN', name: 'Polish Zloty' },
+    { code: 'MYR', name: 'Malaysian Ringgit' }
+  ]
+
+  // Load data on mount and find existing Stripe configuration
   useEffect(() => {
-    fetchPaymentMethods()
+    const loadConfiguration = async () => {
+      await fetchPaymentMethods()
+    }
+    loadConfiguration()
   }, [])
 
-  const handleRefresh = () => {
-    fetchPaymentMethods()
-  }
-
-  const handleCreateMethod = () => {
-    setFormData({
-      name: '',
-      type: PaymentMethod.CREDIT_CARD,
-      is_active: true,
-      config: {}
-    })
-    setOpenCreateDialog(true)
-  }
-
-  const handleEditMethod = (method: PaymentMethodConfig) => {
-    setSelectedMethod(method)
-    setFormData({
-      name: method.name,
-      type: method.type,
-      is_active: method.is_active,
-      config: method.config || {}
-    })
-    setOpenEditDialog(true)
-  }
-
-  const handleDeleteMethod = (method: PaymentMethodConfig) => {
-    setSelectedMethod(method)
-    setOpenDeleteDialog(true)
-  }
-
-  const handleConfigMethod = (method: PaymentMethodConfig) => {
-    setSelectedMethod(method)
-    setOpenConfigDialog(true)
-  }
-
-  const handleCreateSubmit = async () => {
-    const success = await createPaymentMethod(formData)
-    if (success) {
-      setOpenCreateDialog(false)
-      setFormData({
-        name: '',
-        type: PaymentMethod.CREDIT_CARD,
-        is_active: true,
-        config: {}
-      })
+  // Update form data when payment methods are loaded
+  useEffect(() => {
+    if (paymentMethods.length > 0) {
+      const existing = paymentMethods.find(pm => pm.type === PaymentMethod.STRIPE_BANK_TRANSFER)
+      if (existing) {
+        setStripeConfig(existing)
+        setFormData({
+          name: existing.name,
+          type: existing.type,
+          is_active: existing.is_active,
+          config: existing.config || {}
+        })
+      }
     }
+  }, [paymentMethods])
+
+  const handleRefresh = async () => {
+    await fetchPaymentMethods()
   }
 
-  const handleEditSubmit = async () => {
-    if (selectedMethod) {
-      const updateData: UpdatePaymentMethodDto = {
-        name: formData.name,
-        type: formData.type,
-        is_active: formData.is_active,
-        config: formData.config
+  const handleSaveConfiguration = async () => {
+    setSaving(true)
+    try {
+      let result = null
+      
+      if (stripeConfig?.id) {
+        // Update existing configuration
+        const updateData: UpdatePaymentMethodDto = {
+          name: formData.name,
+          type: formData.type,
+          is_active: formData.is_active,
+          config: formData.config
+        }
+        result = await updatePaymentMethod(stripeConfig.id, updateData)
+      } else {
+        // Create new configuration
+        result = await createPaymentMethod(formData)
       }
       
-      const success = await updatePaymentMethod(selectedMethod.id, updateData)
-      if (success) {
-        setOpenEditDialog(false)
-        setSelectedMethod(null)
+      if (result) {
+        setIsDirty(false)
+        await fetchPaymentMethods() // Reload to get the latest data
       }
+    } finally {
+      setSaving(false)
     }
   }
 
-  const handleConfirmDelete = async () => {
-    if (selectedMethod) {
-      const success = await deletePaymentMethod(selectedMethod.id)
-      if (success) {
-        setOpenDeleteDialog(false)
-        setSelectedMethod(null)
-      }
+  const handleFieldChange = (field: string, value: any) => {
+    if (field.startsWith('config.')) {
+      const configField = field.replace('config.', '')
+      setFormData(prev => ({
+        ...prev,
+        config: {
+          ...prev.config,
+          [configField]: value
+        }
+      }))
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }))
     }
+    setIsDirty(true)
   }
 
-  const handleToggleActive = async (method: PaymentMethodConfig) => {
-    const success = await updatePaymentMethod(method.id, {
-      is_active: !method.is_active
-    })
-    if (success) {
-      // The method will be updated via the hook
+  const handleToggleActive = () => {
+    handleFieldChange('is_active', !formData.is_active)
+  }
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue)
+  }
+
+  const isConfigurationValid = () => {
+    const config = formData.config
+    return !!
+      config?.stripe_public_key &&
+      config?.stripe_secret_key &&
+      config?.supported_countries?.length &&
+      config?.supported_currencies?.length
+  }
+
+  const getConfigurationStatus = () => {
+    if (!stripeConfig) {
+      return { status: 'not_configured', label: 'Not Configured', color: 'error' }
     }
-  }
-
-  const getMethodIcon = (method: PaymentMethod) => {
-    switch (method) {
-      case PaymentMethod.CREDIT_CARD:
-      case PaymentMethod.DEBIT_CARD:
-        return <CreditCardIcon fontSize="small" />
-      case PaymentMethod.BANK_TRANSFER:
-        return <BankIcon fontSize="small" />
-      case PaymentMethod.WALLET:
-        return <WalletIcon fontSize="small" />
-      case PaymentMethod.CASH:
-        return <CashIcon fontSize="small" />
-      default:
-        return <PaymentIcon fontSize="small" />
+    if (!stripeConfig.is_active) {
+      return { status: 'disabled', label: 'Disabled', color: 'warning' }
     }
-  }
-
-  const getMethodColor = (method: PaymentMethod) => {
-    switch (method) {
-      case PaymentMethod.CREDIT_CARD:
-        return 'primary'
-      case PaymentMethod.DEBIT_CARD:
-        return 'secondary'
-      case PaymentMethod.BANK_TRANSFER:
-        return 'info'
-      case PaymentMethod.WALLET:
-        return 'warning'
-      case PaymentMethod.CASH:
-        return 'success'
-      default:
-        return 'default'
+    if (!isConfigurationValid()) {
+      return { status: 'incomplete', label: 'Incomplete Configuration', color: 'warning' }
     }
+    return { status: 'active', label: 'Active & Configured', color: 'success' }
   }
 
-  const formatPaymentMethod = (method: PaymentMethod) => {
-    return method.split('_').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
-  }
-
-  // Filter payment methods by search term
-  const filteredMethods = paymentMethods.filter(method => {
-    if (!searchTerm) return true
-    
-    const searchLower = searchTerm.toLowerCase()
-    return (
-      method.name.toLowerCase().includes(searchLower) ||
-      method.type.toLowerCase().includes(searchLower)
-    )
-  })
-
-  const paymentMethodOptions = Object.values(PaymentMethod).map(method => ({
-    value: method,
-    label: formatPaymentMethod(method)
-  }))
-
-  const activeMethodsCount = paymentMethods.filter(m => m.is_active).length
-  const totalMethodsCount = paymentMethods.length
+  const configStatus = getConfigurationStatus()
 
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4" component="h1">
-          Payment Methods Configuration
-        </Typography>
+        <Box>
+          <Typography variant="h4" component="h1">
+            Stripe Configuration
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+            Configure Stripe bank transfer payment processing for your platform
+          </Typography>
+        </Box>
         <Box display="flex" gap={2}>
           <Button
             variant="outlined"
@@ -247,15 +278,16 @@ const PaymentMethods = () => {
           </Button>
           <Button
             variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleCreateMethod}
+            startIcon={<SaveIcon />}
+            onClick={handleSaveConfiguration}
+            disabled={saving || !isDirty || !isConfigurationValid()}
           >
-            Add Payment Method
+            {saving ? <CircularProgress size={20} /> : 'Save Configuration'}
           </Button>
         </Box>
       </Box>
 
-      {/* Statistics Cards */}
+      {/* Configuration Status Overview */}
       <Grid container spacing={3} mb={3}>
         <Grid item xs={12} md={4}>
           <Card>
@@ -263,13 +295,16 @@ const PaymentMethods = () => {
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography color="textSecondary" gutterBottom variant="body2">
-                    Total Methods
+                    Configuration Status
                   </Typography>
-                  <Typography variant="h5">
-                    {totalMethodsCount}
-                  </Typography>
+                  <Chip
+                    icon={configStatus.status === 'active' ? <CheckIcon /> : <WarningIcon />}
+                    label={configStatus.label}
+                    color={configStatus.color as any}
+                    size="medium"
+                  />
                 </Box>
-                <PaymentIcon color="primary" sx={{ fontSize: 40 }} />
+                <SettingsIcon color="primary" sx={{ fontSize: 40 }} />
               </Box>
             </CardContent>
           </Card>
@@ -280,13 +315,13 @@ const PaymentMethods = () => {
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography color="textSecondary" gutterBottom variant="body2">
-                    Active Methods
+                    Payment Method
                   </Typography>
-                  <Typography variant="h5">
-                    {activeMethodsCount}
+                  <Typography variant="h6">
+                    Stripe Bank Transfer
                   </Typography>
                 </Box>
-                <CheckIcon color="success" sx={{ fontSize: 40 }} />
+                <BankIcon color="primary" sx={{ fontSize: 40 }} />
               </Box>
             </CardContent>
           </Card>
@@ -297,364 +332,459 @@ const PaymentMethods = () => {
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography color="textSecondary" gutterBottom variant="body2">
-                    Inactive Methods
+                    Supported Countries
                   </Typography>
                   <Typography variant="h5">
-                    {totalMethodsCount - activeMethodsCount}
+                    {formData.config?.supported_countries?.length || 0}
                   </Typography>
                 </Box>
-                <CancelIcon color="error" sx={{ fontSize: 40 }} />
+                <PublicIcon color="primary" sx={{ fontSize: 40 }} />
               </Box>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
 
-      {/* Search */}
+      {/* Configuration Tabs */}
       <Paper sx={{ mb: 2 }}>
-        <Box p={2}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                placeholder="Search payment methods..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Typography variant="body2" color="textSecondary" textAlign="right">
-                {filteredMethods.length} method(s) found
-              </Typography>
-            </Grid>
-          </Grid>
-        </Box>
+        <Tabs value={tabValue} onChange={handleTabChange} aria-label="stripe configuration tabs">
+          <Tab 
+            icon={<SettingsIcon />} 
+            label="Basic Configuration" 
+            id="stripe-tab-0"
+            aria-controls="stripe-tabpanel-0"
+          />
+          <Tab 
+            icon={<SecurityIcon />} 
+            label="API Keys & Security" 
+            id="stripe-tab-1"
+            aria-controls="stripe-tabpanel-1"
+          />
+          <Tab 
+            icon={<LanguageIcon />} 
+            label="Supported Regions" 
+            id="stripe-tab-2"
+            aria-controls="stripe-tabpanel-2"
+          />
+        </Tabs>
       </Paper>
 
-      {/* Payment Methods Table */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Configuration</TableCell>
-              <TableCell>Created</TableCell>
-              <TableCell align="right">Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  <CircularProgress />
-                </TableCell>
-              </TableRow>
-            ) : filteredMethods.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  <Alert severity="info">
-                    No payment methods found. Try adjusting your search criteria or add a new method.
-                  </Alert>
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredMethods.map((method) => (
-                <TableRow key={method.id} hover>
-                  <TableCell>
-                    <Typography variant="subtitle2">
-                      {method.name}
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight={300}>
+          <CircularProgress size={50} />
+        </Box>
+      ) : (
+        <>
+          {/* Basic Configuration Tab */}
+          <TabPanel value={tabValue} index={0}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      <SettingsIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      General Settings
                     </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Chip
-                      icon={getMethodIcon(method.type)}
-                      label={formatPaymentMethod(method.type)}
-                      color={getMethodColor(method.type) as any}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={method.is_active}
-                          onChange={() => handleToggleActive(method)}
-                          size="small"
-                        />
-                      }
-                      label={method.is_active ? 'Active' : 'Inactive'}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <Typography variant="body2">
-                        {Object.keys(method.config || {}).length} setting(s)
-                      </Typography>
-                      <Tooltip title="View Configuration">
-                        <IconButton
-                          size="small"
-                          onClick={() => handleConfigMethod(method)}
-                          color="info"
-                        >
-                          <SettingsIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">
-                      {new Date(method.created_at).toLocaleDateString()}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      {new Date(method.created_at).toLocaleTimeString()}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="Edit Method">
-                      <IconButton
-                        size="small"
-                        onClick={() => handleEditMethod(method)}
-                        color="primary"
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete Method">
-                      <IconButton
-                        size="small"
-                        onClick={() => handleDeleteMethod(method)}
-                        color="error"
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Create Payment Method Dialog */}
-      <Dialog open={openCreateDialog} onClose={() => setOpenCreateDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Add New Payment Method</DialogTitle>
-        <DialogContent>
-          <Box sx={{ pt: 2 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Method Name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g., Stripe Credit Card"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Payment Type</InputLabel>
-                  <Select
-                    value={formData.type}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value as PaymentMethod })}
-                    label="Payment Type"
-                  >
-                    {paymentMethodOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        <Box display="flex" alignItems="center" gap={1}>
-                          {getMethodIcon(option.value)}
-                          {option.label}
-                        </Box>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.is_active}
-                      onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                    />
-                  }
-                  label="Active"
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenCreateDialog(false)}>Cancel</Button>
-          <Button 
-            variant="contained" 
-            onClick={handleCreateSubmit}
-            disabled={!formData.name.trim()}
-            startIcon={<SaveIcon />}
-          >
-            Create Method
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Edit Payment Method Dialog */}
-      <Dialog open={openEditDialog} onClose={() => setOpenEditDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Edit Payment Method</DialogTitle>
-        <DialogContent>
-          <Box sx={{ pt: 2 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Method Name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Payment Type</InputLabel>
-                  <Select
-                    value={formData.type}
-                    onChange={(e) => setFormData({ ...formData, type: e.target.value as PaymentMethod })}
-                    label="Payment Type"
-                  >
-                    {paymentMethodOptions.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        <Box display="flex" alignItems="center" gap={1}>
-                          {getMethodIcon(option.value)}
-                          {option.label}
-                        </Box>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.is_active}
-                      onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                    />
-                  }
-                  label="Active"
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenEditDialog(false)}>Cancel</Button>
-          <Button 
-            variant="contained" 
-            onClick={handleEditSubmit}
-            disabled={!formData.name.trim()}
-            startIcon={<SaveIcon />}
-          >
-            Update Method
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Delete Payment Method Dialog */}
-      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
-        <DialogTitle>Delete Payment Method</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to delete the payment method "{selectedMethod?.name}"?
-            This action cannot be undone and may affect existing payment configurations.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-          <Button variant="contained" color="error" onClick={handleConfirmDelete}>
-            Delete Method
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Configuration Dialog */}
-      <Dialog open={openConfigDialog} onClose={() => setOpenConfigDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
-          Payment Method Configuration: {selectedMethod?.name}
-        </DialogTitle>
-        <DialogContent>
-          {selectedMethod && (
-            <Box sx={{ pt: 2 }}>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
-                  <Paper sx={{ p: 2, bgcolor: 'grey.50' }}>
-                    <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-                      Basic Information
-                    </Typography>
-                    <Grid container spacing={1}>
+                    
+                    <Grid container spacing={2}>
                       <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary">Name</Typography>
-                        <Typography variant="body1">{selectedMethod.name}</Typography>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary">Type</Typography>
-                        <Chip
-                          icon={getMethodIcon(selectedMethod.type)}
-                          label={formatPaymentMethod(selectedMethod.type)}
-                          color={getMethodColor(selectedMethod.type) as any}
-                          size="small"
+                        <TextField
+                          fullWidth
+                          label="Configuration Name"
+                          value={formData.name}
+                          onChange={(e) => handleFieldChange('name', e.target.value)}
+                          helperText="A descriptive name for this payment configuration"
                         />
                       </Grid>
+                      
                       <Grid item xs={12}>
-                        <Typography variant="body2" color="textSecondary">Status</Typography>
-                        <Chip
-                          icon={selectedMethod.is_active ? <CheckIcon /> : <CancelIcon />}
-                          label={selectedMethod.is_active ? 'Active' : 'Inactive'}
-                          color={selectedMethod.is_active ? 'success' : 'error'}
-                          size="small"
+                        <TextField
+                          fullWidth
+                          label="Display Name"
+                          value={formData.config?.display_name || ''}
+                          onChange={(e) => handleFieldChange('config.display_name', e.target.value)}
+                          helperText="Name shown to customers during checkout"
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label="Description"
+                          multiline
+                          rows={3}
+                          value={formData.config?.description || ''}
+                          onChange={(e) => handleFieldChange('config.description', e.target.value)}
+                          helperText="Description of the payment method for customers"
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={12}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={formData.is_active}
+                              onChange={handleToggleActive}
+                            />
+                          }
+                          label="Enable Stripe Bank Transfer"
+                        />
+                        <FormHelperText>
+                          When enabled, customers can pay using bank transfer methods
+                        </FormHelperText>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+              
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      <BankIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      Bank Transfer Options
+                    </Typography>
+                    
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={formData.config?.customer_balance_funding_enabled || false}
+                              onChange={(e) => handleFieldChange('config.customer_balance_funding_enabled', e.target.checked)}
+                            />
+                          }
+                          label="Enable Customer Balance Funding"
+                        />
+                        <FormHelperText>
+                          Allow customers to fund their Stripe customer balance
+                        </FormHelperText>
+                      </Grid>
+                      
+                      <Grid item xs={12}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={formData.config?.auto_confirmation_enabled || false}
+                              onChange={(e) => handleFieldChange('config.auto_confirmation_enabled', e.target.checked)}
+                            />
+                          }
+                          label="Auto-confirm Payments"
+                        />
+                        <FormHelperText>
+                          Automatically confirm payments when possible
+                        </FormHelperText>
+                      </Grid>
+                    </Grid>
+                    
+                    {configStatus.status !== 'not_configured' && Boolean(stripeConfig) && (
+                      <Box mt={3}>
+                        <Alert severity={configStatus.color as any} icon={<InfoIcon />}>
+                          <Typography variant="subtitle2" gutterBottom>
+                            Configuration Status: {configStatus.label}
+                          </Typography>
+                          {stripeConfig?.updated_at && (
+                            <Typography variant="body2">
+                              Last updated: {new Date(stripeConfig.updated_at).toLocaleString()}
+                            </Typography>
+                          )}
+                        </Alert>
+                      </Box>
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </TabPanel>
+
+          {/* API Keys & Security Tab */}
+          <TabPanel value={tabValue} index={1}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Alert severity="warning" sx={{ mb: 3 }}>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Security Notice
+                  </Typography>
+                  Keep your Stripe API keys secure. Never share them publicly or commit them to version control.
+                </Alert>
+              </Grid>
+              
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      <SecurityIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      Stripe API Credentials
+                    </Typography>
+                    
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label="Publishable Key"
+                          value={formData.config?.stripe_public_key || ''}
+                          onChange={(e) => handleFieldChange('config.stripe_public_key', e.target.value)}
+                          placeholder="pk_live_..."
+                          helperText="Your Stripe publishable key (starts with pk_)"
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label="Secret Key"
+                          type={showSecrets ? 'text' : 'password'}
+                          value={formData.config?.stripe_secret_key || ''}
+                          onChange={(e) => handleFieldChange('config.stripe_secret_key', e.target.value)}
+                          placeholder="sk_live_..."
+                          helperText="Your Stripe secret key (starts with sk_)"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={() => setShowSecrets(!showSecrets)}
+                                  edge="end"
+                                >
+                                  {showSecrets ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={12}>
+                        <TextField
+                          fullWidth
+                          label="Webhook Endpoint Secret"
+                          type={showSecrets ? 'text' : 'password'}
+                          value={formData.config?.stripe_webhook_endpoint_secret || ''}
+                          onChange={(e) => handleFieldChange('config.stripe_webhook_endpoint_secret', e.target.value)}
+                          placeholder="whsec_..."
+                          helperText="Your Stripe webhook endpoint secret (starts with whsec_)"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={() => setShowSecrets(!showSecrets)}
+                                  edge="end"
+                                >
+                                  {showSecrets ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }}
                         />
                       </Grid>
                     </Grid>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Paper sx={{ p: 2, bgcolor: 'grey.50' }}>
-                    <Typography variant="subtitle1" gutterBottom fontWeight="bold">
-                      Configuration Settings
-                    </Typography>
-                    {selectedMethod.config && Object.keys(selectedMethod.config).length > 0 ? (
-                      <Grid container spacing={1}>
-                        {Object.entries(selectedMethod.config).map(([key, value]) => (
-                          <Grid item xs={12} key={key}>
-                            <Typography variant="body2" color="textSecondary">{key}</Typography>
-                            <Typography variant="body1" sx={{ wordBreak: 'break-all' }}>
-                              {typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value)}
-                            </Typography>
-                            <Divider sx={{ my: 1 }} />
-                          </Grid>
-                        ))}
-                      </Grid>
-                    ) : (
-                      <Alert severity="info">
-                        No configuration settings found for this payment method.
-                      </Alert>
-                    )}
-                  </Paper>
-                </Grid>
+                  </CardContent>
+                </Card>
               </Grid>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenConfigDialog(false)}>Close</Button>
-        </DialogActions>
-      </Dialog>
+              
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      <InfoIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      Setup Instructions
+                    </Typography>
+                    
+                    <List dense>
+                      <ListItem>
+                        <ListItemIcon>
+                          <Typography variant="body2" fontWeight="bold">1.</Typography>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Get API Keys"
+                          secondary="Log in to your Stripe dashboard and navigate to Developers > API keys"
+                        />
+                      </ListItem>
+                      
+                      <ListItem>
+                        <ListItemIcon>
+                          <Typography variant="body2" fontWeight="bold">2.</Typography>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Copy Keys"
+                          secondary="Copy your publishable key (pk_) and secret key (sk_)"
+                        />
+                      </ListItem>
+                      
+                      <ListItem>
+                        <ListItemIcon>
+                          <Typography variant="body2" fontWeight="bold">3.</Typography>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Setup Webhook"
+                          secondary="Create a webhook endpoint for payment events"
+                        />
+                      </ListItem>
+                      
+                      <ListItem>
+                        <ListItemIcon>
+                          <Typography variant="body2" fontWeight="bold">4.</Typography>
+                        </ListItemIcon>
+                        <ListItemText
+                          primary="Test Configuration"
+                          secondary="Use Stripe's test mode first, then switch to live keys"
+                        />
+                      </ListItem>
+                    </List>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </TabPanel>
+          
+          {/* Supported Regions Tab */}
+          <TabPanel value={tabValue} index={2}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      <LanguageIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      Supported Countries
+                    </Typography>
+                    
+                    <FormControl fullWidth>
+                      <InputLabel>Select Countries</InputLabel>
+                      <Select
+                        multiple
+                        value={formData.config?.supported_countries || []}
+                        onChange={(e) => handleFieldChange('config.supported_countries', e.target.value)}
+                        renderValue={(selected) => (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {(selected as string[]).map((code) => {
+                              const country = supportedCountries.find(c => c.code === code)
+                              return (
+                                <Chip
+                                  key={code}
+                                  label={`${code} - ${country?.name}`}
+                                  size="small"
+                                />
+                              )
+                            })}
+                          </Box>
+                        )}
+                      >
+                        {supportedCountries.map((country) => (
+                          <MenuItem key={country.code} value={country.code}>
+                            {country.code} - {country.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        Select the countries where bank transfers will be accepted
+                      </FormHelperText>
+                    </FormControl>
+                  </CardContent>
+                </Card>
+              </Grid>
+              
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Supported Currencies
+                    </Typography>
+                    
+                    <FormControl fullWidth>
+                      <InputLabel>Select Currencies</InputLabel>
+                      <Select
+                        multiple
+                        value={formData.config?.supported_currencies || []}
+                        onChange={(e) => handleFieldChange('config.supported_currencies', e.target.value)}
+                        renderValue={(selected) => (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {(selected as string[]).map((code) => {
+                              const currency = supportedCurrencies.find(c => c.code === code)
+                              return (
+                                <Chip
+                                  key={code}
+                                  label={`${code} - ${currency?.name}`}
+                                  size="small"
+                                />
+                              )
+                            })}
+                          </Box>
+                        )}
+                      >
+                        {supportedCurrencies.map((currency) => (
+                          <MenuItem key={currency.code} value={currency.code}>
+                            {currency.code} - {currency.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        Select the currencies that will be supported for bank transfers
+                      </FormHelperText>
+                    </FormControl>
+                  </CardContent>
+                </Card>
+              </Grid>
+              
+              <Grid item xs={12}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Available Bank Transfer Types
+                    </Typography>
+                    
+                    <Grid container spacing={2}>
+                      {bankTransferTypes.map((type) => (
+                        <Grid item xs={12} sm={6} md={4} key={type.value}>
+                          <Card variant="outlined">
+                            <CardContent sx={{ p: 2 }}>
+                              <Typography variant="subtitle2" gutterBottom>
+                                {type.label}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                {type.description}
+                              </Typography>
+                            </CardContent>
+                          </Card>
+                        </Grid>
+                      ))}
+                    </Grid>
+                    
+                    <Alert severity="info" sx={{ mt: 2 }}>
+                      Bank transfer types are automatically enabled based on your supported countries and currencies.
+                      Stripe will present the appropriate options to customers during checkout.
+                    </Alert>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </TabPanel>
+        </>
+      )}
+      {/* Save notification */}
+      {isDirty && (
+        <Box
+          position="fixed"
+          bottom={16}
+          right={16}
+          zIndex={1000}
+        >
+          <Alert
+            severity="warning"
+            action={
+              <Button
+                color="inherit"
+                size="small"
+                onClick={handleSaveConfiguration}
+                disabled={saving || !isConfigurationValid()}
+              >
+                Save Changes
+              </Button>
+            }
+          >
+            You have unsaved changes
+          </Alert>
+        </Box>
+      )}
     </Box>
   )
 }

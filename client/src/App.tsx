@@ -20,11 +20,11 @@ import Affiliates from './pages/users/Affiliates'
 import B2BUsers from './pages/users/B2BUsers'
 import Administrators from './pages/users/Administrators'
 
-// Company Management
-import AllCompanies from './pages/companies/AllCompanies'
-import AffiliateCompanies from './pages/companies/AffiliateCompanies'
-import B2BCompanies from './pages/companies/B2BCompanies'
-import CompanyApprovals from './pages/companies/CompanyApprovals'
+// Company Management - Removed (integrated into user management)
+// import AllCompanies from './pages/companies/AllCompanies'
+// import AffiliateCompanies from './pages/companies/AffiliateCompanies'
+// import B2BCompanies from './pages/companies/B2BCompanies'
+// import CompanyApprovals from './pages/companies/CompanyApprovals'
 
 // Booking Management
 import AllBookings from './pages/bookings/AllBookings'
@@ -262,43 +262,7 @@ function App() {
         )
       } />
 
-      {/* Company Management Routes */}
-      <Route path="/companies" element={
-        authenticated ? (
-          <DashboardLayout>
-            <AllCompanies />
-          </DashboardLayout>
-        ) : (
-          <Navigate to="/auth/login" replace />
-        )
-      } />
-      <Route path="/companies/affiliates" element={
-        authenticated ? (
-          <DashboardLayout>
-            <AffiliateCompanies />
-          </DashboardLayout>
-        ) : (
-          <Navigate to="/auth/login" replace />
-        )
-      } />
-      <Route path="/companies/b2b" element={
-        authenticated ? (
-          <DashboardLayout>
-            <B2BCompanies />
-          </DashboardLayout>
-        ) : (
-          <Navigate to="/auth/login" replace />
-        )
-      } />
-      <Route path="/companies/approvals" element={
-        authenticated ? (
-          <DashboardLayout>
-            <CompanyApprovals />
-          </DashboardLayout>
-        ) : (
-          <Navigate to="/auth/login" replace />
-        )
-      } />
+      {/* Company Management Routes - Removed (integrated into user management) */}
 
       {/* Booking Management Routes */}
       <Route path="/bookings" element={

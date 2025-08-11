@@ -14,7 +14,6 @@ import {
   Dashboard,
   DirectionsCar,
   Route,
-  People,
   Business,
   ExpandLess,
   ExpandMore,
@@ -53,24 +52,25 @@ const menuItems: MenuItem[] = [
     title: 'User Management',
     icon: SupervisedUserCircle,
     children: [
-      { id: 'all-users', title: 'All Users', icon: People, path: '/users' },
-      { id: 'customers', title: 'Customers', icon: People, path: '/users/customers' },
+      // { id: 'all-users', title: 'All Users', icon: People, path: '/users' },
+      // { id: 'customers', title: 'Customers', icon: People, path: '/users/customers' },
       { id: 'affiliates', title: 'Affiliates', icon: Business, path: '/users/affiliates' },
       { id: 'b2b-users', title: 'B2B Users', icon: Business, path: '/users/b2b' },
       { id: 'admins', title: 'Administrators', icon: SupervisedUserCircle, path: '/users/admins' },
     ],
   },
-  {
-    id: 'company-management',
-    title: 'Company Management',
-    icon: Business,
-    children: [
-      { id: 'companies', title: 'All Companies', icon: Business, path: '/companies' },
-      { id: 'affiliate-companies', title: 'Affiliate Companies', icon: Business, path: '/companies/affiliates' },
-      { id: 'b2b-companies', title: 'B2B Companies', icon: Business, path: '/companies/b2b' },
-      { id: 'company-approval', title: 'Company Approvals', icon: EventNote, path: '/companies/approvals' },
-    ],
-  },
+  // Company management integrated into user management
+  // {
+  //   id: 'company-management',
+  //   title: 'Company Management',
+  //   icon: Business,
+  //   children: [
+  //     { id: 'companies', title: 'All Companies', icon: Business, path: '/companies' },
+  //     { id: 'affiliate-companies', title: 'Affiliate Companies', icon: Business, path: '/companies/affiliates' },
+  //     { id: 'b2b-companies', title: 'B2B Companies', icon: Business, path: '/companies/b2b' },
+  //     { id: 'company-approval', title: 'Company Approvals', icon: EventNote, path: '/companies/approvals' },
+  //   ],
+  // },
   {
     id: 'booking-management',
     title: 'Booking Management',
@@ -132,7 +132,7 @@ const menuItems: MenuItem[] = [
     children: [
       { id: 'payments', title: 'Payments', icon: Payment, path: '/financial/payments' },
       { id: 'commissions', title: 'Commissions', icon: AccountBalance, path: '/financial/commissions' },
-      { id: 'payment-methods', title: 'Payment Methods', icon: Payment, path: '/financial/payment-methods' },
+      { id: 'stripe-config', title: 'Stripe Configuration', icon: AccountBalance, path: '/financial/payment-methods' },
     ],
   },
   {

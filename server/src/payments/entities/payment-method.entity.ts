@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { PaymentMethod } from '@/common/enums';
+import { PaymentMethod, BankTransferType } from '@/common/enums';
 
 @Entity('payment_methods')
 export class PaymentMethodConfig {
@@ -15,8 +15,21 @@ export class PaymentMethodConfig {
     @Column({ default: true })
     is_active: boolean;
 
+    @Column({ type: 'enum', enum: BankTransferType, nullable: true })
+    bank_transfer_type: BankTransferType;
+
     @Column('jsonb', { nullable: true })
-    config: Record<string, any>;
+    config: {
+        stripe_public_key?: string;
+        stripe_secret_key?: string;
+        stripe_webhook_endpoint_secret?: string;
+        supported_countries?: string[];
+        supported_currencies?: string[];
+        customer_balance_funding_enabled?: boolean;
+        display_name?: string;
+        description?: string;
+        auto_confirmation_enabled?: boolean;
+    };
 
     @CreateDateColumn()
     created_at: Date;

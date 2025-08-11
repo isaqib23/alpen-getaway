@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { PaymentMethod, PaymentStatus } from '@/common/enums';
+import { PaymentMethod, PaymentStatus, BankTransferType } from '@/common/enums';
 import { Booking } from '@/bookings/entities/booking.entity';
 import { User } from '@/users/entities/user.entity';
 import { Company } from '@/companies/entities/company.entity';
@@ -25,10 +25,13 @@ export class Payment {
     @Column('decimal', { precision: 10, scale: 2 })
     amount: number;
 
-    @Column({ length: 3, default: 'USD' })
+    @Column({ length: 3, default: 'EUR' })
     currency: string;
 
-    // Stripe integration fields
+    // Stripe Bank Transfer specific fields
+    @Column({ type: 'enum', enum: BankTransferType, nullable: true })
+    bank_transfer_type: BankTransferType;
+
     @Column({ nullable: true })
     stripe_payment_intent_id: string;
 
@@ -38,12 +41,28 @@ export class Payment {
     @Column({ nullable: true })
     stripe_payment_method_id: string;
 
-    // General gateway fields
     @Column({ nullable: true })
-    gateway: string;
+    stripe_session_id: string;
 
     @Column({ nullable: true })
-    gateway_payment_id: string;
+    stripe_client_secret: string;
+
+    // Bank transfer specific details
+    @Column('json', { nullable: true })
+    bank_details: {
+        account_holder_name?: string;
+        account_number?: string;
+        routing_number?: string;
+        iban?: string;
+        swift_code?: string;
+        sort_code?: string;
+        bank_name?: string;
+        country?: string;
+        financial_connections_account?: string;
+        reference?: string;
+        payment_reference?: string;
+        hosted_regulatory_receipt_url?: string;
+    };
 
     @Column('json', { nullable: true })
     metadata: any;

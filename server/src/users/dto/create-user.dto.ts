@@ -1,6 +1,8 @@
-import { IsEmail, IsNotEmpty, IsEnum, IsOptional, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsEnum, IsOptional, MinLength, ValidateNested, IsObject } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { UserType } from '@/common/enums';
+import { CreateCompanyDto } from './create-company.dto';
 
 export class CreateUserDto {
     @ApiProperty({ example: 'user@example.com' })
@@ -28,4 +30,15 @@ export class CreateUserDto {
     @ApiProperty({ enum: UserType, example: UserType.CUSTOMER })
     @IsEnum(UserType)
     user_type: UserType;
+
+    @ApiProperty({ 
+        description: 'Company information (required for B2B and Affiliate users)', 
+        type: CreateCompanyDto,
+        required: false 
+    })
+    @IsOptional()
+    @ValidateNested()
+    @Type(() => CreateCompanyDto)
+    @IsObject()
+    company?: CreateCompanyDto;
 }

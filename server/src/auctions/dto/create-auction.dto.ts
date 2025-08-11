@@ -1,5 +1,4 @@
-import { IsString, IsUUID, IsOptional, IsDateString, IsNumber, Min, IsEnum } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsUUID, IsOptional, IsDateString, IsEnum } from 'class-validator';
 import { AuctionStatus } from '@/common/enums';
 
 export class CreateAuctionDto {
@@ -18,17 +17,6 @@ export class CreateAuctionDto {
 
     @IsDateString()
     auction_end_time: string;
-
-    @IsNumber()
-    @Min(0)
-    @Type(() => Number)
-    minimum_bid_amount: number;
-
-    @IsOptional()
-    @IsNumber()
-    @Min(0)
-    @Type(() => Number)
-    reserve_price?: number;
 
     @IsOptional()
     @IsEnum(AuctionStatus)

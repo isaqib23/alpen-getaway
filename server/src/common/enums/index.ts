@@ -97,11 +97,22 @@ export enum ReviewStatus {
 }
 
 export enum PaymentMethod {
-    CREDIT_CARD = 'credit_card',
-    DEBIT_CARD = 'debit_card',
-    BANK_TRANSFER = 'bank_transfer',
-    WALLET = 'wallet',
-    CASH = 'cash',
+    STRIPE_BANK_TRANSFER = 'stripe_bank_transfer',
+}
+
+export enum BankTransferType {
+    US_BANK_ACCOUNT = 'us_bank_account',
+    SEPA_DEBIT = 'sepa_debit',
+    ACH_DEBIT = 'ach_debit',
+    ACH_CREDIT = 'ach_credit',
+    CUSTOMER_BALANCE = 'customer_balance',
+    FPX = 'fpx',
+    GIROPAY = 'giropay',
+    IDEAL = 'ideal',
+    SOFORT = 'sofort',
+    BANCONTACT = 'bancontact',
+    EPS = 'eps',
+    PRZELEWY24 = 'przelewy24'
 }
 
 export enum CommissionStatus {

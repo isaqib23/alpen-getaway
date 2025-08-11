@@ -1204,7 +1204,7 @@ export class DatabaseSeeder {
             {
                 booking_id: bookings[0].id,
                 payer_id: bookings[0].user_id,
-                payment_method: PaymentMethod.CREDIT_CARD,
+                payment_method: PaymentMethod.STRIPE_BANK_TRANSFER,
                 amount: 132.00,
                 currency: 'USD',
                 stripe_payment_intent_id: 'pi_1234567890abcdef',
@@ -1215,7 +1215,7 @@ export class DatabaseSeeder {
             {
                 booking_id: bookings[1].id,
                 payer_id: bookings[1].user_id,
-                payment_method: PaymentMethod.DEBIT_CARD,
+                payment_method: PaymentMethod.STRIPE_BANK_TRANSFER,
                 amount: 37.80,
                 currency: 'USD',
                 stripe_payment_intent_id: 'pi_0987654321fedcba',
@@ -1226,7 +1226,7 @@ export class DatabaseSeeder {
                 booking_id: bookings[2].id,
                 payer_id: bookings[2].user_id,
                 company_id: companies[0].id,
-                payment_method: PaymentMethod.BANK_TRANSFER,
+                payment_method: PaymentMethod.STRIPE_BANK_TRANSFER,
                 amount: 229.50,
                 currency: 'USD',
                 payment_status: PaymentStatus.PAID,
@@ -1235,7 +1235,7 @@ export class DatabaseSeeder {
             {
                 booking_id: bookings[4].id,
                 payer_id: bookings[4].user_id,
-                payment_method: PaymentMethod.CREDIT_CARD,
+                payment_method: PaymentMethod.STRIPE_BANK_TRANSFER,
                 amount: 102.60,
                 currency: 'USD',
                 stripe_payment_intent_id: 'pi_5555666677778888',
@@ -1245,7 +1245,7 @@ export class DatabaseSeeder {
             {
                 booking_id: bookings[6].id,
                 payer_id: bookings[6].user_id,
-                payment_method: PaymentMethod.CREDIT_CARD,
+                payment_method: PaymentMethod.STRIPE_BANK_TRANSFER,
                 amount: 59.40,
                 currency: 'USD',
                 stripe_payment_intent_id: 'pi_9999000011112222',

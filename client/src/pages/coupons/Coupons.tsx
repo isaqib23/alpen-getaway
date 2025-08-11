@@ -135,12 +135,17 @@ const Coupons = () => {
       if (statusFilter !== 'all') filters.status = statusFilter
       if (discountTypeFilter !== 'all') filters.discount_type = discountTypeFilter
       
+      console.log('Loading coupons with filters:', filters)
+      
       const response = await couponsAPI.getCoupons(filters)
-      setCoupons(response.data)
-      setTotal(response.total)
+      console.log('Coupons API response:', response)
+      
+      setCoupons(response.data || [])
+      setTotal(response.total || 0)
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load coupons')
       console.error('Error loading coupons:', err)
+      setError(err.response?.data?.message || 'Failed to load coupons')
+      setCoupons([]) // Clear coupons on error
     } finally {
       setLoading(false)
     }
@@ -283,28 +288,29 @@ const Coupons = () => {
     { value: CouponStatus.EXPIRED, label: 'Expired' }
   ]
 
-  // Use real data if available, fallback to mock data
+  // Always try to use real API data first, only fallback to mock if API completely fails
+  const filteredCoupons = coupons.length > 0 ? coupons : 
+    // Only show mock data if we haven't successfully loaded from API and there's an error
+    (!loading && error) ? mockCoupons.filter(coupon => {
+      const matchesSearch = 
+        coupon.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        coupon.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (coupon.description && coupon.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      
+      const matchesStatus = statusFilter === 'all' || coupon.status === statusFilter
+      const matchesDiscountType = discountTypeFilter === 'all' || coupon.discount_type === discountTypeFilter
+      
+      return matchesSearch && matchesStatus && matchesDiscountType
+    }) : []
 
-  // Filter coupons based on search and filters (only for mock data)
-  const filteredCoupons = coupons.length > 0 ? coupons : mockCoupons.filter(coupon => {
-    const matchesSearch = 
-      coupon.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      coupon.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (coupon.description && coupon.description.toLowerCase().includes(searchTerm.toLowerCase()))
-    
-    const matchesStatus = statusFilter === 'all' || coupon.status === statusFilter
-    const matchesDiscountType = discountTypeFilter === 'all' || coupon.discount_type === discountTypeFilter
-    
-    return matchesSearch && matchesStatus && matchesDiscountType
-  })
-
-  // Statistics from API or calculated from mock data
-  const totalCoupons = stats?.totalCoupons || mockCoupons.length
-  const activeCoupons = stats?.activeCoupons || mockCoupons.filter(c => c.status === CouponStatus.ACTIVE).length
-  const totalUsages = stats?.totalUsages || mockCoupons.reduce((sum, c) => sum + c.usage_count, 0)
-  const avgDiscountValue = stats?.avgDiscountPerCoupon || mockCoupons.reduce((sum, c) => {
+  // Statistics from API or calculated from actual displayed data
+  const dataSource = coupons.length > 0 ? coupons : ((!loading && error) ? mockCoupons : [])
+  const totalCoupons = stats?.totalCoupons || dataSource.length
+  const activeCoupons = stats?.activeCoupons || dataSource.filter(c => c.status === CouponStatus.ACTIVE).length
+  const totalUsages = stats?.totalUsages || dataSource.reduce((sum, c) => sum + c.usage_count, 0)
+  const avgDiscountValue = stats?.avgDiscountPerCoupon || (dataSource.length > 0 ? dataSource.reduce((sum, c) => {
     return sum + (c.discount_type === DiscountType.PERCENTAGE ? c.discount_value : c.discount_value)
-  }, 0) / totalCoupons
+  }, 0) / totalCoupons : 0)
 
   const handleView = (coupon: Coupon) => {
     setSelectedCoupon(coupon)
@@ -455,16 +461,50 @@ const Coupons = () => {
       setLoading(true)
       setError(null)
       
+      console.log('Deleting coupon:', couponToDelete.id, couponToDelete.code)
+      
       await couponsAPI.deleteCoupon(couponToDelete.id)
+      console.log('Delete API call successful')
+      
       setSuccessMessage(`Coupon "${couponToDelete.code}" deleted successfully`)
       setDeleteDialogOpen(false)
       setCouponToDelete(null)
       
+      // Clear local state and reload data
+      setCoupons([])
       await loadCoupons()
       await loadStats()
+      
+      console.log('Data reloaded after delete')
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete coupon')
       console.error('Error deleting coupon:', err)
+      const errorMessage = err.response?.data?.message || 'Failed to delete coupon'
+      
+      // Check if error suggests the coupon can't be deleted due to usage
+      if (errorMessage.includes('has been used')) {
+        // Ask user if they want to deactivate instead
+        if (window.confirm(`${errorMessage}\n\nWould you like to deactivate the coupon instead?`)) {
+          try {
+            await couponsAPI.deactivateCoupon(couponToDelete.id)
+            setSuccessMessage(`Coupon "${couponToDelete.code}" deactivated successfully`)
+            setDeleteDialogOpen(false)
+            setCouponToDelete(null)
+            
+            // Clear local state and reload data
+            setCoupons([])
+            await loadCoupons()
+            await loadStats()
+          } catch (deactivateErr: any) {
+            setError('Failed to deactivate coupon')
+            console.error('Error deactivating coupon:', deactivateErr)
+          }
+        } else {
+          setDeleteDialogOpen(false)
+          setCouponToDelete(null)
+        }
+      } else {
+        setError(errorMessage)
+      }
     } finally {
       setLoading(false)
     }

@@ -9,11 +9,22 @@ export enum PaymentStatus {
 }
 
 export enum PaymentMethod {
-  CREDIT_CARD = 'credit_card',
-  DEBIT_CARD = 'debit_card',
-  BANK_TRANSFER = 'bank_transfer',
-  WALLET = 'wallet',
-  CASH = 'cash'
+  STRIPE_BANK_TRANSFER = 'stripe_bank_transfer'
+}
+
+export enum BankTransferType {
+  US_BANK_ACCOUNT = 'us_bank_account',
+  SEPA_DEBIT = 'sepa_debit',
+  ACH_DEBIT = 'ach_debit',
+  ACH_CREDIT = 'ach_credit',
+  CUSTOMER_BALANCE = 'customer_balance',
+  FPX = 'fpx',
+  GIROPAY = 'giropay',
+  IDEAL = 'ideal',
+  SOFORT = 'sofort',
+  BANCONTACT = 'bancontact',
+  EPS = 'eps',
+  PRZELEWY24 = 'przelewy24'
 }
 
 export enum CommissionStatus {
@@ -137,8 +148,19 @@ export interface PaymentMethodConfig {
   id: string
   name: string
   type: PaymentMethod
+  bank_transfer_type?: BankTransferType
   is_active: boolean
-  config: Record<string, any>
+  config: {
+    stripe_public_key?: string
+    stripe_secret_key?: string
+    stripe_webhook_endpoint_secret?: string
+    supported_countries?: string[]
+    supported_currencies?: string[]
+    customer_balance_funding_enabled?: boolean
+    display_name?: string
+    description?: string
+    auto_confirmation_enabled?: boolean
+  }
   created_at: string
   updated_at: string
 }
@@ -146,15 +168,37 @@ export interface PaymentMethodConfig {
 export interface CreatePaymentMethodDto {
   name: string
   type: PaymentMethod
+  bank_transfer_type?: BankTransferType
   is_active?: boolean
-  config?: Record<string, any>
+  config?: {
+    stripe_public_key?: string
+    stripe_secret_key?: string
+    stripe_webhook_endpoint_secret?: string
+    supported_countries?: string[]
+    supported_currencies?: string[]
+    customer_balance_funding_enabled?: boolean
+    display_name?: string
+    description?: string
+    auto_confirmation_enabled?: boolean
+  }
 }
 
 export interface UpdatePaymentMethodDto {
   name?: string
   type?: PaymentMethod
+  bank_transfer_type?: BankTransferType
   is_active?: boolean
-  config?: Record<string, any>
+  config?: {
+    stripe_public_key?: string
+    stripe_secret_key?: string
+    stripe_webhook_endpoint_secret?: string
+    supported_countries?: string[]
+    supported_currencies?: string[]
+    customer_balance_funding_enabled?: boolean
+    display_name?: string
+    description?: string
+    auto_confirmation_enabled?: boolean
+  }
 }
 
 export interface PaginatedResponse<T> {

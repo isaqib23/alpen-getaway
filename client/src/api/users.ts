@@ -1,5 +1,29 @@
 import { apiClient } from './client'
 
+export interface Company {
+  id: string
+  company_name: string
+  company_email: string
+  company_contact_number: string
+  company_type: 'affiliate' | 'b2b'
+  company_registration_number: string
+  registration_country: string
+  company_representative: string
+  service_area_province?: string
+  tax_id?: string
+  address?: string
+  city?: string
+  state?: string
+  postal_code?: string
+  country?: string
+  website?: string
+  contact_person?: string
+  status: 'pending' | 'approved' | 'rejected' | 'suspended'
+  commission_rate?: number
+  created_at: string
+  updated_at: string
+}
+
 export interface User {
   id: string
   email: string
@@ -12,12 +36,27 @@ export interface User {
   phone_verified: boolean
   created_at: string
   updated_at: string
-  company?: {
-    id: string
-    company_name: string
-    company_type: string
-    status: string
-  }
+  company?: Company
+}
+
+export interface CreateCompanyData {
+  company_name: string
+  company_email: string
+  company_contact_number: string
+  company_type: 'affiliate' | 'b2b'
+  company_registration_number: string
+  registration_country: string
+  company_representative: string
+  service_area_province?: string
+  tax_id?: string
+  address?: string
+  city?: string
+  state?: string
+  postal_code?: string
+  country?: string
+  website?: string
+  contact_person?: string
+  commission_rate?: number
 }
 
 export interface CreateUserRequest {
@@ -27,6 +66,7 @@ export interface CreateUserRequest {
   first_name: string
   last_name: string
   user_type: UserType
+  company?: CreateCompanyData // For B2B and Affiliate users
 }
 
 export interface UpdateUserRequest {
@@ -38,6 +78,7 @@ export interface UpdateUserRequest {
   status?: UserStatus
   email_verified?: boolean
   phone_verified?: boolean
+  company?: Partial<CreateCompanyData> // For updating company info
 }
 
 export interface UsersResponse {

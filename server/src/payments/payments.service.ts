@@ -8,8 +8,9 @@ import {CreatePaymentDto} from './dto/create-payment.dto';
 import {UpdatePaymentDto} from './dto/update-payment.dto';
 import {CreatePaymentMethodDto} from './dto/create-payment-method.dto';
 import {UpdatePaymentMethodDto} from './dto/update-payment-method.dto';
-import {CommissionStatus, PaymentStatus, PaymentMethod} from "@/common/enums";
+import {CommissionStatus, PaymentStatus, PaymentMethod, BankTransferType} from "@/common/enums";
 import {Booking} from '@/bookings/entities/booking.entity';
+import {StripeBankTransferService} from './services/stripe-bank-transfer.service';
 
 @Injectable()
 export class PaymentsService {
@@ -22,10 +23,55 @@ export class PaymentsService {
         private paymentMethodsRepository: Repository<PaymentMethodConfig>,
         @InjectRepository(Booking)
         private bookingsRepository: Repository<Booking>,
+        private stripeBankTransferService: StripeBankTransferService,
     ) {}
 
     async create(createPaymentDto: CreatePaymentDto): Promise<Payment> {
+        if (createPaymentDto.payment_method === PaymentMethod.STRIPE_BANK_TRANSFER) {
+            return this.createStripeBankTransferPayment(createPaymentDto);
+        }
+        
         const payment = this.paymentsRepository.create(createPaymentDto);
+        return this.paymentsRepository.save(payment);
+    }
+
+    async createStripeBankTransferPayment(createPaymentDto: CreatePaymentDto): Promise<Payment> {
+        // Get booking details for customer email
+        const booking = await this.bookingsRepository.findOne({
+            where: { id: createPaymentDto.booking_id },
+            relations: ['user']
+        });
+
+        if (!booking) {
+            throw new NotFoundException('Booking not found');
+        }
+
+        // Create Stripe Payment Intent
+        const stripeResponse = await this.stripeBankTransferService.createBankTransferPayment(
+            createPaymentDto.amount,
+            createPaymentDto.currency || 'EUR',
+            createPaymentDto.bank_transfer_type || BankTransferType.CUSTOMER_BALANCE,
+            booking.user?.email,
+            {
+                booking_id: createPaymentDto.booking_id,
+                payer_id: createPaymentDto.payer_id,
+                company_id: createPaymentDto.company_id,
+            }
+        );
+
+        // Get bank transfer details
+        const bankDetails = await this.stripeBankTransferService.getBankTransferDetails(stripeResponse.id);
+
+        // Create payment record
+        const payment = this.paymentsRepository.create({
+            ...createPaymentDto,
+            stripe_payment_intent_id: stripeResponse.id,
+            stripe_client_secret: stripeResponse.client_secret,
+            stripe_customer_id: stripeResponse.metadata?.customer_id,
+            bank_details: bankDetails,
+            payment_status: PaymentStatus.PENDING,
+        });
+
         return this.paymentsRepository.save(payment);
     }
 
@@ -120,6 +166,39 @@ export class PaymentsService {
             payment_status: PaymentStatus.REFUNDED,
             refunded_at: new Date(),
         });
+    }
+
+    // Stripe Bank Transfer specific methods
+    async getBankTransferDetails(paymentId: string): Promise<any> {
+        const payment = await this.findOne(paymentId);
+        
+        if (payment.payment_method !== PaymentMethod.STRIPE_BANK_TRANSFER) {
+            throw new BadRequestException('Payment is not a Stripe bank transfer');
+        }
+
+        if (!payment.stripe_payment_intent_id) {
+            throw new BadRequestException('Payment intent ID not found');
+        }
+
+        return this.stripeBankTransferService.getBankTransferDetails(payment.stripe_payment_intent_id);
+    }
+
+    async handleStripeWebhook(signature: string, payload: string): Promise<void> {
+        // Verify webhook signature and parse event
+        const event = JSON.parse(payload);
+        
+        return this.stripeBankTransferService.handleStripeWebhook(event);
+    }
+
+    async getSupportedBankTransferTypes(country?: string, currency?: string): Promise<BankTransferType[]> {
+        return this.stripeBankTransferService.getSupportedBankTransferTypes(
+            country || 'DE',
+            currency || 'EUR'
+        );
+    }
+
+    async initializeDefaultPaymentMethods(): Promise<PaymentMethodConfig[]> {
+        return this.stripeBankTransferService.createDefaultPaymentMethodConfigs();
     }
 
     // Commission methods
@@ -373,11 +452,10 @@ export class PaymentsService {
                 booking_id: booking.id,
                 payer_id: booking.user_id,
                 amount: data.amount,
-                currency: data.currency || 'USD',
-                payment_method: PaymentMethod.CREDIT_CARD,
+                currency: data.currency || 'EUR',
+                payment_method: PaymentMethod.STRIPE_BANK_TRANSFER,
                 payment_status: PaymentStatus.PENDING,
-                gateway: 'stripe',
-                gateway_payment_id: mockSessionId,
+                stripe_session_id: mockSessionId,
                 metadata: {
                     successUrl: data.successUrl,
                     cancelUrl: data.cancelUrl
@@ -400,9 +478,9 @@ export class PaymentsService {
 
     async getStripeSessionStatus(sessionId: string): Promise<{ status: string; payment_status: string }> {
         try {
-            // Find payment by gateway_payment_id
+            // Find payment by stripe_session_id
             const payment = await this.paymentsRepository.findOne({
-                where: { gateway_payment_id: sessionId }
+                where: { stripe_session_id: sessionId }
             });
 
             if (!payment) {
@@ -447,11 +525,10 @@ export class PaymentsService {
                 booking_id: booking.id,
                 payer_id: booking.user_id,
                 amount: data.amount,
-                currency: data.currency || 'USD',
-                payment_method: PaymentMethod.CREDIT_CARD,
+                currency: data.currency || 'EUR',
+                payment_method: PaymentMethod.STRIPE_BANK_TRANSFER,
                 payment_status: PaymentStatus.PENDING,
-                gateway: 'stripe',
-                gateway_payment_id: mockPaymentIntentId
+                stripe_payment_intent_id: mockPaymentIntentId
             });
 
             await this.paymentsRepository.save(payment);
@@ -466,37 +543,10 @@ export class PaymentsService {
         }
     }
 
-    async handleStripeWebhook(body: any): Promise<{ received: boolean }> {
-        try {
-            // In production, this would verify the webhook signature
-            // and handle various Stripe events
-            console.log('Stripe webhook received:', body);
-            
-            // Handle different event types
-            switch (body.type) {
-                case 'checkout.session.completed':
-                    await this.handleCheckoutSessionCompleted(body.data.object);
-                    break;
-                case 'payment_intent.succeeded':
-                    await this.handlePaymentIntentSucceeded(body.data.object);
-                    break;
-                case 'payment_intent.payment_failed':
-                    await this.handlePaymentIntentFailed(body.data.object);
-                    break;
-                default:
-                    console.log(`Unhandled event type: ${body.type}`);
-            }
-
-            return { received: true };
-        } catch (error) {
-            console.error('Stripe webhook handling failed:', error);
-            throw new BadRequestException(`Failed to handle webhook: ${error.message}`);
-        }
-    }
 
     private async handleCheckoutSessionCompleted(session: any): Promise<void> {
         const payment = await this.paymentsRepository.findOne({
-            where: { gateway_payment_id: session.id }
+            where: { stripe_session_id: session.id }
         });
 
         if (payment) {
@@ -509,7 +559,7 @@ export class PaymentsService {
 
     private async handlePaymentIntentSucceeded(paymentIntent: any): Promise<void> {
         const payment = await this.paymentsRepository.findOne({
-            where: { gateway_payment_id: paymentIntent.id }
+            where: { stripe_payment_intent_id: paymentIntent.id }
         });
 
         if (payment) {
@@ -522,7 +572,7 @@ export class PaymentsService {
 
     private async handlePaymentIntentFailed(paymentIntent: any): Promise<void> {
         const payment = await this.paymentsRepository.findOne({
-            where: { gateway_payment_id: paymentIntent.id }
+            where: { stripe_payment_intent_id: paymentIntent.id }
         });
 
         if (payment) {

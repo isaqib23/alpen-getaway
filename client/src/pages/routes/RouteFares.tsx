@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
   IconButton,
   Chip,
   Button,
@@ -114,13 +115,46 @@ const RouteFares = () => {
     }
   }, [error, clearError, toast])
 
-  const loadRoutes = async () => {
-    console.log('🔄 Loading routes from API...')
-    const response = await getRoutes({
-      page: 1,
-      limit: 100 // Load all for now, implement pagination later if needed
-    })
+  // State for pagination
+  const [page, setPage] = useState(1)
+  const [rowsPerPage, setRowsPerPage] = useState(25)
+
+  // Reload routes when filters or pagination changes
+  useEffect(() => {
+    console.log('🔄 Filters changed, reloading routes...', { page, rowsPerPage, searchTerm, statusFilter, vehicleFilter })
+    loadRoutes()
+  }, [page, rowsPerPage, searchTerm, statusFilter, vehicleFilter])
+
+  const loadRoutes = async (currentPage = page, limit = rowsPerPage, search = searchTerm, status = statusFilter, vehicle = vehicleFilter) => {
+    console.log('🔄 Loading routes from API...', { currentPage, limit, search, status, vehicle })
+    
+    const filters: any = {
+      page: currentPage,
+      limit: limit,
+    }
+    
+    // Add search filter
+    if (search && search.length >= 2) {
+      filters.search = search
+    }
+    
+    // Add status filter
+    if (status !== 'all') {
+      filters.is_active = status === 'active'
+    }
+    
+    // Add vehicle filter
+    if (vehicle !== 'all') {
+      filters.vehicle = vehicle
+    }
+    
+    // Add sorting for consistency (if supported by API)
+    // filters.sort_by = 'created_at'
+    // filters.sort_order = 'desc'
+    
+    const response = await getRoutes(filters)
     console.log('📡 API Response:', response)
+    
     if (response) {
       // Handle the response format: {data: [], total: X} or just []
       if (Array.isArray(response)) {
@@ -133,9 +167,13 @@ const RouteFares = () => {
         setTotalRoutes(response.total || response.data.length)
       } else {
         console.log('❌ Unexpected response format:', response)
+        setRoutes([])
+        setTotalRoutes(0)
       }
     } else {
       console.log('❌ No response from API')
+      setRoutes([])
+      setTotalRoutes(0)
     }
   }
 
@@ -146,7 +184,43 @@ const RouteFares = () => {
     }
   }
 
-  // Mock data removed - using real API data
+  // Debounced search function
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (page !== 1) {
+        setPage(1) // Reset to first page when searching
+      } else {
+        loadRoutes(1, rowsPerPage, searchTerm, statusFilter, vehicleFilter)
+      }
+    }, 500)
+
+    return () => clearTimeout(timeoutId)
+  }, [searchTerm])
+
+  // Pagination handlers
+  const handlePageChange = (_: unknown, newPage: number) => {
+    setPage(newPage + 1) // Material-UI uses 0-based pages, API uses 1-based
+  }
+
+  const handleRowsPerPageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(1) // Reset to first page
+  }
+
+  // Filter handlers
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value)
+  }
+
+  const handleStatusFilterChange = (event: any) => {
+    setStatusFilter(event.target.value)
+    setPage(1) // Reset to first page
+  }
+
+  const handleVehicleFilterChange = (event: any) => {
+    setVehicleFilter(event.target.value)
+    setPage(1) // Reset to first page
+  }
 
   // Vehicle types from backend enums
   const vehicleTypes = [
@@ -187,30 +261,6 @@ const RouteFares = () => {
     )
   }
 
-  // Filter routes based on search and filters
-  const filteredRoutes = routeData.filter(route => {
-    // Debug each route
-    console.log('🔍 Checking route:', route.from_location, '→', route.to_location, 'Vehicle:', route.vehicle, 'Active:', route.is_active)
-    
-    const matchesSearch = searchTerm === '' || 
-      route.from_location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.to_location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      route.vehicle.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesStatus = statusFilter === 'all' || 
-      (statusFilter === 'active' && route.is_active) ||
-      (statusFilter === 'inactive' && !route.is_active)
-    
-    const matchesVehicle = vehicleFilter === 'all' || route.vehicle === vehicleFilter
-    
-    console.log('🔍 Route matches - Search:', matchesSearch, 'Status:', matchesStatus, 'Vehicle:', matchesVehicle)
-    
-    return matchesSearch && matchesStatus && matchesVehicle
-  })
-  
-  console.log('🔍 Filters:', { searchTerm, statusFilter, vehicleFilter })
-  console.log('📊 Filtered routes count:', filteredRoutes.length)
-  console.log('🎯 First filtered route:', filteredRoutes[0])
   console.log('🎯 Sample route data for debugging:', routeData[0])
 
   // Statistics - use API data if available
@@ -311,7 +361,7 @@ const RouteFares = () => {
     // Simulate export functionality
     const csvContent = "data:text/csv;charset=utf-8," + 
       "From Location,To Location,Vehicle,Distance (km),Min Fare,Original Fare,Sale Fare,Currency,Status\n" +
-      filteredRoutes.map(route => 
+      routeData.map(route => 
         `${route.from_location},${route.to_location},${route.vehicle},${route.distance_km},${route.min_fare},${route.original_fare},${route.sale_fare},${route.currency},${route.is_active ? 'Active' : 'Inactive'}`
       ).join("\n")
     
@@ -430,7 +480,7 @@ const RouteFares = () => {
               fullWidth
               placeholder="Search routes..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -445,7 +495,7 @@ const RouteFares = () => {
               <InputLabel>Status</InputLabel>
               <Select
                 value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
+                onChange={handleStatusFilterChange}
                 label="Status"
               >
                 <MenuItem value="all">All Status</MenuItem>
@@ -459,7 +509,7 @@ const RouteFares = () => {
               <InputLabel>Vehicle Type</InputLabel>
               <Select
                 value={vehicleFilter}
-                onChange={(e) => setVehicleFilter(e.target.value)}
+                onChange={handleVehicleFilterChange}
                 label="Vehicle Type"
               >
                 <MenuItem value="all">All Vehicles</MenuItem>
@@ -494,7 +544,7 @@ const RouteFares = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRoutes.length === 0 && (
+              {routeData.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={8} align="center">
                     <Typography variant="body2" color="text.secondary">
@@ -503,7 +553,7 @@ const RouteFares = () => {
                   </TableCell>
                 </TableRow>
               )}
-              {filteredRoutes.map((route) => {
+              {routeData.map((route) => {
                 console.log('🎯 Rendering route row:', route.id, route.from_location, '→', route.to_location)
                 return (
                   <TableRow key={route.id}>
@@ -560,6 +610,17 @@ const RouteFares = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          component="div"
+          count={totalRoutes}
+          rowsPerPage={rowsPerPage}
+          page={page - 1} // Material-UI uses 0-based pages
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          labelDisplayedRows={({ from, to, count }) => `${from}-${to} of ${count !== -1 ? count : `more than ${to}`}`}
+          labelRowsPerPage="Routes per page:"
+        />
       </Paper>
 
       {/* View Dialog */}

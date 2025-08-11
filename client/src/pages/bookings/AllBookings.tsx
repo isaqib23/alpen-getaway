@@ -55,7 +55,7 @@ import { bookingsAPI, Booking, BookingFilters, BookingStatus, PaymentStatus, Boo
 import { useUsers } from '../../hooks/useUsers'
 import { useDrivers } from '../../hooks/useDrivers'
 import { useCars } from '../../hooks/useCars'
-import { routesAPI } from '../../api/routes'
+import { RouteSelector } from '../../components/forms/RouteSelector'
 
 // Interface removed as it's imported from API
 
@@ -68,7 +68,7 @@ const AllBookings = () => {
   const drivers = Array.isArray(driversData?.data?.data) ? driversData.data.data : []
   const carsArray = Array.isArray(cars) ? cars : []
   const [bookings, setBookings] = useState<Booking[]>([])
-  const [routes, setRoutes] = useState<any[]>([])
+  // Routes are now handled by RouteSelector component internally
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -80,6 +80,7 @@ const AllBookings = () => {
   const [dateFilter, setDateFilter] = useState('')
   const [openAddDialog, setOpenAddDialog] = useState(false)
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
+  const [selectedEditRoute, setSelectedEditRoute] = useState<any>(null)
   const [openEditDialog, setOpenEditDialog] = useState(false)
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
   const [openViewDialog, setOpenViewDialog] = useState(false)
@@ -102,6 +103,9 @@ const AllBookings = () => {
     passenger_phone: '',
     booking_status: '',
     payment_status: '',
+    route_fare_id: '',
+    from_location: '',
+    to_location: '',
     pickup_address: '',
     dropoff_address: '',
     pickup_datetime: '',
@@ -116,8 +120,6 @@ const AllBookings = () => {
     customer_email: '',
     customer_name: '',
     customer_phone: '',
-    passenger_name: '',
-    passenger_phone: '',
     passenger_count: 1,
     pickup_address: '',
     dropoff_address: '',
@@ -130,21 +132,13 @@ const AllBookings = () => {
   })
 
   // Load routes for route fare selection
-  const loadRoutes = async () => {
-    try {
-      const response = await routesAPI.getAll()
-      setRoutes(response.data || [])
-    } catch (error) {
-      console.error('Failed to load routes:', error)
-    }
-  }
+  // Remove loadRoutes - RouteSelector handles route loading internally
 
   // Load data on component mount and when filters change
   useEffect(() => {
     loadBookings()
     loadStats()
     fetchUsers() // Fetch users for the dropdown
-    loadRoutes() // Load routes for booking form
   }, [page, rowsPerPage, searchTerm, statusFilter, typeFilter, paymentStatusFilter, dateFilter])
 
   const showToast = (message: string, severity: 'success' | 'error' = 'success') => {
@@ -215,6 +209,9 @@ const AllBookings = () => {
 
   const handleEditBooking = (booking: Booking) => {
     setSelectedBooking(booking)
+    // Set the route directly from booking data
+    setSelectedEditRoute(booking.route_fare || null)
+    
     // Populate edit form data
     setEditFormData({
       passenger_name: booking.passenger_name,
@@ -222,6 +219,9 @@ const AllBookings = () => {
       passenger_phone: booking.passenger_phone,
       booking_status: booking.booking_status,
       payment_status: booking.payment_status,
+      route_fare_id: booking.route_fare?.id || '',
+      from_location: booking.route_fare?.from_location || '',
+      to_location: booking.route_fare?.to_location || '',
       pickup_address: booking.pickup_address,
       dropoff_address: booking.dropoff_address,
       pickup_datetime: new Date(booking.pickup_datetime).toISOString().slice(0, 16),
@@ -353,8 +353,8 @@ const AllBookings = () => {
         customer_name: bookingFormData.customer_name,
         customer_phone: bookingFormData.customer_phone,
         route_fare_id: bookingFormData.route_fare_id,
-        passenger_name: bookingFormData.passenger_name || bookingFormData.customer_name,
-        passenger_phone: bookingFormData.passenger_phone || bookingFormData.customer_phone,
+        passenger_name: bookingFormData.customer_name,
+        passenger_phone: bookingFormData.customer_phone,
         passenger_email: bookingFormData.customer_email,
         passenger_count: bookingFormData.passenger_count,
         pickup_datetime: bookingFormData.pickup_datetime,
@@ -374,8 +374,6 @@ const AllBookings = () => {
         customer_email: '',
         customer_name: '',
         customer_phone: '',
-        passenger_name: '',
-        passenger_phone: '',
         passenger_count: 1,
         pickup_address: '',
         dropoff_address: '',
@@ -423,6 +421,33 @@ const AllBookings = () => {
       ...prev,
       [field]: event.target.value
     }))
+  }
+
+  const handleEditRouteChange = (route: any) => {
+    setSelectedEditRoute(route);
+    if (route) {
+      setEditFormData(prev => ({
+        ...prev,
+        route_fare_id: route.id,
+        from_location: route.from_location,
+        to_location: route.to_location,
+        pickup_address: prev.pickup_address || route.from_location,
+        dropoff_address: prev.dropoff_address || route.to_location,
+        base_amount: route.sale_fare || route.base_fare || route.original_fare,
+        total_amount: route.sale_fare || route.base_fare || route.original_fare
+      }));
+    } else {
+      setEditFormData(prev => ({
+        ...prev,
+        route_fare_id: '',
+        from_location: '',
+        to_location: '',
+        pickup_address: '',
+        dropoff_address: '',
+        base_amount: 0,
+        total_amount: 0
+      }));
+    }
   }
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -926,65 +951,67 @@ const AllBookings = () => {
                 sx={{ mb: 2 }}
                 required
               />
-              <TextField 
-                fullWidth 
-                label="Passenger Name" 
-                value={bookingFormData.passenger_name}
-                onChange={handleFormChange('passenger_name')}
-                sx={{ mb: 2 }} 
-                helperText="Leave empty to use customer name"
-              />
-              <TextField 
-                fullWidth 
-                label="Passenger Phone" 
-                value={bookingFormData.passenger_phone}
-                onChange={handleFormChange('passenger_phone')}
-                sx={{ mb: 2 }} 
-                helperText="Leave empty to use customer phone"
-              />
             </Grid>
             <Grid item xs={12} md={6}>
               <Typography variant="h6" gutterBottom>Route Information</Typography>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Select Route</InputLabel>
-                <Select
-                  value={bookingFormData.route_fare_id}
-                  onChange={(e) => {
-                    const selectedRoute = routes.find(r => r.id === e.target.value);
-                    setBookingFormData(prev => ({
-                      ...prev,
-                      route_fare_id: e.target.value as string,
-                      pickup_address: selectedRoute?.from_location || prev.pickup_address,
-                      dropoff_address: selectedRoute?.to_location || prev.dropoff_address,
-                      base_amount: selectedRoute?.sale_fare || prev.base_amount,
-                      total_amount: selectedRoute?.sale_fare || prev.total_amount,
-                    }));
-                  }}
-                  label="Select Route"
-                  required
-                >
-                  {routes.map((route) => (
-                    <MenuItem key={route.id} value={route.id}>
-                      {route.from_location} → {route.to_location} (€{route.sale_fare})
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <RouteSelector
+                value={null} // RouteSelector handles its own data
+                onChange={(selectedRoute) => {
+                  setBookingFormData(prev => ({
+                    ...prev,
+                    route_fare_id: selectedRoute?.id || '',
+                    pickup_address: selectedRoute?.from_location || '',
+                    dropoff_address: selectedRoute?.to_location || '',
+                    base_amount: selectedRoute?.sale_fare || 0,
+                    total_amount: selectedRoute?.sale_fare || 0,
+                  }));
+                }}
+                label="Select Route"
+                placeholder="Search routes by location..."
+                required
+                helperText="Search by typing location names"
+              />
               <TextField 
                 fullWidth 
                 label="From Location" 
                 value={bookingFormData.pickup_address}
-                onChange={handleFormChange('pickup_address')}
                 sx={{ mb: 2 }} 
                 required
+                InputProps={{
+                  readOnly: true,
+                }}
+                helperText="Auto-populated from selected route"
+                style={{
+                  backgroundColor: '#f5f5f5',
+                }}
               />
               <TextField 
                 fullWidth 
                 label="To Location" 
                 value={bookingFormData.dropoff_address}
-                onChange={handleFormChange('dropoff_address')}
                 sx={{ mb: 2 }} 
                 required
+                InputProps={{
+                  readOnly: true,
+                }}
+                helperText="Auto-populated from selected route"
+                style={{
+                  backgroundColor: '#f5f5f5',
+                }}
+              />
+              <TextField 
+                fullWidth 
+                label="Specific Pickup Address" 
+                placeholder="Enter specific pickup address within the from location"
+                sx={{ mb: 2 }} 
+                helperText="Full pickup address"
+              />
+              <TextField 
+                fullWidth 
+                label="Specific Dropoff Address" 
+                placeholder="Enter specific dropoff address within the to location"
+                sx={{ mb: 2 }} 
+                helperText="Full dropoff address"
               />
               <TextField
                 fullWidth
@@ -1070,21 +1097,21 @@ const AllBookings = () => {
                 <Typography variant="h6" gutterBottom>Customer Information</Typography>
                 <TextField 
                   fullWidth 
-                  label="Passenger Name" 
+                  label="Customer Name" 
                   value={editFormData.passenger_name} 
                   onChange={handleEditFormChange('passenger_name')}
                   sx={{ mb: 2 }} 
                 />
                 <TextField 
                   fullWidth 
-                  label="Passenger Email" 
+                  label="Customer Email" 
                   value={editFormData.passenger_email} 
                   onChange={handleEditFormChange('passenger_email')}
                   sx={{ mb: 2 }} 
                 />
                 <TextField 
                   fullWidth 
-                  label="Passenger Phone" 
+                  label="Customer Phone" 
                   value={editFormData.passenger_phone} 
                   onChange={handleEditFormChange('passenger_phone')}
                   sx={{ mb: 2 }} 
@@ -1107,12 +1134,46 @@ const AllBookings = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom>Route Information</Typography>
+                <RouteSelector
+                  value={selectedEditRoute}
+                  onChange={handleEditRouteChange}
+                  label="Select Route"
+                  placeholder="Search routes by location..."
+                  helperText="Search by typing location names to change route"
+                />
+                <TextField 
+                  fullWidth 
+                  label="From Location" 
+                  value={editFormData.from_location || ''}
+                  sx={{ mb: 2 }} 
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  helperText="Auto-populated from selected route"
+                  style={{
+                    backgroundColor: '#f5f5f5',
+                  }}
+                />
+                <TextField 
+                  fullWidth 
+                  label="To Location" 
+                  value={editFormData.to_location || ''}
+                  sx={{ mb: 2 }} 
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  helperText="Auto-populated from selected route"
+                  style={{
+                    backgroundColor: '#f5f5f5',
+                  }}
+                />
                 <TextField 
                   fullWidth 
                   label="Pickup Address" 
                   value={editFormData.pickup_address} 
                   onChange={handleEditFormChange('pickup_address')}
                   sx={{ mb: 2 }} 
+                  helperText="Specific pickup address within the from location"
                 />
                 <TextField 
                   fullWidth 
@@ -1120,6 +1181,7 @@ const AllBookings = () => {
                   value={editFormData.dropoff_address} 
                   onChange={handleEditFormChange('dropoff_address')}
                   sx={{ mb: 2 }} 
+                  helperText="Specific dropoff address within the to location"
                 />
                 <TextField
                   fullWidth
@@ -1129,13 +1191,6 @@ const AllBookings = () => {
                   onChange={handleEditFormChange('pickup_datetime')}
                   InputLabelProps={{ shrink: true }}
                   sx={{ mb: 2 }}
-                />
-                <TextField 
-                  fullWidth 
-                  label="Vehicle Type" 
-                  value={selectedBooking.route_fare?.vehicle_type || 'Standard'} 
-                  disabled
-                  sx={{ mb: 2 }} 
                 />
               </Grid>
               <Grid item xs={12} md={6}>
