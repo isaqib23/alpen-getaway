@@ -42,7 +42,7 @@ interface FleetsProps {
   hideSupplier?: boolean;
   loading?: boolean;
   sizeAuto?: boolean;
-  onLoad?: bookcarsTypes.DataEvent<bookcarsTypes.Car>;
+  onLoad?: (data: { rows: bookcarsTypes.Car[]; rowCount: number }) => void;
 }
 
 interface CategoryState {
