@@ -82,8 +82,6 @@ const AuctionManagement = () => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    auction_start_time: '',
-    auction_end_time: '',
     booking_id: ''
   })
   
@@ -286,8 +284,6 @@ const AuctionManagement = () => {
     setFormData({
       title: auction.title,
       description: auction.description || '',
-      auction_start_time: auction.auction_start_time.slice(0, 16), // Format for datetime-local input
-      auction_end_time: auction.auction_end_time.slice(0, 16),
       booking_id: auction.booking_id || ''
     })
     
@@ -312,8 +308,6 @@ const AuctionManagement = () => {
     setFormData({
       title: '',
       description: '',
-      auction_start_time: '',
-      auction_end_time: '',
       booking_id: ''
     })
     setSelectedBooking(null)
@@ -340,33 +334,12 @@ const AuctionManagement = () => {
       errors.title = 'Title is required'
     }
 
-    if (!selectedBooking) {
-      errors.booking_id = 'Please select a booking first to determine pricing'
-    }
-
-    if (!formData.auction_start_time) {
-      errors.auction_start_time = 'Start time is required'
-    }
-
-    if (!formData.auction_end_time) {
-      errors.auction_end_time = 'End time is required'
-    }
-
     if (!formData.booking_id) {
       errors.booking_id = 'Please select a booking for this auction'
     }
 
-    if (formData.auction_start_time && formData.auction_end_time) {
-      const startTime = new Date(formData.auction_start_time)
-      const endTime = new Date(formData.auction_end_time)
-      
-      if (startTime >= endTime) {
-        errors.auction_end_time = 'End time must be after start time'
-      }
-
-      if (startTime < new Date()) {
-        errors.auction_start_time = 'Start time must be in the future'
-      }
+    if (!selectedBooking) {
+      errors.booking_id = 'Please select a booking first to determine pricing'
     }
 
     setFormErrors(errors)
@@ -378,14 +351,18 @@ const AuctionManagement = () => {
 
     setFormLoading(true)
     try {
+      // Auto-start auction immediately and set 24-hour duration
+      const now = new Date()
+      const endTime = new Date(now.getTime() + 24 * 60 * 60 * 1000) // 24 hours from now
+
       await createAuction({
         title: formData.title,
         description: formData.description || undefined,
-        auction_start_time: new Date(formData.auction_start_time).toISOString(),
-        auction_end_time: new Date(formData.auction_end_time).toISOString(),
+        auction_start_time: now.toISOString(),
+        auction_end_time: endTime.toISOString(),
         booking_id: formData.booking_id
       })
-      success('Auction created successfully')
+      success('Auction created and started successfully')
       handleCloseDialog()
       refetch()
     } catch (error: any) {
@@ -402,9 +379,8 @@ const AuctionManagement = () => {
     try {
       await updateAuction(selectedAuction.id, {
         title: formData.title,
-        description: formData.description || undefined,
-        auction_start_time: new Date(formData.auction_start_time).toISOString(),
-        auction_end_time: new Date(formData.auction_end_time).toISOString()
+        description: formData.description || undefined
+        // Note: We don't update auction times for existing auctions
       })
       success('Auction updated successfully')
       handleCloseDialog()
@@ -779,69 +755,6 @@ const AuctionManagement = () => {
         <DialogContent>
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Auction Title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                error={!!formErrors.title}
-                helperText={formErrors.title}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Description"
-                multiline
-                rows={3}
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              />
-            </Grid>
-            {/* Show selected booking pricing information */}
-            {selectedBooking && (
-              <Grid item xs={12}>
-                <Alert severity="info">
-                  <Typography variant="subtitle2" gutterBottom>
-                    Auction Pricing (from selected booking)
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Minimum Bid Amount:</strong> €{selectedBooking.base_amount} (Booking base amount)
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Reserve Price:</strong> €{selectedBooking.total_amount} (Booking total amount)
-                  </Typography>
-                </Alert>
-              </Grid>
-            )}
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Auction Start Time"
-                type="datetime-local"
-                value={formData.auction_start_time}
-                onChange={(e) => setFormData({ ...formData, auction_start_time: e.target.value })}
-                error={!!formErrors.auction_start_time}
-                helperText={formErrors.auction_start_time}
-                required
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Auction End Time"
-                type="datetime-local"
-                value={formData.auction_end_time}
-                onChange={(e) => setFormData({ ...formData, auction_end_time: e.target.value })}
-                error={!!formErrors.auction_end_time}
-                helperText={formErrors.auction_end_time}
-                required
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12}>
               <FormControl fullWidth error={!!formErrors.booking_id}>
                 <InputLabel>Select Booking</InputLabel>
                 <Select
@@ -867,6 +780,37 @@ const AuctionManagement = () => {
                   </Typography>
                 )}
               </FormControl>
+            </Grid>
+            {/* Show selected booking pricing information */}
+            {selectedBooking && (
+              <Grid item xs={12}>
+                <Alert severity="info">
+                  <Typography variant="subtitle2" gutterBottom>
+                    Booking Amount: €{selectedBooking.total_amount}
+                  </Typography>
+                </Alert>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Auction Title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                error={!!formErrors.title}
+                helperText={formErrors.title}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Description"
+                multiline
+                rows={3}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              />
             </Grid>
           </Grid>
         </DialogContent>
@@ -915,43 +859,11 @@ const AuctionManagement = () => {
               <Grid item xs={12}>
                 <Alert severity="info">
                   <Typography variant="subtitle2" gutterBottom>
-                    Auction Pricing (from selected booking)
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Minimum Bid Amount:</strong> €{selectedBooking.base_amount} (Booking base amount)
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Reserve Price:</strong> €{selectedBooking.total_amount} (Booking total amount)
+                    Booking Amount: €{selectedBooking.total_amount}
                   </Typography>
                 </Alert>
               </Grid>
             )}
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Auction Start Time"
-                type="datetime-local"
-                value={formData.auction_start_time}
-                onChange={(e) => setFormData({ ...formData, auction_start_time: e.target.value })}
-                error={!!formErrors.auction_start_time}
-                helperText={formErrors.auction_start_time}
-                required
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Auction End Time"
-                type="datetime-local"
-                value={formData.auction_end_time}
-                onChange={(e) => setFormData({ ...formData, auction_end_time: e.target.value })}
-                error={!!formErrors.auction_end_time}
-                helperText={formErrors.auction_end_time}
-                required
-                InputLabelProps={{ shrink: true }}
-              />
-            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>

@@ -216,9 +216,11 @@ export class BookingsService {
     }
 
     async update(id: string, updateBookingDto: UpdateBookingDto): Promise<Booking> {
-        const booking = await this.findOne(id);
-        Object.assign(booking, updateBookingDto);
-        return this.bookingsRepository.save(booking);
+        // Use repository.update for direct database update
+        await this.bookingsRepository.update(id, updateBookingDto);
+        
+        // Reload the booking with fresh relations after update
+        return this.findOne(id);
     }
 
     async remove(id: string): Promise<void> {
@@ -455,6 +457,125 @@ export class BookingsService {
                 revenue: parseFloat(route.total_revenue || 0).toFixed(2),
             })),
         };
+    }
+
+    async exportBookings(filters: any = {}): Promise<string> {
+        const queryBuilder = this.bookingsRepository.createQueryBuilder('booking')
+            .leftJoinAndSelect('booking.user', 'user')
+            .leftJoinAndSelect('booking.company', 'company')
+            .leftJoinAndSelect('booking.route_fare', 'route_fare')
+            .leftJoinAndSelect('booking.assigned_car', 'car')
+            .leftJoinAndSelect('booking.assigned_driver', 'driver')
+            .leftJoinAndSelect('driver.user', 'driver_user');
+
+        // Apply same filters as findAll method
+        if (filters?.booking_status) {
+            queryBuilder.andWhere('booking.booking_status = :bookingStatus', {
+                bookingStatus: filters.booking_status
+            });
+        }
+
+        if (filters?.payment_status) {
+            queryBuilder.andWhere('booking.payment_status = :paymentStatus', {
+                paymentStatus: filters.payment_status
+            });
+        }
+
+        if (filters?.user_type) {
+            queryBuilder.andWhere('user.user_type = :userType', {
+                userType: filters.user_type
+            });
+        }
+
+        if (filters?.company_id) {
+            queryBuilder.andWhere('booking.company_id = :companyId', {
+                companyId: filters.company_id
+            });
+        }
+
+        if (filters?.driver_id) {
+            queryBuilder.andWhere('booking.assigned_driver_id = :driverId', {
+                driverId: filters.driver_id
+            });
+        }
+
+        if (filters?.date_from && filters?.date_to) {
+            queryBuilder.andWhere('booking.pickup_datetime BETWEEN :dateFrom AND :dateTo', {
+                dateFrom: filters.date_from,
+                dateTo: filters.date_to,
+            });
+        }
+
+        if (filters?.search) {
+            queryBuilder.andWhere(
+                '(booking.booking_reference ILIKE :search OR booking.passenger_name ILIKE :search OR booking.passenger_phone ILIKE :search)',
+                { search: `%${filters.search}%` }
+            );
+        }
+
+        const bookings = await queryBuilder
+            .orderBy('booking.created_at', 'DESC')
+            .getMany();
+
+        // Generate CSV content
+        const headers = [
+            'Booking Reference',
+            'Customer Name',
+            'Customer Email',
+            'Customer Phone', 
+            'Passenger Name',
+            'Passenger Count',
+            'Route',
+            'Pickup Address',
+            'Dropoff Address',
+            'Pickup Date & Time',
+            'Vehicle Type',
+            'Driver Name',
+            'Car Details',
+            'Base Amount',
+            'Total Amount',
+            'Booking Status',
+            'Payment Status',
+            'Company',
+            'Created At'
+        ];
+
+        const csvRows = bookings.map(booking => [
+            booking.booking_reference || '',
+            booking.user ? `${booking.user.first_name} ${booking.user.last_name}` : '',
+            booking.user?.email || '',
+            booking.user?.phone || '',
+            booking.passenger_name || '',
+            booking.passenger_count?.toString() || '1',
+            booking.route_fare ? `${booking.route_fare.from_location} → ${booking.route_fare.to_location}` : `${booking.pickup_address} → ${booking.dropoff_address}`,
+            booking.pickup_address || '',
+            booking.dropoff_address || '',
+            booking.pickup_datetime ? new Date(booking.pickup_datetime).toLocaleString() : '',
+            booking.route_fare?.vehicle || '',
+            booking.assigned_driver?.user ? `${booking.assigned_driver.user.first_name} ${booking.assigned_driver.user.last_name}` : '',
+            booking.assigned_car ? `${booking.assigned_car.make} ${booking.assigned_car.model} (${booking.assigned_car.license_plate})` : '',
+            booking.base_amount?.toString() || '0',
+            booking.total_amount?.toString() || '0',
+            booking.booking_status || '',
+            booking.payment_status || '',
+            booking.company?.company_name || '',
+            booking.created_at ? new Date(booking.created_at).toLocaleString() : ''
+        ]);
+
+        // Escape CSV values and join
+        const escapeCsvValue = (value: string) => {
+            if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+                return `"${value.replace(/"/g, '""')}"`;
+            }
+            return value;
+        };
+
+        const csvContent = [
+            headers.join(','),
+            ...csvRows.map(row => row.map(escapeCsvValue).join(','))
+        ].join('\n');
+
+        return csvContent;
     }
 
     private generateBookingReference(): string {

@@ -62,8 +62,9 @@ export class AuctionsService {
         const endTime = new Date(createAuctionDto.auction_end_time);
         const now = new Date();
 
-        if (startTime <= now) {
-            throw new BadRequestException('Auction start time must be in the future');
+        // Allow start time to be current time or future (for auto-start auctions)
+        if (startTime < new Date(now.getTime() - 60000)) { // Allow up to 1 minute in the past to account for request delays
+            throw new BadRequestException('Auction start time cannot be in the past');
         }
 
         if (endTime <= startTime) {
@@ -74,6 +75,7 @@ export class AuctionsService {
         const auctionReference = await this.generateAuctionReference();
 
         // Use booking's base_amount as minimum bid and total_amount as reserve price
+        // Set status to ACTIVE since auction starts immediately
         const auction = this.auctionRepository.create({
             ...createAuctionDto,
             auction_reference: auctionReference,
@@ -82,6 +84,7 @@ export class AuctionsService {
             auction_end_time: endTime,
             minimum_bid_amount: booking.base_amount,
             reserve_price: booking.total_amount,
+            status: AuctionStatus.ACTIVE
         });
 
         const savedAuction = await this.auctionRepository.save(auction);
@@ -363,9 +366,10 @@ export class AuctionsService {
             { status: BidStatus.REJECTED }
         );
 
-        // Update booking status
+        // Update booking status and assign to winning company
         await this.bookingRepository.update(auction.booking_id, {
             booking_status: BookingStatus.AUCTION_AWARDED,
+            company_id: winningBid.company_id, // Assign booking to winning company
             assigned_driver_id: winningBid.proposed_driver_id,
             assigned_car_id: winningBid.proposed_car_id
         });

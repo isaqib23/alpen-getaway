@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseIntPipe, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -95,6 +96,51 @@ export class BookingsController {
     @Get('stats')
     getStats(@CompanyContext() companyId?: string) {
         return this.bookingsService.getStats(companyId);
+    }
+
+    @ApiOperation({ summary: 'Export bookings to CSV' })
+    @ApiResponse({ status: 200, description: 'Bookings exported successfully' })
+    @ApiQuery({ name: 'booking_status', required: false, type: String, description: 'Filter by booking status' })
+    @ApiQuery({ name: 'payment_status', required: false, type: String, description: 'Filter by payment status' })
+    @ApiQuery({ name: 'user_type', required: false, type: String, description: 'Filter by user type' })
+    @ApiQuery({ name: 'company_id', required: false, type: String, description: 'Filter by company ID' })
+    @ApiQuery({ name: 'driver_id', required: false, type: String, description: 'Filter by driver ID' })
+    @ApiQuery({ name: 'date_from', required: false, type: String, description: 'Filter from date (YYYY-MM-DD)' })
+    @ApiQuery({ name: 'date_to', required: false, type: String, description: 'Filter to date (YYYY-MM-DD)' })
+    @ApiQuery({ name: 'search', required: false, type: String, description: 'Search by reference, name, or phone' })
+    @Get('export')
+    async exportBookings(
+        @Res() res: Response,
+        @Query('booking_status') booking_status?: string,
+        @Query('payment_status') payment_status?: string,
+        @Query('user_type') user_type?: string,
+        @Query('company_id') company_id?: string,
+        @Query('driver_id') driver_id?: string,
+        @Query('date_from') date_from?: string,
+        @Query('date_to') date_to?: string,
+        @Query('search') search?: string,
+        @CompanyContext() contextCompanyId?: string
+    ) {
+        // Override company_id filter for B2B users
+        const effectiveCompanyId = contextCompanyId || company_id;
+        
+        const filters = {
+            booking_status,
+            payment_status,
+            user_type,
+            company_id: effectiveCompanyId,
+            driver_id,
+            date_from: date_from ? new Date(date_from) : undefined,
+            date_to: date_to ? new Date(date_to) : undefined,
+            search,
+        };
+        
+        const csvContent = await this.bookingsService.exportBookings(filters);
+        const filename = `bookings-export-${new Date().toISOString().split('T')[0]}.csv`;
+        
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(csvContent);
     }
 
     @ApiOperation({ summary: 'Get upcoming bookings' })

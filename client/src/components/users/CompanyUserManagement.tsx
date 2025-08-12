@@ -79,7 +79,6 @@ const CompanyUserManagement: React.FC<CompanyUserManagementProps> = ({ userType,
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
-  const [companyStatusFilter, setCompanyStatusFilter] = useState('')
   const [openAddDialog, setOpenAddDialog] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [openEditDialog, setOpenEditDialog] = useState(false)
@@ -143,6 +142,7 @@ const CompanyUserManagement: React.FC<CompanyUserManagementProps> = ({ userType,
       country: '',
       website: '',
       contact_person: '',
+      status: 'pending',
       commission_rate: userType === UserType.AFFILIATE ? 5 : undefined,
     }
   })
@@ -230,6 +230,7 @@ const CompanyUserManagement: React.FC<CompanyUserManagementProps> = ({ userType,
         country: user.company.country || '',
         website: user.company.website || '',
         contact_person: user.company.contact_person || '',
+        status: user.company.status,
         commission_rate: user.company.commission_rate || (userType === UserType.AFFILIATE ? 5 : undefined),
       } : {
         company_name: '',
@@ -248,6 +249,7 @@ const CompanyUserManagement: React.FC<CompanyUserManagementProps> = ({ userType,
         country: '',
         website: '',
         contact_person: '',
+        status: 'pending',
         commission_rate: userType === UserType.AFFILIATE ? 5 : undefined,
       }
     })
@@ -315,6 +317,13 @@ const CompanyUserManagement: React.FC<CompanyUserManagementProps> = ({ userType,
 
   const handleSubmitEditUser = async () => {
     if (!selectedUser) return
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (editUser.company?.company_email && !emailRegex.test(editUser.company.company_email)) {
+      console.error('Invalid company email format')
+      return
+    }
     
     setFormLoading(true)
     try {
@@ -469,24 +478,7 @@ const CompanyUserManagement: React.FC<CompanyUserManagementProps> = ({ userType,
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={6} md={2}>
-              <FormControl fullWidth>
-                <InputLabel>Company Status</InputLabel>
-                <Select
-                  value={companyStatusFilter}
-                  onChange={(e) => setCompanyStatusFilter(e.target.value)}
-                  label="Company Status"
-                >
-                  <MenuItem value="">All</MenuItem>
-                  {companyStatusOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={7}>
               <Box display="flex" justifyContent="flex-end">
                 <Typography variant="body2" color="textSecondary">
                   {total} {title.toLowerCase()} found
@@ -1110,6 +1102,25 @@ const CompanyUserManagement: React.FC<CompanyUserManagementProps> = ({ userType,
                           })}
                         />
                       </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <FormControl fullWidth required>
+                          <InputLabel>Company Status</InputLabel>
+                          <Select
+                            value={editUser.company?.status || 'pending'}
+                            onChange={(e) => setEditUser({
+                              ...editUser,
+                              company: { ...editUser.company!, status: e.target.value as 'suspended' | 'pending' | 'approved' | 'rejected' }
+                            })}
+                            label="Company Status"
+                          >
+                            {companyStatusOptions.map((option) => (
+                              <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
                       {userType === UserType.AFFILIATE && (
                         <Grid item xs={12} sm={6}>
                           <TextField
@@ -1185,7 +1196,11 @@ const CompanyUserManagement: React.FC<CompanyUserManagementProps> = ({ userType,
           <Button 
             variant="contained" 
             onClick={handleSubmitEditUser}
-            disabled={formLoading || !editUser.first_name || !editUser.last_name || !editUser.email}
+            disabled={formLoading || !editUser.first_name || !editUser.last_name || !editUser.email || 
+              !editUser.company?.company_name || !editUser.company?.company_email || 
+              !editUser.company?.company_contact_number || !editUser.company?.company_registration_number || 
+              !editUser.company?.registration_country || !editUser.company?.company_representative ||
+              (!!editUser.company?.company_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editUser.company.company_email))}
           >
             {formLoading ? <CircularProgress size={20} /> : `Update ${title.slice(0, -1)}`}
           </Button>

@@ -497,4 +497,72 @@ export class CarsService {
             }, {}),
         };
     }
+
+    async exportCars(status?: string, companyId?: string): Promise<string> {
+        const queryBuilder = this.carsRepository.createQueryBuilder('car')
+            .leftJoinAndSelect('car.category', 'category')
+            .leftJoinAndSelect('car.company', 'company');
+
+        if (status) {
+            queryBuilder.andWhere('car.status = :status', { status });
+        }
+
+        if (companyId) {
+            queryBuilder.andWhere('car.company_id = :companyId', { companyId });
+        }
+
+        const cars = await queryBuilder
+            .orderBy('car.created_at', 'DESC')
+            .getMany();
+
+        // Generate CSV content
+        const headers = [
+            'Make',
+            'Model',
+            'Year',
+            'License Plate',
+            'Color',
+            'Category',
+            'Seats',
+            'Status',
+            'VIN',
+            'Has WiFi',
+            'Has AC',
+            'Has GPS',
+            'Company',
+            'Created At'
+        ];
+
+        const csvRows = cars.map(car => [
+            car.make || '',
+            car.model || '',
+            car.year?.toString() || '',
+            car.license_plate || '',
+            car.color || '',
+            car.category?.name || '',
+            car.seats?.toString() || '',
+            car.status || '',
+            car.vin || '',
+            car.has_wifi ? 'Yes' : 'No',
+            car.has_ac ? 'Yes' : 'No',
+            car.has_gps ? 'Yes' : 'No',
+            car.company?.company_name || '',
+            car.created_at ? new Date(car.created_at).toLocaleString() : ''
+        ]);
+
+        // Escape CSV values and join
+        const escapeCsvValue = (value: string) => {
+            if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+                return `"${value.replace(/"/g, '""')}"`;
+            }
+            return value;
+        };
+
+        const csvContent = [
+            headers.join(','),
+            ...csvRows.map(row => row.map(escapeCsvValue).join(','))
+        ].join('\n');
+
+        return csvContent;
+    }
 }

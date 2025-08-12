@@ -112,6 +112,7 @@ const AllBookings = () => {
     passenger_count: 1,
     base_amount: 0,
     total_amount: 0,
+    fare_used: '',
     special_instructions: ''
   })
   
@@ -228,6 +229,7 @@ const AllBookings = () => {
       passenger_count: booking.passenger_count,
       base_amount: parseFloat(booking.base_amount.toString()),
       total_amount: parseFloat(booking.total_amount.toString()),
+      fare_used: booking.fare_used || 'sale_fare',
       special_instructions: booking.special_instructions || ''
     })
     setOpenEditDialog(true)
@@ -290,12 +292,14 @@ const AllBookings = () => {
         passenger_phone: editFormData.passenger_phone,
         booking_status: editFormData.booking_status,
         payment_status: editFormData.payment_status,
+        route_fare_id: editFormData.route_fare_id || undefined,
         pickup_address: editFormData.pickup_address,
         dropoff_address: editFormData.dropoff_address,
         pickup_datetime: editFormData.pickup_datetime,
         passenger_count: editFormData.passenger_count,
         base_amount: editFormData.base_amount,
         total_amount: editFormData.total_amount,
+        fare_used: editFormData.fare_used || undefined,
         special_instructions: editFormData.special_instructions || undefined
       }
       
@@ -434,7 +438,8 @@ const AllBookings = () => {
         pickup_address: prev.pickup_address || route.from_location,
         dropoff_address: prev.dropoff_address || route.to_location,
         base_amount: route.sale_fare || route.base_fare || route.original_fare,
-        total_amount: route.sale_fare || route.base_fare || route.original_fare
+        total_amount: route.sale_fare || route.base_fare || route.original_fare,
+        fare_used: 'sale_fare'
       }));
     } else {
       setEditFormData(prev => ({
@@ -445,7 +450,8 @@ const AllBookings = () => {
         pickup_address: '',
         dropoff_address: '',
         base_amount: 0,
-        total_amount: 0
+        total_amount: 0,
+        fare_used: ''
       }));
     }
   }
@@ -1219,6 +1225,19 @@ const AllBookings = () => {
                   onChange={handleEditFormChange('total_amount')}
                   sx={{ mb: 2 }} 
                 />
+                <TextField
+                  fullWidth
+                  select
+                  label="Fare Type"
+                  value={editFormData.fare_used}
+                  onChange={handleEditFormSelectChange('fare_used')}
+                  sx={{ mb: 2 }}
+                  helperText="Type of fare applied to this booking"
+                >
+                  <MenuItem value="min_fare">Minimum Fare</MenuItem>
+                  <MenuItem value="original_fare">Original Fare</MenuItem>
+                  <MenuItem value="sale_fare">Sale Fare</MenuItem>
+                </TextField>
                 <TextField
                   fullWidth
                   select

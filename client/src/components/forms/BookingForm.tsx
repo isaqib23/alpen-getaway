@@ -187,7 +187,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                     label="Select Route"
                     placeholder="Search routes by location..."
                     required
-                    helperText="Search by typing location names (e.g., 'Vienna', 'Salzburg')"
+                    helperText="Search by typing any location name - searches both from and to locations (e.g., 'Vienna', 'Salzburg')"
                   />
                 </Grid>
 

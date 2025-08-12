@@ -21,6 +21,7 @@ export class RouteFaresController {
     @ApiOperation({ summary: 'Get all route fares with pagination and filters' })
     @ApiQuery({ name: 'page', required: false, type: Number })
     @ApiQuery({ name: 'limit', required: false, type: Number })
+    @ApiQuery({ name: 'search', required: false, type: String, description: 'Search in both from and to locations' })
     @ApiQuery({ name: 'from_location', required: false, type: String })
     @ApiQuery({ name: 'to_location', required: false, type: String })
     @ApiQuery({ name: 'vehicle', required: false, type: String })
@@ -29,12 +30,14 @@ export class RouteFaresController {
     findAll(
         @Query('page') page: string = '1',
         @Query('limit') limit: string = '10',
+        @Query('search') search?: string,
         @Query('from_location') from_location?: string,
         @Query('to_location') to_location?: string,
         @Query('vehicle') vehicle?: string,
         @Query('is_active') is_active?: string,
     ) {
         const filters = {
+            search,
             from_location,
             to_location,
             vehicle,

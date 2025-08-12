@@ -45,14 +45,9 @@ import { Booking, BookingStatus } from '../../api/bookings'
 
 const statusOptions = [
   { value: 'all', label: 'All Status' },
-  { value: BookingStatus.PENDING, label: 'Pending' },
-  { value: BookingStatus.CONFIRMED, label: 'Confirmed' },
-  { value: BookingStatus.ASSIGNED, label: 'Assigned' },
-  { value: BookingStatus.IN_AUCTION, label: 'In Auction' },
-  { value: BookingStatus.AUCTION_AWARDED, label: 'Auction Awarded' },
+  { value: BookingStatus.AUCTION_AWARDED, label: 'Won Auctions' },
   { value: BookingStatus.IN_PROGRESS, label: 'In Progress' },
   { value: BookingStatus.COMPLETED, label: 'Completed' },
-  { value: BookingStatus.CANCELLED, label: 'Cancelled' },
 ]
 
 const getStatusColor = (status: string) => {
@@ -157,19 +152,16 @@ const PartnerBookings = () => {
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
-    // Update filters based on tab
+    // Update filters based on tab - simplified for B2B partners
     let status: string | undefined = undefined
     switch (newValue) {
       case 1:
-        status = BookingStatus.PENDING
+        status = BookingStatus.AUCTION_AWARDED
         break
       case 2:
-        status = BookingStatus.CONFIRMED
-        break
-      case 3:
         status = BookingStatus.IN_PROGRESS
         break
-      case 4:
+      case 3:
         status = BookingStatus.COMPLETED
         break
       default:
@@ -205,12 +197,10 @@ const PartnerBookings = () => {
       case 0:
         return bookings
       case 1:
-        return getBookingsByStatus(BookingStatus.PENDING)
+        return getBookingsByStatus(BookingStatus.AUCTION_AWARDED)
       case 2:
-        return getBookingsByStatus(BookingStatus.CONFIRMED)
-      case 3:
         return getBookingsByStatus(BookingStatus.IN_PROGRESS)
-      case 4:
+      case 3:
         return getBookingsByStatus(BookingStatus.COMPLETED)
       default:
         return bookings
@@ -240,7 +230,7 @@ const PartnerBookings = () => {
         </Box>
       </Box>
 
-      {/* Stats Cards */}
+      {/* Stats Cards - Simplified for B2B Partners */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <Card>
@@ -248,13 +238,13 @@ const PartnerBookings = () => {
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography color="textSecondary" gutterBottom variant="body2">
-                    Total Bookings
+                    Won Auctions
                   </Typography>
                   <Typography variant="h4">
-                    {loading ? <CircularProgress size={24} /> : total}
+                    {loading ? <CircularProgress size={24} /> : (stats?.byStatus?.auction_awarded || 0)}
                   </Typography>
                 </Box>
-                <Avatar sx={{ bgcolor: 'primary.main' }}>
+                <Avatar sx={{ bgcolor: 'success.main' }}>
                   <Assignment />
                 </Avatar>
               </Box>
@@ -267,7 +257,7 @@ const PartnerBookings = () => {
               <Box display="flex" alignItems="center" justifyContent="space-between">
                 <Box>
                   <Typography color="textSecondary" gutterBottom variant="body2">
-                    Active Bookings
+                    In Progress
                   </Typography>
                   <Typography variant="h4">
                     {loading ? <CircularProgress size={24} /> : (stats?.byStatus?.in_progress || 0)}
@@ -370,15 +360,8 @@ const PartnerBookings = () => {
             <Tab label="All Bookings" />
             <Tab
               label={
-                <Badge badgeContent={stats?.byStatus?.pending || 0} color="warning">
-                  Pending
-                </Badge>
-              }
-            />
-            <Tab
-              label={
-                <Badge badgeContent={stats?.byStatus?.confirmed || 0} color="info">
-                  Confirmed
+                <Badge badgeContent={stats?.byStatus?.auction_awarded || 0} color="success">
+                  Won Auctions
                 </Badge>
               }
             />
@@ -409,9 +392,6 @@ const PartnerBookings = () => {
           <BookingTable bookings={getTabBookings()} onViewDetails={handleViewDetails} loading={loading} />
         </TabPanel>
         <TabPanel value={tabValue} index={3}>
-          <BookingTable bookings={getTabBookings()} onViewDetails={handleViewDetails} loading={loading} />
-        </TabPanel>
-        <TabPanel value={tabValue} index={4}>
           <BookingTable bookings={getTabBookings()} onViewDetails={handleViewDetails} loading={loading} />
         </TabPanel>
         

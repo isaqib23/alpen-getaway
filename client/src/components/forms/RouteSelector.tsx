@@ -57,7 +57,7 @@ export const RouteSelector: React.FC<RouteSelectorProps> = ({
         const response = await routesAPI.getAll({
           search: searchTerm,
           page: 1,
-          limit: 50, // Load first 50 matching routes
+          limit: 100, // Load first 100 matching routes
           is_active: true, // Only active routes
         });
         
@@ -81,7 +81,7 @@ export const RouteSelector: React.FC<RouteSelectorProps> = ({
     try {
       const response = await routesAPI.getAll({
         page: 1,
-        limit: 20, // Load first 20 popular routes
+        limit: 100, // Load first 100 popular routes
         is_active: true,
         // sort_by: 'created_at', // Most recently used routes - if supported by API
         // sort_order: 'desc',
@@ -139,17 +139,8 @@ export const RouteSelector: React.FC<RouteSelectorProps> = ({
   const getOptionLabel = (option: RouteFare) => 
     `${option.from_location} → ${option.to_location} (${option.vehicle})`;
 
-  // Filter options based on search
-  const filterOptions = (options: RouteFare[], { inputValue }: any) => {
-    if (!inputValue) return options;
-    
-    const searchLower = inputValue.toLowerCase();
-    return options.filter(option =>
-      option.from_location.toLowerCase().includes(searchLower) ||
-      option.to_location.toLowerCase().includes(searchLower) ||
-      option.vehicle.toLowerCase().includes(searchLower)
-    );
-  };
+  // No client-side filtering needed since backend handles search
+  const filterOptions = (options: RouteFare[]) => options;
 
   return (
     <Autocomplete

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsEmail, IsOptional, IsEnum, IsNumber, Min, Max } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { CompanyType } from '@/common/enums';
+import { CompanyType, CompanyStatus } from '@/common/enums';
 
 export class CreateCompanyDto {
     @ApiProperty({ example: 'Acme Corporation' })
@@ -67,6 +67,11 @@ export class CreateCompanyDto {
     @ApiProperty({ example: 'Jane Doe', required: false })
     @IsOptional()
     contact_person?: string;
+
+    @ApiProperty({ enum: CompanyStatus, example: CompanyStatus.PENDING, required: false })
+    @IsOptional()
+    @IsEnum(CompanyStatus)
+    status?: CompanyStatus;
 
     @ApiProperty({ example: 5.5, description: 'Commission rate for affiliate companies', required: false })
     @IsOptional()

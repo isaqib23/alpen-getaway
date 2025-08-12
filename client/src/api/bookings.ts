@@ -159,6 +159,7 @@ export interface UpdateBookingRequest {
   passenger_phone?: string
   passenger_email?: string
   passenger_count?: number
+  route_fare_id?: string
   pickup_datetime?: string
   pickup_address?: string
   dropoff_address?: string
@@ -167,12 +168,19 @@ export interface UpdateBookingRequest {
   needs_wheelchair_access?: boolean
   needs_medical_equipment?: boolean
   special_instructions?: string
+  fare_used?: FareType
   base_amount?: number
   discount_amount?: number
+  coupon_id?: string
   tax_amount?: number
   total_amount?: number
   booking_status?: BookingStatus
   payment_status?: PaymentStatus
+  assigned_car_id?: string
+  assigned_driver_id?: string
+  actual_pickup_time?: string
+  actual_dropoff_time?: string
+  actual_distance_km?: number
 }
 
 export interface AssignDriverCarRequest {

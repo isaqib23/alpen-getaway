@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, UseInterceptors, UploadedFile, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, UseInterceptors, UploadedFile, UploadedFiles, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiConsumes } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
@@ -51,6 +52,22 @@ export class CarsController {
     @Get('stats')
     getStats(@CompanyContext() companyId?: string) {
         return this.carsService.getCarStats(companyId);
+    }
+
+    @ApiOperation({ summary: 'Export cars to CSV' })
+    @ApiQuery({ name: 'status', required: false, type: String, description: 'Filter by car status' })
+    @Get('export')
+    async exportCars(
+        @Res() res: Response,
+        @Query('status') status?: string,
+        @CompanyContext() companyId?: string
+    ) {
+        const csvContent = await this.carsService.exportCars(status, companyId);
+        const filename = `cars-export-${new Date().toISOString().split('T')[0]}.csv`;
+        
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.send(csvContent);
     }
 
     // Car Category endpoints

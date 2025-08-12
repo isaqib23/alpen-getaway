@@ -56,6 +56,7 @@ export interface CreateCompanyData {
   country?: string
   website?: string
   contact_person?: string
+  status?: 'pending' | 'approved' | 'rejected' | 'suspended'
   commission_rate?: number
 }
 

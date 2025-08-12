@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import {Repository, LessThanOrEqual, MoreThanOrEqual, Brackets} from 'typeorm';
 import { RouteFare } from './entities/route-fare.entity';
 import { CreateRouteFareDto } from './dto/create-route-fare.dto';
 import { UpdateRouteFareDto } from './dto/update-route-fare.dto';
@@ -20,7 +20,17 @@ export class RouteFaresService {
     async findAll(page: number = 1, limit: number = 10, filters?: any): Promise<{ data: RouteFare[], total: number }> {
         const queryBuilder = this.routeFaresRepository.createQueryBuilder('route_fare');
 
-        // Apply filters
+        // Apply search filter - searches both from and to locations
+        if (filters?.search) {
+            queryBuilder.andWhere(
+                new Brackets(qb => {
+                    qb.where('route_fare.from_location ILIKE :search', { search: `%${filters.search}%` })
+                      .orWhere('route_fare.to_location ILIKE :search', { search: `%${filters.search}%` });
+                })
+            );
+        }
+
+        // Apply specific location filters (for backward compatibility)
         if (filters?.from_location) {
             queryBuilder.andWhere('route_fare.from_location ILIKE :fromLocation', {
                 fromLocation: `%${filters.from_location}%`
@@ -85,9 +95,14 @@ export class RouteFaresService {
     }
 
     async findByRoute(fromLocation: string, toLocation: string, vehicle?: string): Promise<RouteFare[]> {
+        console.log(fromLocation);
         const queryBuilder = this.routeFaresRepository.createQueryBuilder('route_fare')
-            .where('route_fare.from_location ILIKE :fromLocation', { fromLocation: `%${fromLocation}%` })
-            .andWhere('route_fare.to_location ILIKE :toLocation', { toLocation: `%${toLocation}%` })
+            .where(
+                new Brackets(qb => {
+                    qb.where('route_fare.from_location ILIKE :fromLocation', { fromLocation: `%${fromLocation}%` })
+                        .orWhere('route_fare.to_location ILIKE :toLocation', { toLocation: `%${toLocation}%` });
+                })
+            )
             .andWhere('route_fare.is_active = :isActive', { isActive: true });
 
         if (vehicle) {
