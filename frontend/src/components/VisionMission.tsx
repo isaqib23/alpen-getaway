@@ -1,5 +1,6 @@
 import React from "react";
 import { strings } from "../lang/vision-mission";
+import aboutUs2Img from "@assets/images/about_us/2.png";
 
 const visionMissionData = [
   {
@@ -8,7 +9,7 @@ const visionMissionData = [
     subtitle: strings.SUBTITLE,
     content: strings.INNOVATE,
     listItems: [strings.PRIORITY, strings.QUALITY, strings.BEST],
-    imageSrc: "/img/about_us/2.png",
+    imageSrc: aboutUs2Img,
     active: true,
   },
   {
@@ -21,7 +22,7 @@ const visionMissionData = [
       strings.QUALITY_MISSION,
       strings.BEST_MISSION,
     ],
-    imageSrc: "/img/about_us/2.png",
+    imageSrc: aboutUs2Img,
     active: false,
   },
   {
@@ -34,7 +35,7 @@ const visionMissionData = [
       strings.QUALITY_APPROACH,
       strings.BEST_APPROACH,
     ],
-    imageSrc: "/img/about_us/2.png",
+    imageSrc: aboutUs2Img,
     active: false,
   },
 ];

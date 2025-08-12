@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 
 import { strings } from "../lang/affiliate";
 import RegistrationService, { AffiliateRegistrationData } from "../services/RegistrationService";
+import affiliate1Img from "@assets/images/affiliate/1.jpg";
+import affiliate2Img from "@assets/images/affiliate/2.jpg";
 
 const fadeInUpVariants = {
   initial: { opacity: 0, y: 20 },
@@ -129,14 +131,14 @@ const AffiliateBody: React.FC = () => {
               <div className="trusted-partner-images">
                 <div className="main-image-circle">
                   <img 
-                    src="/img/affiliate/1.jpg" 
+                    src={affiliate1Img} 
                     alt="Our Service" 
                     className="img-fluid" 
                   />
                 </div>
                 <div className="secondary-image-circle">
                   <img 
-                    src="/img/affiliate/2.jpg" 
+                    src={affiliate2Img} 
                     alt="Why Choose Us" 
                     className="img-fluid" 
                   />

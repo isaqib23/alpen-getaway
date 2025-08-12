@@ -4,7 +4,7 @@ import PageHeader from "../components/PageHeader";
 import Layout from "../components/Layout";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-const errorImg = "/img/404-error-img.png";
+import errorImg from "@assets/images/404-error-img.png";
 
 
 const NotFound = () => {

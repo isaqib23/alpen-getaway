@@ -10,6 +10,7 @@ import * as NotificationService from "../services/NotificationService";
 import * as langHelper from "../common/langHelper";
 import * as helper from "../common/helper";
 import { useGlobalContext, GlobalContextType } from "../context/GlobalContext";
+import logoImg from "@assets/images/logo.png";
 
 
 interface HeaderProps {
@@ -208,7 +209,7 @@ const Header: React.FC<HeaderProps> = ({ user, hidden, hideSignin }) => {
                 <div className="container">
                   {/* Logo Start */}
                   <Link className="navbar-brand" to="/">
-                    <img src="/img/logo.png" alt="Logo" />
+                    <img src={logoImg} alt="Logo" />
                   </Link>
                   {/* Logo End */}
 

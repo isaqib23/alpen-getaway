@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import TextAnime from "./animations/TextAnime";
 
 import { strings } from "../lang/contact-page";
+import iconLocation from "@assets/images/icons/icon-location.svg";
 
 const ContactInfo: React.FC = () => {
   const iconRefs = Array(3)
@@ -58,7 +59,7 @@ const ContactInfo: React.FC = () => {
                       animate={iconRefs[index].inView ? "visible" : "hidden"}
                     >
                       <div className="icon-box">
-                        <img src={`/img/icons/${item.icon}`} alt="" />
+                        <img src={iconLocation} alt="" style={{ width: '24px', height: '24px' }} />
                       </div>
                       <div className="contact-info-content">
                         <p>{item.content}</p>

@@ -1,12 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { strings } from "../lang/about-page";
+import driver1Img from "@assets/images/about_us/driver_1.jpg";
+import driver2Img from "@assets/images/about_us/driver_2.jpg";
+import driver3Img from "@assets/images/about_us/driver_3.jpg";
+import driver4Img from "@assets/images/about_us/driver_4.jpg";
 
 const teamMembers = [
   {
     name: "john smith",
     role: strings.SENIOR,
-    imageSrc: "/img/about_us/driver_1.jpg",
+    imageSrc: driver1Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -17,7 +21,7 @@ const teamMembers = [
   {
     name: "taylor smith",
     role: strings.GUIDE,
-    imageSrc: "/img/about_us/driver_2.jpg",
+    imageSrc: driver2Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -28,7 +32,7 @@ const teamMembers = [
   {
     name: "jordan brown",
     role: strings.DISTANCE,
-    imageSrc: "/img/about_us/driver_3.jpg",
+    imageSrc: driver3Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },
@@ -39,7 +43,7 @@ const teamMembers = [
   {
     name: "davis casey",
     role: strings.SPECIALIST,
-    imageSrc: "/img/about_us/driver_4.jpg",
+    imageSrc: driver4Img,
     social: [
       { icon: "fa-brands fa-facebook-f", link: "#" },
       { icon: "fa-brands fa-youtube", link: "#" },

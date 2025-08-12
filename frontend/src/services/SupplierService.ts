@@ -2,7 +2,7 @@ import * as bookcarsTypes from "../types/bookcars-types"
 import axiosInstance from './axiosInstance'
 import { publicApi, authUtils } from '../api/client'
 import { transformUserResponse, transformPaginatedResponse, createQueryParams } from '../utils/apiTransformers'
-const defaultSupplierImg = '/img/default-supplier.jpg'
+import defaultSupplierImg from '@assets/images/default-supplier.jpg'
 
 /**
  * Get all suppliers.

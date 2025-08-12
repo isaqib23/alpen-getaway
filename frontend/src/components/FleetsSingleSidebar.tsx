@@ -19,10 +19,10 @@ import { strings } from "../lang/fleets-single-sidebar";
 import { strings as commonStrings } from "../lang/cars";
 import { strings as chkStrings } from "../lang/checkout";
 import { strings as comStrings } from "../lang/common";
-const iconFleetList1 = "/img/icons/icon-fleet-list-1.svg";
-const iconFleetList2 = "/img/icons/icon-fleet-list-2.svg";
-const iconFleetList3 = "/img/icons/icon-fleet-list-3.svg";
-const iconFleetList4 = "/img/icons/icon-fleet-list-4.svg";
+import iconFleetList1 from "@assets/images/icons/icon-fleet-list-1.svg";
+import iconFleetList2 from "@assets/images/icons/icon-fleet-list-2.svg";
+import iconFleetList3 from "@assets/images/icons/icon-fleet-list-3.svg";
+import iconFleetList4 from "@assets/images/icons/icon-fleet-list-4.svg";
 
 const stripePromise = loadStripe(env.STRIPE_PUBLISHABLE_KEY);
 // Modal styles

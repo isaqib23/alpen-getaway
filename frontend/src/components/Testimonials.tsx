@@ -5,6 +5,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { strings } from "../lang/testiomonials";
 import { getApprovedReviews } from "../services/PublicContentService";
+import driver1Img from "@assets/images/about_us/driver_1.jpg";
+import driver2Img from "@assets/images/about_us/driver_2.jpg";
+import driver3Img from "@assets/images/about_us/driver_3.jpg";
+import driver4Img from "@assets/images/about_us/driver_4.jpg";
 
 interface Review {
   id: string;
@@ -16,6 +20,8 @@ interface Review {
 }
 
 const Testimonials: React.FC = () => {
+  const driverImages = [driver1Img, driver2Img, driver3Img, driver4Img];
+  
   const [testimonials, setTestimonials] = useState([
     {
       id: 1,
@@ -23,7 +29,7 @@ const Testimonials: React.FC = () => {
       text: strings.TEXT,
       author: "floyd miles",
       position: strings.MANAGER,
-      image: "/img/about_us/driver_1.jpg",
+      image: driver1Img,
     },
     {
       id: 2,
@@ -31,7 +37,7 @@ const Testimonials: React.FC = () => {
       text: strings.TEXT,
       author: "annette black",
       position: strings.MANAGER,
-      image: "/img/about_us/driver_2.jpg",
+      image: driver2Img,
     },
     {
       id: 3,
@@ -39,7 +45,7 @@ const Testimonials: React.FC = () => {
       text: strings.TEXT,
       author: "leslie alexander",
       position: strings.MANAGER,
-      image: "/img/about_us/driver_3.jpg",
+      image: driver3Img,
     },
     {
       id: 4,
@@ -47,7 +53,7 @@ const Testimonials: React.FC = () => {
       text: strings.TEXT,
       author: "alis white",
       position: strings.MANAGER,
-      image: "/img/about_us/driver_4.jpg",
+      image: driver4Img,
     },
   ]);
   
@@ -69,7 +75,7 @@ const Testimonials: React.FC = () => {
             text: review.comment || strings.TEXT,
             author: review.customerName || "Customer",
             position: "Verified Customer",
-            image: `/img/about_us/driver_${(index % 4) + 1}.jpg`, // Cycle through available images
+            image: driverImages[index % 4], // Cycle through available images
             isServerData: true,
           }));
           

@@ -4,6 +4,8 @@ import { useInView } from "react-intersection-observer";
 import TextAnime from "../animations/TextAnime";
 
 import { strings } from "../../lang/faqs";
+import b2bPartner1Img from "@assets/images/b2b_partner/1.jpg";
+import b2bPartner2Img from "@assets/images/b2b_partner/2.jpg";
 
 const fadeInUpVariants = {
   initial: { opacity: 0, y: 20 },
@@ -37,7 +39,7 @@ const HomeFAQs: React.FC = () => {
               <div className="faqs-img-1">
                 <figure className="image-anime">
                   <img
-                    src="/img/b2b_partner/1.jpg"
+                    src={b2bPartner1Img}
                     alt="FAQ Image 1"
                   />
                 </figure>
@@ -46,7 +48,7 @@ const HomeFAQs: React.FC = () => {
               <div className="faqs-img-2">
                 <figure className="image-anime">
                   <img
-                    src="/img/b2b_partner/2.jpg"
+                    src={b2bPartner2Img}
                     alt="FAQ Image 2"
                   />
                 </figure>
