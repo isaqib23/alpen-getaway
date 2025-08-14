@@ -5,15 +5,15 @@ import { motion } from "framer-motion";
 import { useMediaQuery } from "react-responsive";
 
 import { Link } from "react-router-dom";
-import arrowWhiteImg from "@assets/images/icons/arrow-white.svg";
-import iconService1 from "@assets/images/icons/icon-service-1.svg";
-import iconService2 from "@assets/images/icons/icon-service-2.svg";
-import iconService3 from "@assets/images/icons/icon-service-3.svg";
-import iconService4 from "@assets/images/icons/icon-service-4.svg";
-import iconService5 from "@assets/images/icons/icon-service-5.svg";
-import iconService6 from "@assets/images/icons/icon-service-6.svg";
-import iconService7 from "@assets/images/icons/icon-service-7.svg";
-import iconService8 from "@assets/images/icons/icon-service-8.svg";
+import arrowWhiteImg from "../assets/images/icons/arrow-white.svg";
+import iconService1 from "../assets/images/icons/icon-service-1.svg";
+import iconService2 from "../assets/images/icons/icon-service-2.svg";
+import iconService3 from "../assets/images/icons/icon-service-3.svg";
+import iconService4 from "../assets/images/icons/icon-service-4.svg";
+import iconService5 from "../assets/images/icons/icon-service-5.svg";
+import iconService6 from "../assets/images/icons/icon-service-6.svg";
+import iconService7 from "../assets/images/icons/icon-service-7.svg";
+import iconService8 from "../assets/images/icons/icon-service-8.svg";
 
 // Create service icon mapping
 const SERVICE_ICONS: Record<string, string> = {

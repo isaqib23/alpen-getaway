@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import TextAnime from "./animations/TextAnime";
 
 import { strings } from "../lang/contact-page";
-import iconLocation from "@assets/images/icons/icon-location.svg";
+import iconLocation from "../assets/images/icons/icon-location.svg";
 
 const ContactInfo: React.FC = () => {
   const iconRefs = Array(3)

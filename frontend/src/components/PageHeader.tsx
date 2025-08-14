@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import aboutImg from "@assets/images/about_us/about.jpg";
+import aboutImg from "../assets/images/about_us/about.jpg";
 
 interface PageHeaderProps {
   title: string;

@@ -1,6 +1,6 @@
 import React from "react";
 import { strings } from "../lang/vision-mission";
-import aboutUs2Img from "@assets/images/about_us/2.png";
+import aboutUs2Img from "../assets/images/about_us/2.png";
 
 const visionMissionData = [
   {

@@ -8,50 +8,50 @@ import TextAnime from "./animations/TextAnime";
 import { Link } from "react-router-dom";
 
 // Import all service images
-import airportTransfer1 from "@assets/images/our_service_details/airport_transfer/1.jpg";
-import airportTransfer2 from "@assets/images/our_service_details/airport_transfer/2.jpg";
-import airportTransfer3 from "@assets/images/our_service_details/airport_transfer/3.jpg";
-import airportTransfer4 from "@assets/images/our_service_details/airport_transfer/4.jpg";
+import airportTransfer1 from "../assets/images/our_service_details/airport_transfer/1.jpg";
+import airportTransfer2 from "../assets/images/our_service_details/airport_transfer/2.jpg";
+import airportTransfer3 from "../assets/images/our_service_details/airport_transfer/3.jpg";
+import airportTransfer4 from "../assets/images/our_service_details/airport_transfer/4.jpg";
 
-import businessTransfers1 from "@assets/images/our_service_details/business_transfers/1.jpg";
-import businessTransfers2 from "@assets/images/our_service_details/business_transfers/2.jpg";
-import businessTransfers3 from "@assets/images/our_service_details/business_transfers/3.jpg";
-import businessTransfers4 from "@assets/images/our_service_details/business_transfers/4.jpg";
+import businessTransfers1 from "../assets/images/our_service_details/business_transfers/1.jpg";
+import businessTransfers2 from "../assets/images/our_service_details/business_transfers/2.jpg";
+import businessTransfers3 from "../assets/images/our_service_details/business_transfers/3.jpg";
+import businessTransfers4 from "../assets/images/our_service_details/business_transfers/4.jpg";
 
-import chauffeurServices1 from "@assets/images/our_service_details/chauffeur_services/1.jpg";
-import chauffeurServices2 from "@assets/images/our_service_details/chauffeur_services/2.jpg";
-import chauffeurServices3 from "@assets/images/our_service_details/chauffeur_services/3.jpg";
-import chauffeurServices4 from "@assets/images/our_service_details/chauffeur_services/4.jpg";
+import chauffeurServices1 from "../assets/images/our_service_details/chauffeur_services/1.jpg";
+import chauffeurServices2 from "../assets/images/our_service_details/chauffeur_services/2.jpg";
+import chauffeurServices3 from "../assets/images/our_service_details/chauffeur_services/3.jpg";
+import chauffeurServices4 from "../assets/images/our_service_details/chauffeur_services/4.jpg";
 
-import economyServices1 from "@assets/images/our_service_details/economy_services/1.jpg";
-import economyServices2 from "@assets/images/our_service_details/economy_services/2.jpg";
-import economyServices3 from "@assets/images/our_service_details/economy_services/3.jpg";
-import economyServices4 from "@assets/images/our_service_details/economy_services/4.jpg";
+import economyServices1 from "../assets/images/our_service_details/economy_services/1.jpg";
+import economyServices2 from "../assets/images/our_service_details/economy_services/2.jpg";
+import economyServices3 from "../assets/images/our_service_details/economy_services/3.jpg";
+import economyServices4 from "../assets/images/our_service_details/economy_services/4.jpg";
 
-import flexiblePayment1 from "@assets/images/our_service_details/flexible_payment_options/1.jpg";
-import flexiblePayment2 from "@assets/images/our_service_details/flexible_payment_options/2.jpg";
-import flexiblePayment3 from "@assets/images/our_service_details/flexible_payment_options/3.jpg";
-import flexiblePayment4 from "@assets/images/our_service_details/flexible_payment_options/4.jpg";
+import flexiblePayment1 from "../assets/images/our_service_details/flexible_payment_options/1.jpg";
+import flexiblePayment2 from "../assets/images/our_service_details/flexible_payment_options/2.jpg";
+import flexiblePayment3 from "../assets/images/our_service_details/flexible_payment_options/3.jpg";
+import flexiblePayment4 from "../assets/images/our_service_details/flexible_payment_options/4.jpg";
 
-import liveRides1 from "@assets/images/our_service_details/live_rides/1.jpg";
-import liveRides2 from "@assets/images/our_service_details/live_rides/2.jpg";
-import liveRides3 from "@assets/images/our_service_details/live_rides/3.jpg";
-import liveRides4 from "@assets/images/our_service_details/live_rides/4.jpg";
+import liveRides1 from "../assets/images/our_service_details/live_rides/1.jpg";
+import liveRides2 from "../assets/images/our_service_details/live_rides/2.jpg";
+import liveRides3 from "../assets/images/our_service_details/live_rides/3.jpg";
+import liveRides4 from "../assets/images/our_service_details/live_rides/4.jpg";
 
-import privateTransfer1 from "@assets/images/our_service_details/private_transfer/1.jpg";
-import privateTransfer2 from "@assets/images/our_service_details/private_transfer/2.jpg";
-import privateTransfer3 from "@assets/images/our_service_details/private_transfer/3.jpg";
-import privateTransfer4 from "@assets/images/our_service_details/private_transfer/4.jpg";
+import privateTransfer1 from "../assets/images/our_service_details/private_transfer/1.jpg";
+import privateTransfer2 from "../assets/images/our_service_details/private_transfer/2.jpg";
+import privateTransfer3 from "../assets/images/our_service_details/private_transfer/3.jpg";
+import privateTransfer4 from "../assets/images/our_service_details/private_transfer/4.jpg";
 
-import roadsideAssistance1 from "@assets/images/our_service_details/roadside_assistance/1.jpg";
-import roadsideAssistance2 from "@assets/images/our_service_details/roadside_assistance/2.jpg";
-import roadsideAssistance3 from "@assets/images/our_service_details/roadside_assistance/3.jpg";
-import roadsideAssistance4 from "@assets/images/our_service_details/roadside_assistance/4.jpg";
+import roadsideAssistance1 from "../assets/images/our_service_details/roadside_assistance/1.jpg";
+import roadsideAssistance2 from "../assets/images/our_service_details/roadside_assistance/2.jpg";
+import roadsideAssistance3 from "../assets/images/our_service_details/roadside_assistance/3.jpg";
+import roadsideAssistance4 from "../assets/images/our_service_details/roadside_assistance/4.jpg";
 
-import vipTransfer1 from "@assets/images/our_service_details/vip_transfer/1.jpg";
-import vipTransfer2 from "@assets/images/our_service_details/vip_transfer/2.jpg";
-import vipTransfer3 from "@assets/images/our_service_details/vip_transfer/3.jpg";
-import vipTransfer4 from "@assets/images/our_service_details/vip_transfer/4.jpg";
+import vipTransfer1 from "../assets/images/our_service_details/vip_transfer/1.jpg";
+import vipTransfer2 from "../assets/images/our_service_details/vip_transfer/2.jpg";
+import vipTransfer3 from "../assets/images/our_service_details/vip_transfer/3.jpg";
+import vipTransfer4 from "../assets/images/our_service_details/vip_transfer/4.jpg";
 
 // Create image mapping
 const SERVICE_IMAGES = {

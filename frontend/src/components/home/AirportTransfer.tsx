@@ -1,9 +1,9 @@
 import React from "react";
 import { strings } from "../../lang/airport-transfer";
-import salzburgImg from "@assets/images/airport_images/salzburg/salzburg_main_image.jpg";
-import munichImg from "@assets/images/airport_images/munich/munich_main_image.jpg";
-import innsbruckImg from "@assets/images/airport_images/innsbruck/main_image_innsbruck.jpg";
-import zurichImg from "@assets/images/airport_images/zurich/zurich_main_image.jpg";
+import salzburgImg from "../../assets/images/airport_images/salzburg/salzburg_main_image.jpg";
+import munichImg from "../../assets/images/airport_images/munich/munich_main_image.jpg";
+import innsbruckImg from "../../assets/images/airport_images/innsbruck/main_image_innsbruck.jpg";
+import zurichImg from "../../assets/images/airport_images/zurich/zurich_main_image.jpg";
 
 const airports = [
   {

@@ -18,6 +18,11 @@ export default ({ mode }: { mode: string }) => {
         "@assets": path.resolve(__dirname, "src/assets"),
       },
     },
+    optimizeDeps: {
+      include: [],
+      exclude: [],
+      force: true,
+    },
     server: {
       host: "0.0.0.0",
       port: Number.parseInt(process.env.VITE_PORT || "3002", 10),

@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { strings } from "../lang/about-page";
-import driver1Img from "@assets/images/about_us/driver_1.jpg";
-import driver2Img from "@assets/images/about_us/driver_2.jpg";
-import driver3Img from "@assets/images/about_us/driver_3.jpg";
-import driver4Img from "@assets/images/about_us/driver_4.jpg";
+import driver1Img from "../assets/images/about_us/driver_1.jpg";
+import driver2Img from "../assets/images/about_us/driver_2.jpg";
+import driver3Img from "../assets/images/about_us/driver_3.jpg";
+import driver4Img from "../assets/images/about_us/driver_4.jpg";
 
 const teamMembers = [
   {

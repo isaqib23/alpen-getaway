@@ -2,8 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { strings } from "../lang/footer";
-import logoBlackImg from "@assets/images/logo_black.png";
-import arrowWhiteImg from "@assets/images/icons/arrow-white.svg";
+import logoBlackImg from "../assets/images/logo_black.png";
+import arrowWhiteImg from "../assets/images/icons/arrow-white.svg";
 
 const Footer: React.FC = () => {
   return (

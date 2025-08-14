@@ -6,10 +6,10 @@ import TextAnime from "./animations/TextAnime";
 import { useMediaQuery } from "react-responsive";
 
 import { strings } from "../lang/why-choose-us";
-import iconWhyChoose1 from "@assets/images/icons/icon-why-choose-1.svg";
-import iconWhyChoose2 from "@assets/images/icons/icon-why-choose-2.svg";
-import iconWhyChoose3 from "@assets/images/icons/icon-why-choose-3.svg";
-import iconWhyChoose4 from "@assets/images/icons/icon-why-choose-4.svg";
+import iconWhyChoose1 from "../assets/images/icons/icon-why-choose-1.svg";
+import iconWhyChoose2 from "../assets/images/icons/icon-why-choose-2.svg";
+import iconWhyChoose3 from "../assets/images/icons/icon-why-choose-3.svg";
+import iconWhyChoose4 from "../assets/images/icons/icon-why-choose-4.svg";
 
 const HomeWhyChooseUs: React.FC = () => {
   const isLaptop = useMediaQuery({ query: "(min-width: 992px)" });

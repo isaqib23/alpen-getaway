@@ -1,8 +1,8 @@
 import React from "react";
 import { CheckCircle, Smartphone, Clock, Gift, Car } from "lucide-react";
 import { strings } from "../lang/about";
-import driver1Img from "@assets/images/about_us/driver_1.jpg";
-import driver2Img from "@assets/images/about_us/driver_2.jpg";
+import driver1Img from "../assets/images/about_us/driver_1.jpg";
+import driver2Img from "../assets/images/about_us/driver_2.jpg";
 
 const AboutTrustedPartner: React.FC = () => {
   return (

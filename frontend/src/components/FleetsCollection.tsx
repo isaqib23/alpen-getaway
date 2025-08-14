@@ -16,11 +16,11 @@ import * as SupplierService from "../services/SupplierService";
 
 import { useMediaQuery } from "react-responsive";
 import TextAnime from "./animations/TextAnime";
-import iconFleetList1 from "@assets/images/icons/icon-fleet-list-1.svg";
-import iconFleetList2 from "@assets/images/icons/icon-fleet-list-2.svg";
-import iconFleetList3 from "@assets/images/icons/icon-fleet-list-3.svg";
-import iconFleetList4 from "@assets/images/icons/icon-fleet-list-4.svg";
-import arrowWhiteIcon from "@assets/images/icons/arrow-white.svg";
+import iconFleetList1 from "../assets/images/icons/icon-fleet-list-1.svg";
+import iconFleetList2 from "../assets/images/icons/icon-fleet-list-2.svg";
+import iconFleetList3 from "../assets/images/icons/icon-fleet-list-3.svg";
+import iconFleetList4 from "../assets/images/icons/icon-fleet-list-4.svg";
+import arrowWhiteIcon from "../assets/images/icons/arrow-white.svg";
 
 interface FleetsProps {
   from?: Date;

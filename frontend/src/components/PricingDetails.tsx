@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import eClassImg from "@assets/images/our_fleet/transparent_car_images/e_class.png";
-import sClassImg from "@assets/images/our_fleet/transparent_car_images/s_class.png";
-import vClassImg from "@assets/images/our_fleet/transparent_car_images/v_class.png";
+import eClassImg from "../assets/images/our_fleet/transparent_car_images/e_class.png";
+import sClassImg from "../assets/images/our_fleet/transparent_car_images/s_class.png";
+import vClassImg from "../assets/images/our_fleet/transparent_car_images/v_class.png";
 
 
 const pricingItems = [

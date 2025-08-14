@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import { useMediaQuery } from "react-responsive";
-import iconRentDetails2 from "@assets/images/icons/icon-rent-details-2.svg";
-import iconRentDetails3 from "@assets/images/icons/icon-rent-details-3.svg";
+import iconRentDetails2 from "../../assets/images/icons/icon-rent-details-2.svg";
+import iconRentDetails3 from "../../assets/images/icons/icon-rent-details-3.svg";
 
 import * as bookcarsTypes from "../../types/bookcars-types";
 import * as bookcarsHelper from "../../utils/bookcars-helper";

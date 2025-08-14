@@ -22,7 +22,7 @@ import * as SupplierService from '../../services/SupplierService';
 import * as helper from '../../common/helper';
 
 import { strings } from "../../lang/fleets";
-import eClassImg from "@assets/images/our_fleet/transparent_car_images/e_class.png";
+import eClassImg from "../../assets/images/our_fleet/transparent_car_images/e_class.png";
 
 const HomeFleets: React.FC = () => {
   const { ref, inView } = useInView({ triggerOnce: true });

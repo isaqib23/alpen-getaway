@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Phone } from "lucide-react";
 import { strings } from "../../lang/cta";
-import sClassImg from "@assets/images/our_fleet/transparent_car_images/s_class.png";
+import sClassImg from "../../assets/images/our_fleet/transparent_car_images/s_class.png";
 
 const HomeCTA: React.FC = () => {
   return (

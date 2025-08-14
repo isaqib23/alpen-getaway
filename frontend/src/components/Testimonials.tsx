@@ -5,10 +5,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { strings } from "../lang/testiomonials";
 import { getApprovedReviews } from "../services/PublicContentService";
-import driver1Img from "@assets/images/about_us/driver_1.jpg";
-import driver2Img from "@assets/images/about_us/driver_2.jpg";
-import driver3Img from "@assets/images/about_us/driver_3.jpg";
-import driver4Img from "@assets/images/about_us/driver_4.jpg";
+import driver1Img from "../assets/images/about_us/driver_1.jpg";
+import driver2Img from "../assets/images/about_us/driver_2.jpg";
+import driver3Img from "../assets/images/about_us/driver_3.jpg";
+import driver4Img from "../assets/images/about_us/driver_4.jpg";
 
 interface Review {
   id: string;

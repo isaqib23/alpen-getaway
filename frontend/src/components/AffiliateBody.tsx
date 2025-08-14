@@ -9,8 +9,8 @@ import { Link } from "react-router-dom";
 
 import { strings } from "../lang/affiliate";
 import RegistrationService, { AffiliateRegistrationData } from "../services/RegistrationService";
-import affiliate1Img from "@assets/images/affiliate/1.jpg";
-import affiliate2Img from "@assets/images/affiliate/2.jpg";
+import affiliate1Img from "../assets/images/affiliate/1.jpg";
+import affiliate2Img from "../assets/images/affiliate/2.jpg";
 
 const fadeInUpVariants = {
   initial: { opacity: 0, y: 20 },

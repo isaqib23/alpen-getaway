@@ -10,7 +10,7 @@ import * as NotificationService from "../services/NotificationService";
 import * as langHelper from "../common/langHelper";
 import * as helper from "../common/helper";
 import { useGlobalContext, GlobalContextType } from "../context/GlobalContext";
-import logoImg from "@assets/images/logo.png";
+import logoImg from "../assets/images/logo.png";
 
 
 interface HeaderProps {

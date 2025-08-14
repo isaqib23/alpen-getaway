@@ -14,10 +14,10 @@ import {
   InputLabel,
 } from "@mui/material";
 
-import iconFleetList1 from "@assets/images/icons/icon-fleet-list-1.svg";
-import iconFleetList2 from "@assets/images/icons/icon-fleet-list-2.svg";
-import iconFleetList3 from "@assets/images/icons/icon-fleet-list-3.svg";
-import iconFleetList4 from "@assets/images/icons/icon-fleet-list-4.svg";
+import iconFleetList1 from "../assets/images/icons/icon-fleet-list-1.svg";
+import iconFleetList2 from "../assets/images/icons/icon-fleet-list-2.svg";
+import iconFleetList3 from "../assets/images/icons/icon-fleet-list-3.svg";
+import iconFleetList4 from "../assets/images/icons/icon-fleet-list-4.svg";
 
 interface BookingDetails {
   id: string;

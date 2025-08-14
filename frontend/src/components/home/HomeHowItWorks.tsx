@@ -6,11 +6,11 @@ import { motion } from "framer-motion";
 
 import { strings } from "../../lang/works";
 import { Link } from "react-router-dom";
-import aboutImg from "@assets/images/about_us/about.jpg";
-import driver1Img from "@assets/images/about_us/driver_1.jpg";
-import about1Img from "@assets/images/about_us/1.jpg";
-import about2Img from "@assets/images/about_us/2.png";
-import driver2Img from "@assets/images/about_us/driver_2.jpg";
+import aboutImg from "../../assets/images/about_us/about.jpg";
+import driver1Img from "../../assets/images/about_us/driver_1.jpg";
+import about1Img from "../../assets/images/about_us/1.jpg";
+import about2Img from "../../assets/images/about_us/2.png";
+import driver2Img from "../../assets/images/about_us/driver_2.jpg";
 
 const HomeHowItWorks = () => {
   const [ref1, inView1] = useInView({ triggerOnce: true, threshold: 0.1 });
