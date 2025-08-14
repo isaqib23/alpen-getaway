@@ -61,6 +61,9 @@ export const shuffleArray = <T>(array: T[]): T[] => {
   return shuffled;
 };
 
+// Alias for compatibility
+export const shuffle = shuffleArray;
+
 // Flatten suppliers for compatibility with the UI components
 export const flattenSuppliers = (suppliers: any[]): string[] => {
   return suppliers.map(supplier => supplier._id || supplier.id).filter(Boolean);

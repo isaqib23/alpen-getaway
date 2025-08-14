@@ -26,7 +26,9 @@
     "paths": {
       ":bookcars-types": ["./src/types/bookcars-types"],
       ":bookcars-helper": ["./src/utils/bookcars-helper"],
-      ":disable-react-devtools": ["./src/utils/disable-react-devtools"]
+      ":disable-react-devtools": ["./src/utils/disable-react-devtools"],
+      "@/*": ["./src/*"],
+      "@assets/*": ["./src/assets/*"]
     },
   },
   "include": ["src", "src/jquery.magnific-popup.d.ts" ],
